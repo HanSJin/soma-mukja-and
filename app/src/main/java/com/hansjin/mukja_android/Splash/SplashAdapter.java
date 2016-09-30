@@ -66,20 +66,20 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             Food food = mDataset.get(position);
 
-//            String tasteStr = "";
-//            for (String taste : food.taste) {
-//                taste += ("#" + taste + ", ");
-//            }
-//            String countryStr = "";
-//            for (String county : food.county) {
-//                countryStr  += ("#" + county + ", ");
-//            }
-//            String cookingStr = "";
-//            for (String cooking : food.cooking) {
-//                cookingStr += ("#" + cooking + ", ");
-//            }
+            String tasteStr = "";
+            for (String taste : food.taste) {
+                tasteStr += ("#" + taste + ", ");
+            }
+            String countryStr = "";
+            for (String country : food.country) {
+                countryStr  += ("#" + country + ", ");
+            }
+            String cookingStr = "";
+            for (String cooking : food.cooking) {
+                cookingStr += ("#" + cooking + ", ");
+            }
             itemViewHolder.foodName.setText(food.name);
-//            itemViewHolder.foodDesc.setText(tasteStr + countryStr + cookingStr);
+            itemViewHolder.foodDesc.setText(tasteStr + countryStr + cookingStr);
         }
     }
 

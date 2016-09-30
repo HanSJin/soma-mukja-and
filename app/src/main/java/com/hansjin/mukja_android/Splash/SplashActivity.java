@@ -47,7 +47,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @ViewById
     public LinearLayout indicator;
- 
+
     @AfterViews
     void afterBindingView() {
         this.activity = this;
