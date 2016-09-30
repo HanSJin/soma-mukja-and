@@ -12,6 +12,7 @@ import rx.Observable;
  * Created by kksd0900 on 16. 9. 29..
  */
 public interface CSConnection {
-    @GET("/food")
+    @GET("/foods")
     Observable<List<Food>> getAllFood();
 }
+
