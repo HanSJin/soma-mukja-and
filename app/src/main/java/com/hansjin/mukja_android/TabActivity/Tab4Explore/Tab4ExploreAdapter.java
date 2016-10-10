@@ -1,25 +1,26 @@
-package com.hansjin.mukja_android.Splash;
+package com.hansjin.mukja_android.TabActivity.Tab4Explore;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
 
 import java.util.ArrayList;
 
 /**
- * Created by kksd0900 on 16. 9. 30..
+ * Created by kksd0900 on 16. 10. 11..
  */
-public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder> {
+public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.ViewHolder> {
     private static final int TYPE_ITEM = 0;
 
     public Context context;
+    public Tab4ExploreFragment fragment;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
 
@@ -27,9 +28,10 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
         void onItemClick(View view, int position);
     }
 
-    public SplashAdapter(OnItemClickListener onItemClickListener, Context mContext) {
+    public Tab4ExploreAdapter(OnItemClickListener onItemClickListener, Context mContext, Tab4ExploreFragment mFragment) {
         mOnItemClickListener = onItemClickListener;
         context = mContext;
+        fragment = mFragment;
         mDataset.clear();
     }
 
@@ -46,7 +48,7 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
     }
 
     @Override
-    public SplashAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public Tab4ExploreAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_food_default_item, parent, false);
             return new ItemViewHolder(v);
@@ -65,21 +67,6 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
             });
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             Food food = mDataset.get(position);
-
-            String tasteStr = "";
-            for (String taste : food.taste) {
-                tasteStr += ("#" + taste + ", ");
-            }
-            String countryStr = "";
-            for (String country : food.country) {
-                countryStr  += ("#" + country + ", ");
-            }
-            String cookingStr = "";
-            for (String cooking : food.cooking) {
-                cookingStr += ("#" + cooking + ", ");
-            }
-            itemViewHolder.foodName.setText(food.name);
-            itemViewHolder.foodDesc.setText(tasteStr + countryStr + cookingStr);
         }
     }
 
@@ -112,4 +99,5 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
             foodDesc = (TextView) v.findViewById(R.id.food_desc);
         }
     }
+
 }

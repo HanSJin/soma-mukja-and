@@ -1,4 +1,23 @@
 <resources>
     <string name="app_name">Mukja-android</string>
     <string name="action_settings">Settings</string>
+
+    <!--SJin-->
+
+    <!--DEFAULT-->
+    <string name="exit_app">"\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다."</string>
+
+    <!--TABS-->
+    <string name="tab_1">추천</string>
+    <string name="tab_2">피드</string>
+    <string name="tab_3">월드컵</string>
+    <string name="tab_4">탐색</string>
+    <string name="tab_5">내 정보</string>
+
+    <!--Juwon-->
+
+
+    <!-- Mijung-->
 </resources>
+
+

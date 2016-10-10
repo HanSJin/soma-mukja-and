@@ -1,11 +1,10 @@
-package com.hansjin.mukja_android.Splash;
+package com.hansjin.mukja_android.Template;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hansjin.mukja_android.Model.Food;
@@ -14,9 +13,9 @@ import com.hansjin.mukja_android.R;
 import java.util.ArrayList;
 
 /**
- * Created by kksd0900 on 16. 9. 30..
+ * Created by kksd0900 on 16. 10. 11..
  */
-public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder> {
+public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
     private static final int TYPE_ITEM = 0;
 
     public Context context;
@@ -27,7 +26,7 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
         void onItemClick(View view, int position);
     }
 
-    public SplashAdapter(OnItemClickListener onItemClickListener, Context mContext) {
+    public BaseAdapter(OnItemClickListener onItemClickListener, Context mContext) {
         mOnItemClickListener = onItemClickListener;
         context = mContext;
         mDataset.clear();
@@ -46,7 +45,7 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
     }
 
     @Override
-    public SplashAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BaseAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_food_default_item, parent, false);
             return new ItemViewHolder(v);
@@ -65,21 +64,6 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
             });
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             Food food = mDataset.get(position);
-
-            String tasteStr = "";
-            for (String taste : food.taste) {
-                tasteStr += ("#" + taste + ", ");
-            }
-            String countryStr = "";
-            for (String country : food.country) {
-                countryStr  += ("#" + country + ", ");
-            }
-            String cookingStr = "";
-            for (String cooking : food.cooking) {
-                cookingStr += ("#" + cooking + ", ");
-            }
-            itemViewHolder.foodName.setText(food.name);
-            itemViewHolder.foodDesc.setText(tasteStr + countryStr + cookingStr);
         }
     }
 
