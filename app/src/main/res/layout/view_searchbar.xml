@@ -4,5 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:background="#88ccbb">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="25"></LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="50"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="25"></LinearLayout>
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="400">
+            <EditText
+                android:id="@+id/ET_searchbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:background="@drawable/edittext_round"
+                android:inputType="textMultiLine"
+                android:gravity="center"
+                android:hint="맛, 나라, 조리방법, 사용자 등 검색"
+                android:textSize="15dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="25"></LinearLayout>
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="90">
+            <Button
+                android:id="@+id/BT_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="검색"/>
+        </LinearLayout>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="25"></LinearLayout>
 </LinearLayout>

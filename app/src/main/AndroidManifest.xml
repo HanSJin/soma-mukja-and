@@ -16,7 +16,7 @@
             android:name=".Splash.SplashActivity_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,6 +43,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity android:name=".TabActivity.Tab5MyPage.Setting" />
+        <activity android:name=".TabActivity.Tab5MyPage.Agreement" />
+        <activity android:name=".TabActivity.Tab5MyPage.PrivacyRule" />
+        <activity android:name=".TabActivity.Tab5MyPage.FoodRate"></activity>
     </application>
 
 </manifest>

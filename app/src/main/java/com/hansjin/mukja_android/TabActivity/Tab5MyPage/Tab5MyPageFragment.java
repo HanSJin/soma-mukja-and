@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.hansjin.mukja_android.R;
@@ -29,6 +31,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
+    Button BT_setting;
 
     /**
      * Create a new instance of the fragment
@@ -55,7 +58,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
 
         Toolbar cs_toolbar = (Toolbar)view.findViewById(R.id.cs_toolbar);
         activity.setSupportActionBar(cs_toolbar);
-        activity.getSupportActionBar().setTitle("내정보");
+        activity.getSupportActionBar().setTitle("내 정보");
 
         if (recyclerView == null) {
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -81,6 +84,14 @@ public class Tab5MyPageFragment extends TabParentFragment {
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
                 refresh();
+            }
+        });
+
+        BT_setting = (Button)view.findViewById(R.id.BT_setting);
+        BT_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), Setting.class));
             }
         });
 

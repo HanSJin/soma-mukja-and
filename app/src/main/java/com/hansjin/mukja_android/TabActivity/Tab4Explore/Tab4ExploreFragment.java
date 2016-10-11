@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.hansjin.mukja_android.R;
@@ -28,6 +29,8 @@ public class Tab4ExploreFragment  extends TabParentFragment {
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
+    Button BT_search;
+    Boolean BT_search_bool = false;
 
     /**
      * Create a new instance of the fragment
@@ -80,6 +83,21 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                 refresh();
             }
         });
+
+        BT_search = (Button)view.findViewById(R.id.BT_search);
+        BT_search.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(!BT_search_bool) {
+                    BT_search.setText("취소");
+                    BT_search_bool = true;
+                }else{
+                    BT_search.setText("검색");
+                    BT_search_bool = false;
+                }
+            }
+        });
+
 
         connectTestCall();
     }
