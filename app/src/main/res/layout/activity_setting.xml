@@ -1,0 +1,163 @@
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay" >
+
+        <include layout="@layout/toolbar_setting" android:id="@+id/cs_toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/colorWhite">
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="40"></LinearLayout>
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="460"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="40"></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="30">
+                <Button
+                    android:id="@+id/BT_food_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="음식 평가"
+                    android:textSize="20dp"
+                    android:gravity="left|center_vertical"
+                    android:background="@color/colorWhite"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="10"></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="30">
+                <Button
+                    android:id="@+id/BT_pref_anal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="취향 분석"
+                    android:textSize="20dp"
+                    android:gravity="left|center_vertical"
+                    android:background="@color/colorWhite"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="10"></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="30">
+                <Button
+                    android:id="@+id/BT_push_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="푸쉬 설정(스위치)"
+                    android:textSize="20dp"
+                    android:gravity="left|center_vertical"
+                    android:background="@color/colorWhite"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="10"></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="30">
+                <Button
+                    android:id="@+id/BT_agreement"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="이용약관"
+                    android:textSize="20dp"
+                    android:gravity="left|center_vertical"
+                    android:background="@color/colorWhite"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="10"></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="30">
+                <Button
+                    android:id="@+id/BT_privacy_rule"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="개인정보 취급방침"
+                    android:textSize="20dp"
+                    android:gravity="left|center_vertical"
+                    android:background="@color/colorWhite"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="10"></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="30">
+                <Button
+                    android:id="@+id/BT_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="로그아웃"
+                    android:textSize="20dp"
+                    android:gravity="left|center_vertical"
+                    android:background="@color/colorWhite"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="10"></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="30">
+                <Button
+                    android:id="@+id/BT_withdrawal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="회원탈퇴"
+                    android:textSize="20dp"
+                    android:gravity="left|center_vertical"
+                    android:background="@color/colorWhite"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="140"></LinearLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="40"></LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -16,7 +19,7 @@
             android:name=".Splash.SplashActivity_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,6 +46,12 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity android:name=".TabActivity.Tab5MyPage.Setting" />
+        <activity android:name=".TabActivity.Tab5MyPage.Agreement" />
+        <activity android:name=".TabActivity.Tab5MyPage.PrivacyRule" />
+        <activity android:name=".TabActivity.Tab5MyPage.FoodRate" />
+        <activity android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"></activity>
     </application>
 
 </manifest>
