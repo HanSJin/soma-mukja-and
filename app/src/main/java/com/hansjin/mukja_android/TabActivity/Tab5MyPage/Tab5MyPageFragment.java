@@ -1,9 +1,11 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hansjin.mukja_android.R;
@@ -32,6 +35,9 @@ public class Tab5MyPageFragment extends TabParentFragment {
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
     Button BT_setting;
+    Button BT_pref_anal;
+    Button BT_food_rate;
+    public static ImageView profile_image;
 
     /**
      * Create a new instance of the fragment
@@ -61,10 +67,17 @@ public class Tab5MyPageFragment extends TabParentFragment {
         activity.getSupportActionBar().setTitle("내 정보");
 
         if (recyclerView == null) {
+//            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+//            recyclerView.setHasFixedSize(true);
+//            layoutManager = new LinearLayoutManager(activity);
+//            recyclerView.setLayoutManager(layoutManager);
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
             recyclerView.setHasFixedSize(true);
-            layoutManager = new LinearLayoutManager(activity);
-            recyclerView.setLayoutManager(layoutManager);
+
+            //layoutManager = new LinearLayoutManager(activity);
+            //recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setLayoutManager(new GridLayoutManager(activity, 2));
+
         }
 
         if (adapter == null) {
@@ -88,12 +101,35 @@ public class Tab5MyPageFragment extends TabParentFragment {
         });
 
         BT_setting = (Button)view.findViewById(R.id.BT_setting);
+        BT_pref_anal = (Button) view.findViewById(R.id.BT_pref_anal);
+        BT_food_rate = (Button) view.findViewById(R.id.BT_food_rate);
+        profile_image = (ImageView) view.findViewById(R.id.profile_image);
+
         BT_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), Setting.class));
             }
         });
+        BT_pref_anal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //finish();
+            }
+        });
+        BT_food_rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), FoodRate.class));
+            }
+        });
+        profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ThumbPopupActivity.class));
+            }
+        });
+
 
         connectTestCall();
     }
