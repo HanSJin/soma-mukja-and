@@ -6,6 +6,7 @@ import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Model.itemScores;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -37,5 +38,14 @@ public interface CSConnection {
 
     @GET("/pio/recommendation/{user}")
     Observable<List<itemScores>> recommendationResult(@Path("user") String user);
+
+    @POST("/sign/up")
+    Observable<User> signupUser(@Body User user);
+
+    @POST("/users/{user_id}/edit/aboutMe")
+    Observable<User> updateAboutme(@Path("user_id") String user_id,
+                                   @Body Map<String, Object> fields);
+
+
 }
 

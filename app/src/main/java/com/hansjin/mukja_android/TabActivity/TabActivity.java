@@ -1,6 +1,8 @@
 package com.hansjin.mukja_android.TabActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,7 +36,7 @@ public class TabActivity extends AppCompatActivity {
     private AHBottomNavigationAdapter navigationAdapter;
     private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 
-
+    //SharedPreferences sp = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
     @AfterViews
     void afterBindingView() {
         AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
