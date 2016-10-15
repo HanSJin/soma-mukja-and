@@ -6,43 +6,46 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
-import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
+import com.hansjin.mukja_android.Utils.DownloadImageTask;
 
 import java.util.ArrayList;
 
+import static com.hansjin.mukja_android.Utils.Constants.Constants.API_BASE_URL;
+
+
 /**
- * Created by kksd0900 on 16. 10. 11..
+ * Created by kksd0900 on 16. 9. 30..
  */
-public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.ViewHolder> {
+public class Tab4ExploreAdapterSearch extends RecyclerView.Adapter<Tab4ExploreAdapterSearch.ViewHolder> {
     private static final int TYPE_ITEM = 0;
 
     public Context context;
     public Tab4ExploreFragment fragment;
     private OnItemClickListener mOnItemClickListener;
-    public ArrayList<String> mDataset = new ArrayList<>();
+    public ArrayList<Food> mDataset = new ArrayList<>();
+
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
 
-    public Tab4ExploreAdapter(OnItemClickListener onItemClickListener, Context mContext, Tab4ExploreFragment mFragment) {
+    public Tab4ExploreAdapterSearch(OnItemClickListener onItemClickListener, Context mContext, Tab4ExploreFragment mFragment) {
         mOnItemClickListener = onItemClickListener;
         context = mContext;
         fragment = mFragment;
         mDataset.clear();
     }
 
-    public void addData(String item) {
+    public void addData(Food item) {
         mDataset.add(item);
     }
 
-    public String getItem(int position) {
+    public Food getItem(int position) {
         return mDataset.get(position);
     }
 
@@ -51,9 +54,9 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
     }
 
     @Override
-    public Tab4ExploreAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public Tab4ExploreAdapterSearch.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_ranking_keyword, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_search, parent, false);
             return new ItemViewHolder(v);
         }
         return null;
@@ -69,11 +72,28 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
                 }
             });
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            String keyword = mDataset.get(position);
-            Log.i("keyword", keyword);
 
-            int tempPosition = position+1;
-            itemViewHolder.TV_ranking_keyword_name.setText("선호키워드 " + tempPosition + " - '" +keyword + "' TOP 30");
+            Food food = mDataset.get(position);
+            String tasteStr = "";
+            for (String taste : food.taste) {
+                tasteStr += ("#" + taste + ", ");
+            }
+            String countryStr = "";
+            for (String country : food.country) {
+                countryStr  += ("#" + country + ", ");
+            }
+            String cookingStr = "";
+            for (String cooking : food.cooking) {
+                cookingStr += ("#" + cooking + ", ");
+            }
+
+            //itemViewHolder.TV_food_name.setText(food.name);
+            itemViewHolder.food_name.setText(food.name);
+            itemViewHolder.food_desc.setText(tasteStr + countryStr + cookingStr);
+
+
+            new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + food.imageURL);
+
         }
     }
 
@@ -87,6 +107,10 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
         return mDataset.size();
     }
 
+
+    /*
+        ViewHolder
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View container;
         public ViewHolder(View itemView) {
@@ -95,15 +119,19 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
         }
     }
     public class ItemViewHolder extends ViewHolder {
-        public TextView TV_ranking_keyword_name;
+        public TextView food_name, food_desc;
         ImageView IV_food;
+
 
         public ItemViewHolder(View v) {
             super(v);
-            TV_ranking_keyword_name = (TextView) v.findViewById(R.id.cell_ranking_keyword_name).findViewById(R.id.TV_ranking_keyword_name);
+            food_name = (TextView) v.findViewById(R.id.food_name);
+            food_desc = (TextView) v.findViewById(R.id.food_desc);
+
 
             IV_food = (ImageView) v.findViewById(R.id.IV_food);
+
+
         }
     }
-
 }

@@ -15,6 +15,10 @@
         android:launchMode="singleTask"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
         <activity
             android:name=".Splash.SplashActivity_"
             android:launchMode="singleTask"
@@ -49,9 +53,20 @@
         <activity android:name=".TabActivity.Tab5MyPage.Setting" />
         <activity android:name=".TabActivity.Tab5MyPage.Agreement" />
         <activity android:name=".TabActivity.Tab5MyPage.PrivacyRule" />
-        <activity android:name=".TabActivity.Tab5MyPage.FoodRate" />
-        <activity android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"></activity>
+        <activity android:name=".TabActivity.Tab5MyPage.FoodRate_"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+        <activity android:name=".Sign.SignActivity" />
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity android:name=".TabActivity.Tab5MyPage.PopupEditAboutMe"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
     </application>
 
 </manifest>

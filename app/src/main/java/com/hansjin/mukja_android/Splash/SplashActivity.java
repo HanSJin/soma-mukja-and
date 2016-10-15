@@ -1,6 +1,7 @@
 package com.hansjin.mukja_android.Splash;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.ResultActivity_;
+import com.hansjin.mukja_android.Sign.SignActivity;
 import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
@@ -43,6 +45,8 @@ public class SplashActivity extends AppCompatActivity {
     void afterBindingView() {
         this.activity = this;
 
+
+
 //        setSupportActionBar(cs_toolbar);
 //        getSupportActionBar().setTitle("스플래쉬");
 
@@ -51,7 +55,8 @@ public class SplashActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(activity, TabActivity_.class);
+                //Intent intent = new Intent(activity, TabActivity_.class);
+                Intent intent = new Intent(activity, SignActivity.class);
                 startActivity(intent);
                 finish();
             }

@@ -127,20 +127,49 @@
                         android:layout_height="0px"
                         android:layout_weight="15"
                         android:orientation="vertical">
-                            <TextView
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0px"
+                            android:layout_weight="5">
+                            <RelativeLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="HanSJin"
-                                android:gravity="center_horizontal"
-                                android:textStyle="bold"
-                                android:paddingBottom="10dp"/>
-                            <TextView
+                                android:layout_height="match_parent">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="name"
+                                    android:layout_centerHorizontal="true"
+                                    android:textStyle="bold"
+                                    android:paddingBottom="10dp"
+                                    android:paddingRight="10dp"
+                                    android:id="@+id/TV_name"/>
+                            </RelativeLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0px"
+                            android:layout_weight="5">
+                            <RelativeLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="안녕하세요.\n 오늘은 정말 맛있는 거 먹을거에요"
-                                android:gravity="center_horizontal"
-                                android:textSize="10dp"
-                                android:textColor="@color/colorBlack"/>
+                                android:layout_height="match_parent">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="about_me"
+                                    android:layout_centerHorizontal="true"
+                                    android:textSize="10dp"
+                                    android:textColor="@color/colorBlack"
+                                    android:id="@+id/TV_about_me"/>
+                                <Button
+                                    android:layout_toRightOf="@id/TV_about_me"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:text="."
+                                    android:textSize="10dp"
+                                    android:id="@+id/BT_edit_about_me"/>
+                            </RelativeLayout>
+                        </LinearLayout>
+
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"

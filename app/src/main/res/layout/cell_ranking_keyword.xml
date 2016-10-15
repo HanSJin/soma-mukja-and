@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:layout_marginBottom="0dp"
+    android:background="@color/colorWhite">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/xml_border">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/xml_border">
+            <include layout="@layout/cell_ranking_keyword_body_image" android:id="@+id/cell_ranking_keyword_body_image" />
+            <include layout="@layout/cell_ranking_keyword_name" android:id="@+id/cell_ranking_keyword_name" />
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -6,6 +6,7 @@ import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Model.itemScores;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -21,7 +22,7 @@ public interface CSConnection {
     Observable<List<Food>> getAllFood();
 
     @GET("/foods/{id}/{user}")
-    Observable<Food> getOneFood(@Path("id") String id,@Path("user") String user);
+    Observable<Food> getOneFood(@Path("id") String id, @Path("user") String user);
 
     @POST("/users")
     Observable<User> createUser(@Body User user);
@@ -37,5 +38,22 @@ public interface CSConnection {
 
     @GET("/pio/recommendation/{user}")
     Observable<List<itemScores>> recommendationResult(@Path("user") String user);
+
+    @POST("/sign/up")
+    Observable<User> signupUser(@Body User user);
+
+    @POST("/users/{user_id}/edit/aboutMe")
+    Observable<User> updateAboutme(@Path("user_id") String user_id,
+                                   @Body Map<String, Object> fields);
+
+    @POST("/sign/in")
+    Observable<User> signinUser(@Body Map<String, Object> fields);
+
+    @GET("/users/{user_id}/keyword")
+    Observable<List<String>> getAllKeyword(@Path("user_id") String id);
+
+    @GET("/foods/{keyword}")
+    Observable<List<Food>> getSearchResult(@Path("keyword") String keyword);
+
 }
 

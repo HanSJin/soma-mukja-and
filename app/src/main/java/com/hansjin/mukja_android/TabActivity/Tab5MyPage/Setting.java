@@ -56,7 +56,7 @@ public class Setting extends AppCompatActivity {
         BT_food_rate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), FoodRate.class));
+                startActivity(new Intent(getApplicationContext(), FoodRate_.class));
             }
         });
 
