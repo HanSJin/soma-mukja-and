@@ -1,16 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:layout_marginBottom="20dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="24dp"
+    android:orientation="vertical"
+    android:padding="15dp"
     android:background="@color/colorWhite">
+    <!--태그 목록이 두줄 이상 생길 수도 있어서 height 145->wrap으로 변경-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="특별히 찾으시는 음식이 있으세요?"
+        android:layout_marginBottom="10dp"
+        android:textSize="12sp"
+        android:textColor="@color/colorGrayText"
+        android:textStyle="bold"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp">
+            <TextView
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="맛"
+                android:textSize="10sp"
+                android:textColor="@color/colorGrayText"
+                android:textStyle="bold"/>
+            <com.zhy.view.flowlayout.TagFlowLayout
+                xmlns:zhy="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/taste_flowlayout"
+                zhy:max_select="-1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            </com.zhy.view.flowlayout.TagFlowLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp">
+            <TextView
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="국가"
+                android:textSize="10sp"
+                android:textColor="@color/colorGrayText"
+                android:textStyle="bold"/>
+            <com.zhy.view.flowlayout.TagFlowLayout
+                xmlns:zhy="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/country_flowlayout"
+                zhy:max_select="-1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            </com.zhy.view.flowlayout.TagFlowLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp">
+            <TextView
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="조리 방식"
+                android:textSize="10sp"
+                android:textColor="@color/colorGrayText"
+                android:textStyle="bold"/>
+            <com.zhy.view.flowlayout.TagFlowLayout
+                xmlns:zhy="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cooking_flowlayout"
+                zhy:max_select="-1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            </com.zhy.view.flowlayout.TagFlowLayout>
+        </LinearLayout>
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="category"
         android:id="@+id/TV_category"
         android:paddingLeft="5dp"/>
-
-
 </LinearLayout>
