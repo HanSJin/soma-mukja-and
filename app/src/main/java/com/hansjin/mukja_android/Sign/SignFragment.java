@@ -33,15 +33,21 @@ import com.facebook.login.widget.LoginButton;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
+import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
 import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.GetDeviceInfo;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -59,6 +65,7 @@ public class SignFragment extends Fragment {
     Intent fbLoginIntent;
 
     SharedPreferences prefs;
+    SharedPreferences.Editor editor;
     public User tempUser = new User();
 
     private LoginButton mButtonFacebookSignup;
@@ -75,9 +82,9 @@ public class SignFragment extends Fragment {
     Integer age;
     String job;
     String location;
-
-    SharedPreferences sp;
-    SharedPreferences.Editor editor;
+    String thumbnail_url;
+    String thumbnail_url_small;
+    String access_ip;
 
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
@@ -117,26 +124,34 @@ public class SignFragment extends Fragment {
                                 tempGender = true;
                             }
 
-                            prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = prefs.edit();
+//                            prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
+//                            SharedPreferences.Editor editor = prefs.edit();
 
 
-                            device_type = "Android";
+                            device_type = "android";
                             app_version = getAppVersion(getActivity());;
                             Log.i("asd", app_version);
-                            about_me = "about me";
+                            about_me = "자기소개 글을 입력해주세요";
                             age = 24;
-                            job = "student";
-                            location = "seoul";
-                            User n_user = new User(tempId, tempName, tempGender, device_type, app_version, about_me, age, job, location);
-                            //User(String _id, String name, Boolean gender, String device_type, String app_version, String about_me, Integer age, String job, String location) {
+                            job = "";
+                            location = ""; //위치정보 가져오기
+                            thumbnail_url = "http://graph.facebook.com/" + tempId + "/picture?type=large";
+                            thumbnail_url_small = "http://graph.facebookcom/" + tempId + "/picture?width=78&height=78";
+                            //access_ip = GetDeviceInfo.getIPAddress(true);
+                            access_ip = "";//server에서 구현
+                            Log.i("asd", ""+GetDeviceInfo.getIPAddress(true));
+                            Log.i("asd", ""+GetDeviceInfo.getIPAddress(false));
+
+                            User n_user = new User(tempId, tempName, tempGender, device_type, app_version, about_me, age, job, location,
+                                    thumbnail_url, thumbnail_url_small, access_ip);
+                            //User(String social_id, String name, Boolean gender, String device_type, String app_version, String about_me, Integer age, String job, String location, String thumbnail_url, String thumbnail_url_small, String access_ip)
                             connectCreateUser(n_user);
 
-                            /*
-                            editor.putString("email", tempEmail);
-                            editor.putString("name", tempName);
-                            editor.putString("gender", tempGender);
-                            */
+
+                            editor.putString("user_id", tempId);
+                            editor.putString("user_name", tempName);
+                            editor.putString("user_about_me", "자기소개를 입력해주세요");
+
                             editor.commit();
                             //tempAge = object.optString("age_range");
                         }
@@ -164,49 +179,6 @@ public class SignFragment extends Fragment {
         }
     };
 
-    void connectCreateUser(User user) {
-        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.signupUser(user)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<com.hansjin.mukja_android.Model.User>() {
-                    @Override
-                    public final void onCompleted() {
-                        /*
-                        Fragment fragment = new SignAddFragment();
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.activity_sign, fragment);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                        ft.addToBackStack(null);
-                        ft.commit();
-                        */
-
-                        Intent intent = new Intent(getActivity(), TabActivity_.class);
-                        startActivity(intent);
-                        getActivity().finish();
-
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(com.hansjin.mukja_android.Model.User response) {
-                        if (response != null) {
-                            tempUser.setUser(response);
-
-                            editor.putString("user_id", tempUser.getUser_social_id());
-                            editor.putString("user_name", tempUser.getUser_nickname());
-                            editor.putString("user_about_me", tempUser.getUser_about_me());
-                            Log.i("asd", tempUser.getUser_nickname() + " " + tempUser.getUser_about_me());
-                            editor.commit();
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -223,6 +195,9 @@ public class SignFragment extends Fragment {
     }
 
     public void initInstance(View view){
+        prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
+        editor = prefs.edit();
+
         callbackManager = CallbackManager.Factory.create();
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -237,8 +212,7 @@ public class SignFragment extends Fragment {
 
         };
 
-        sp = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-        editor = sp.edit();
+
 
         accessTokenTracker.startTracking();
 
@@ -248,7 +222,19 @@ public class SignFragment extends Fragment {
 
         info = (TextView) view.findViewById(R.id.info);
 
+
+        long now = System.currentTimeMillis();
+        // 현재 시간을 저장 한다.
+        Date date = new Date(now);
+        // 시간 포맷으로 만든다.
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String strNow = sdfNow.format(date);
+
         if(isLoggedIn()){
+
+            Map field = new HashMap();
+            field.put("user_id", prefs.getString("user_id",""));
+            connectSigninUser(field);
             Intent intent = new Intent(getActivity(), TabActivity_.class);
             startActivity(intent);
             getActivity().finish();
@@ -321,5 +307,76 @@ public class SignFragment extends Fragment {
         return versionName;
     }
 
+    void connectCreateUser(User user) {
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.signupUser(user)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<com.hansjin.mukja_android.Model.User>() {
+                    @Override
+                    public final void onCompleted() {
+                        /*
+                        Fragment fragment = new SignAddFragment();
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.replace(R.id.activity_sign, fragment);
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                        */
+
+                        Intent intent = new Intent(getActivity(), TabActivity_.class);
+                        startActivity(intent);
+                        getActivity().finish();
+
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(com.hansjin.mukja_android.Model.User response) {
+                        if (response != null) {
+                            /*
+                            tempUser.setUser(response);
+                            Log.i("azxc",""+response.getUser_social_id());
+                            Log.i("azxc",""+response.getUser_nickname());
+                            Log.i("azxc",""+response.getUser_about_me());
+
+                            Log.i("asd", tempUser.getUser_nickname() + " " + tempUser.getUser_about_me());
+                            editor.commit();
+                            */
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    void connectSigninUser(final Map field) {
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.signinUser(field)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public final void onCompleted() {
+
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(com.hansjin.mukja_android.Model.User response) {
+                        if (response != null) {
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
 
 }

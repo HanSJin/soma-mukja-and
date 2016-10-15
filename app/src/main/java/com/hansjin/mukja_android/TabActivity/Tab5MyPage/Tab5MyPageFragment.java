@@ -29,6 +29,8 @@ import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandAdapter;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
+import com.hansjin.mukja_android.Utils.DownloadImageTask;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -162,7 +164,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
         BT_food_rate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), FoodRate.class));
+                startActivity(new Intent(getActivity(), FoodRate_.class));
             }
         });
         profile_image.setOnClickListener(new View.OnClickListener() {
@@ -264,37 +266,6 @@ public class Tab5MyPageFragment extends TabParentFragment {
 //            Log.i("asd", ""+result);
 //        }
 //    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-
-
-            try {
-                URL url = new URL(urldisplay);
-                InputStream in = url.openConnection().getInputStream();
-                mIcon11 = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                Log.i("zxc", ""+ mIcon11);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-
-
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 
     public static Bitmap getFacebookProfilePicture(String userID){
         try {

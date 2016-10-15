@@ -22,7 +22,7 @@ public interface CSConnection {
     Observable<List<Food>> getAllFood();
 
     @GET("/foods/{id}/{user}")
-    Observable<Food> getOneFood(@Path("id") String id,@Path("user") String user);
+    Observable<Food> getOneFood(@Path("id") String id, @Path("user") String user);
 
     @POST("/users")
     Observable<User> createUser(@Body User user);
@@ -46,6 +46,14 @@ public interface CSConnection {
     Observable<User> updateAboutme(@Path("user_id") String user_id,
                                    @Body Map<String, Object> fields);
 
+    @POST("/sign/in")
+    Observable<User> signinUser(@Body Map<String, Object> fields);
+
+    @GET("/users/{user_id}/keyword")
+    Observable<List<String>> getAllKeyword(@Path("user_id") String id);
+
+    @GET("/foods/{keyword}")
+    Observable<List<Food>> getSearchResult(@Path("keyword") String keyword);
 
 }
 

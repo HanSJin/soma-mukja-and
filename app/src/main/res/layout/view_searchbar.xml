@@ -33,7 +33,7 @@
                 android:background="@drawable/edittext_round"
                 android:inputType="textMultiLine"
                 android:gravity="center"
-                android:hint="맛, 나라, 조리방법, 사용자 등 검색"
+                android:hint="맛, 나라, 조리방법 등 검색"
                 android:textSize="15dp"/>
         </LinearLayout>
         <LinearLayout

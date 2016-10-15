@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -52,7 +53,10 @@
         <activity android:name=".TabActivity.Tab5MyPage.Setting" />
         <activity android:name=".TabActivity.Tab5MyPage.Agreement" />
         <activity android:name=".TabActivity.Tab5MyPage.PrivacyRule" />
-        <activity android:name=".TabActivity.Tab5MyPage.FoodRate" />
+        <activity android:name=".TabActivity.Tab5MyPage.FoodRate_"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
