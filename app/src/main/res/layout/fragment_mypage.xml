@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay" >
 
-        <include layout="@layout/toolbar_default" android:id="@+id/cs_toolbar" />
+        <include layout="@layout/toolbar_mypage" android:id="@+id/cs_toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -25,13 +25,161 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#F3F3F3"
-                android:paddingBottom="56dp"
-                android:scrollbars="vertical" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0px"
+                        android:layout_weight="30">
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0px"
+                                    android:layout_weight="25">
+                                    <FrameLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@drawable/backgroundimage1"
+                                            android:orientation="vertical">
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="0px"
+                                                android:layout_weight="18"></LinearLayout>
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="0px"
+                                                android:layout_weight="7"
+                                                android:orientation="horizontal">
+                                                <LinearLayout
+                                                    android:layout_width="0px"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_weight="10"></LinearLayout>
+                                                <LinearLayout
+                                                    android:layout_width="0px"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_weight="120">
+                                                    <Button
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:text="취향 분석"
+                                                        android:id="@+id/BT_pref_anal"/>
+                                                </LinearLayout>
+                                                <LinearLayout
+                                                    android:layout_width="0px"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_weight="280"></LinearLayout>
+                                                <LinearLayout
+                                                    android:layout_width="0px"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_weight="120">
+                                                    <Button
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:text="음식 평가"
+                                                        android:id="@+id/BT_food_rate"/>
+                                                </LinearLayout>
+                                                <LinearLayout
+                                                    android:layout_width="0px"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_weight="10"></LinearLayout>
+
+                                            </LinearLayout>
+
+                                        </LinearLayout>
+                                    </FrameLayout>
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0px"
+                                    android:layout_weight="5">
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="78dp"
+                                android:layout_height="78dp"
+                                android:background="@drawable/userinformation3"
+                                android:layout_gravity="center_horizontal|bottom"
+                                android:layout_marginBottom="10dp">
+                                <ImageView
+                                    android:id="@+id/profile_image"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:clickable="true"/>
+                            </LinearLayout>
+                        </FrameLayout>
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0px"
+                        android:layout_weight="15"
+                        android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="HanSJin"
+                                android:gravity="center_horizontal"
+                                android:textStyle="bold"
+                                android:paddingBottom="10dp"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="안녕하세요.\n 오늘은 정말 맛있는 거 먹을거에요"
+                                android:gravity="center_horizontal"
+                                android:textSize="10dp"
+                                android:textColor="@color/colorBlack"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0px"
+                        android:layout_weight="55"
+                        android:orientation="vertical"
+                        android:background="@color/colorGrayBackGround">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0px"
+                            android:layout_weight="5">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="좋아한 메뉴"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:textSize="10dp"
+                                android:textColor="@color/colorBlack"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0px"
+                            android:layout_weight="50">
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/recycler_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="#F3F3F3"
+                                android:paddingBottom="56dp"
+                                android:scrollbars="vertical">
+                            </android.support.v7.widget.RecyclerView>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
