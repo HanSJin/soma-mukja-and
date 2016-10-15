@@ -4,11 +4,11 @@ import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.Result;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Model.itemScores;
-import com.squareup.okhttp.RequestBody;
 
 import java.util.List;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -83,8 +83,7 @@ public interface CSConnection {
     Observable<Food> foodPost(@Body Food food);
 
     @Multipart
-    @PUT("uploads/food/{food_id}")
-    Observable<Food> uploadImage(@Part ("photo") MultipartBody.Part photo, @Path("food_id") String food_id);
-
+    @POST("upload/{image_url}")
+    Call<ResponseBody> uploadImage(@Part ("photo") MultipartBody.Part photo, @Part("name") RequestBody name,@Path("image_url") String food_id);
 }
 

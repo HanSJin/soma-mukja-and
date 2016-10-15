@@ -42,9 +42,6 @@ import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.Utils.RoundedAvatarDrawable;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -58,17 +55,31 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+/*
+TODO: 현재는 음식 명 입력하는대로 food데이터에 무조건 넣는데 나중에는 음식 명 통일해야 할 듯
+예를 들어 현재: 김치 찌개 != 김치찌개 => 나중엔 음식명 치는데다가 김치만 치는 순간 자동완성으로 선택할 수 있게 현재 있는 음식 데이터에
+해당 음식이 없을 경우에만 새로운 음식명으로 추가 할 수 있게끔..?
+ */
 
 @EActivity(R.layout.activity_register)
 public class RegisterActivity extends AppCompatActivity {
@@ -111,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
     void btn_ingredient() {
         n_food.ingredient.add(edit_ingredient.getText().toString());
         addFlowChart(ingredient_result,n_food.ingredient.toArray(new String[n_food.ingredient.size()]));
-        Toast.makeText(getApplicationContext(),n_food.ingredient.get(0),Toast.LENGTH_SHORT).show();
+        edit_ingredient.setText("");
     }
 
     @Click
@@ -160,6 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         }
         if (item.getItemId() == R.id.finish) {
+            //현재 순서 : 빈칸 체크 -> 이미지 업로드 -> 음식 등록 -> 별점 평가
             check_blank();
         }
 
@@ -174,7 +186,11 @@ public class RegisterActivity extends AppCompatActivity {
                 imagepath = getPath(selectedImageUri);
                 Log.e("imagepath : ", imagepath);
                 Log.e("upload message : ", "Uploading file path:" + imagepath);
-
+                //TODO:임시데이터 넣음 user+현재시간으로 바꿀 것
+                SimpleDateFormat sdfNow = new SimpleDateFormat("yyMMddHHmmss");
+                String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
+                n_food.image = "lmjing_"+current_time;
+                //n_food.image = prefs.getString("info_id","") + "_Profile.jpg";
                 try {
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     food_image.setImageBitmap(image_bitmap);
@@ -199,25 +215,21 @@ public class RegisterActivity extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
-    @NonNull
-    private MultipartBody.Part prepareFilePart() {
+    /*
+    public void uploadImage(){
         File file = new File(imagepath);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        return MultipartBody.Part.createFormData("image", file.getName(), requestFile);
-    }
-
-    public void uploadImage(String food_id){
-        MultipartBody.Part photo = prepareFilePart();
+        RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload_test");
 
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.uploadImage(photo,food_id)
+        conn.uploadImage(body,name,n_food.image)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Food>() {
+                .subscribe(new Subscriber<ResponseBody>() {
                     @Override
                     public final void onCompleted() {
-                        Toast.makeText(getApplicationContext(),"음식 업로드에 성공했습니다!",Toast.LENGTH_SHORT).show();
-                        finish();
+                        RegisterFood();
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -225,7 +237,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(Food response) {
+                    public final void onNext(ResponseBody response) {
                         if (response != null) {
                             Log.i("image","success");
                         } else {
@@ -234,8 +246,40 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
     }
+    */
+    private void uploadFile() {
+        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        File file = new File(imagepath);
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+        String descriptionString = n_food.name;
+        RequestBody description =
+                RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+
+        Call<ResponseBody> call = conn.uploadImage(body,description,n_food.image);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Response<ResponseBody> response) {
+                Log.v("Upload", "success");
+                RegisterFood();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e("Upload error:", t.getMessage());
+            }
+        });
+    }
 
     void RegisterFood(){
+        //food.update 형식 : 2011-10-05T14:48:00.000Z
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
+        String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
+        n_food.update_date = current_time;
+        n_food.create_date = current_time;
+        n_food.author = prefs.getString("user_id","");
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.foodPost(n_food)
                 .subscribeOn(Schedulers.newThread())
@@ -244,8 +288,10 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public final void onCompleted() {
                         PredictionIOLearnEvent pio = new PredictionIOLearnEvent(getApplicationContext());
-                        if(pio.food_rate(n_food._id)==true)
-                            uploadImage(n_food._id);
+                        //if (pio.food_rate(n_food._id) == true) {
+                          //  Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        //}
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -278,7 +324,7 @@ public class RegisterActivity extends AppCompatActivity {
         else if(rate_num==10.0f)
             Snackbar.make(ratingBar, "음식 평가 해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else
-            RegisterFood();
+            uploadFile();
     }
 
     private void initSpinner(final Spinner s, String[] array, final int type){
