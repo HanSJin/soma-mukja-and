@@ -14,6 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.Result;
@@ -22,6 +23,7 @@ import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderFood;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderParent;
 
@@ -91,10 +93,10 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             final ViewHolderFood itemViewHolder = (ViewHolderFood) holder;
             final Food food = mDataset.get(position);
 
-            itemViewHolder.authorName.setText(food.author);
+//            itemViewHolder.authorName.setText(food.author.nickname);
             itemViewHolder.foodName.setText(food.name);
             //TODO: 정보 띄워주기 서버와 연동 후 화면 테스트해보기
-            Glide.with(context).load(food.image).into(itemViewHolder.food_img);
+            Glide.with(context).load(Constants.API_BASE_URL+food.image_url).into(itemViewHolder.food_img);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
             itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
@@ -240,17 +242,14 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
     }
 
     public void report_food(String food_id) {
-        SharedPreferences sp = context.getSharedPreferences("TodayFood", context.MODE_PRIVATE);
-        String user_id = sp.getString("user_id", null);
-
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.reportFood(user_id,food_id)
+        conn.reportFood(SharedManager.getInstance().getMe()._id, food_id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Result>() {
+                .subscribe(new Subscriber<GlobalResponse>() {
                     @Override
                     public final void onCompleted() {
-                        Toast.makeText(context, "신고 되었습니다.", Toast.LENGTH_SHORT).show();
+
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -258,9 +257,9 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                         Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(Result response) {
-                        if (response != null) {
-                            Log.i("report",response.toString());
+                    public final void onNext(GlobalResponse response) {
+                        if (response != null && response.code == 0 && response.message.equals("success")) {
+                            Toast.makeText(context, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

@@ -28,6 +28,7 @@ import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.List;
 
@@ -112,7 +113,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
             }
         });
 
-        connectFeed(0);
+        connectFeed(1);
     }
 
     @Override
@@ -130,25 +131,9 @@ public class Tab2FeedsFragment extends TabParentFragment {
     }
 
     void connectFeed(final int page_num) {
-        for (int i=0; i<10; i++)
-            adapter.addData(Food.mockFood(i));
-        Handler handler = new Handler();
-
-        final Runnable r = new Runnable() {
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        };
-
-        handler.post(r);
-
-
-        SharedPreferences sp = getActivity().getSharedPreferences("TodayFood", getActivity().MODE_PRIVATE);
-        String user_id = sp.getString("user_id", null);
-
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getFeedList(user_id,page)
+        conn.getFeedList(SharedManager.getInstance().getMe()._id, page_num)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Food>>() {
@@ -156,21 +141,21 @@ public class Tab2FeedsFragment extends TabParentFragment {
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
                         adapter.notifyDataSetChanged();
+                        pullToRefresh.setRefreshing(false);
                     }
                     @Override
                     public final void onError(Throwable e) {
-                        Log.i("result","서버오류");
-                        LoadingUtil.stopLoading(indicator);
                         e.printStackTrace();
                         Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public final void onNext(List<Food> response) {
-                        if (response != null) {
-                            for (int i=0; i<10; i++)
-                                adapter.addData(response.get(i));
+                        if (response != null && response.size()>0) {
+                            for (Food food : response) {
+                                adapter.addData(food);
+                            }
                         } else {
-                            Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                            endOfPage = true;
                         }
                     }
                 });

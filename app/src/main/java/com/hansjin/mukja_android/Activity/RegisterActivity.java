@@ -42,6 +42,8 @@ import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.Utils.RoundedAvatarDrawable;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
+import com.hansjin.mukja_android.Utils.TimeFormatter.TimeFormmater;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -189,7 +191,7 @@ public class RegisterActivity extends AppCompatActivity {
                 //TODO:임시데이터 넣음 user+현재시간으로 바꿀 것
                 SimpleDateFormat sdfNow = new SimpleDateFormat("yyMMddHHmmss");
                 String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
-                n_food.image = "lmjing_"+current_time;
+                n_food.image_url = "lmjing_"+current_time;
                 //n_food.image = prefs.getString("info_id","") + "_Profile.jpg";
                 try {
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
@@ -258,14 +260,13 @@ public class RegisterActivity extends AppCompatActivity {
         RequestBody description =
                 RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
 
-        Call<ResponseBody> call = conn.uploadImage(body,description,n_food.image);
+        Call<ResponseBody> call = conn.uploadImage(body,description,n_food.image_url);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Response<ResponseBody> response) {
                 Log.v("Upload", "success");
                 RegisterFood();
             }
-
             @Override
             public void onFailure(Throwable t) {
                 Log.e("Upload error:", t.getMessage());
@@ -273,13 +274,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    void RegisterFood(){
-        //food.update 형식 : 2011-10-05T14:48:00.000Z
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
-        String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
-        n_food.update_date = current_time;
-        n_food.create_date = current_time;
-        n_food.author = prefs.getString("user_id","");
+    void RegisterFood() {
+        n_food.author.author_id = SharedManager.getInstance().getMe()._id;
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.foodPost(n_food)
                 .subscribeOn(Schedulers.newThread())
@@ -287,11 +283,8 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-                        PredictionIOLearnEvent pio = new PredictionIOLearnEvent(getApplicationContext());
-                        //if (pio.food_rate(n_food._id) == true) {
-                          //  Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
-                            finish();
-                        //}
+                        Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -334,12 +327,19 @@ public class RegisterActivity extends AppCompatActivity {
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!s.getSelectedItem().toString().equals("[맛]")&&!s.getSelectedItem().toString().equals("[국가]")
-                &&!s.getSelectedItem().toString().equals("[조리방식]")){
+                if(!s.getSelectedItem().toString().equals("[맛]")
+                        &&!s.getSelectedItem().toString().equals("[국가]")
+                        &&!s.getSelectedItem().toString().equals("[조리방식]")){
                     switch (type) {
-                        case 1:n_food.taste.add(s.getSelectedItem().toString());break;
-                        case 2:n_food.country.add(s.getSelectedItem().toString());break;
-                        case 3:n_food.cooking.add(s.getSelectedItem().toString());break;
+                        case 1:
+                            n_food.taste.add(s.getSelectedItem().toString());
+                            break;
+                        case 2:
+                            n_food.country.add(s.getSelectedItem().toString());
+                            break;
+                        case 3:
+                            n_food.cooking.add(s.getSelectedItem().toString());
+                            break;
                     }
                     category_list.add(s.getSelectedItem().toString());
                     addFlowChart(category_result, category_list.toArray(new String[category_list.size()]));
@@ -382,7 +382,6 @@ public class RegisterActivity extends AppCompatActivity {
                     return s.equals("Android");
                 }
             });
-        //TODO: 삭제 구
         }
 
 

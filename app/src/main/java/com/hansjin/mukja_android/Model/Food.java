@@ -14,57 +14,26 @@ public class Food {
     public String update_date;
     public String create_date;
 
-    public String author;
-
     public String name;
-    public String image;
     public int view_cnt;
     public int like_cnt;
     public int rate_cnt;
+    public Author author = new Author();
+    public String image_url;
 
-    public List<String> taste;
-    public List<String> country;
-    public List<String> cooking;
-    public String imageURL;
-    public List<String> ingredient;
+    public List<String> taste = new ArrayList<>();
+    public List<String> country = new ArrayList<>();
+    public List<String> cooking = new ArrayList<>();
+    public List<String> ingredient = new ArrayList<>();
 
-    public List<String> like_user;
-    public List<String> rate_user;
-    public List<Integer> rate_distribution;
+    public List<String> like_person = new ArrayList<>();
+    public List<String> rate_persion = new ArrayList<>();
+    public List<Integer> rate_distribution = new ArrayList<>();
 
-    // DO NOT USE GET / SET METHOD
-
-    public static Food mockFood(int index) {
-        Food food = new Food();
-        food.author = "승진이" + index;
-        food.name = "해물 떡볶이 " + index;
-        food.like_cnt = 5;
-        food.view_cnt = 10;
-        food.rate_cnt = 2;
-        food.ingredient = new ArrayList<>();
-        food.ingredient.add("떡");
-        food.ingredient.add("해물");
-        food.ingredient.add("고추장");
-        food.taste = new ArrayList<>();
-        food.taste.add("매콤");
-        food.country = new ArrayList<>();
-        food.country.add("한식");
-        food.cooking = new ArrayList<>();
-        food.cooking.add("볶음");
-        food.update_date = "2011-10-05T14:48:00.000Z";
-        food.image = "http://scontent.cdninstagram.com/t51.2885-15/s480x480/e15/11242295_1412719429052545_1061947082_n.jpg?ig_cache_key=OTk0MTUzNTkzNzI1OTI4Nzg4.2";
-        food.rate_distribution = new ArrayList<>();
-        for(int i=1;i<=10;i++){
-            food.rate_distribution.add(i);
-        }
-        return food;
-    }
-    
-    public Food(){
-        //for post
-        taste = new ArrayList<>();
-        country = new ArrayList<>();
-        cooking = new ArrayList<>();
-        ingredient = new ArrayList<>();
+    public class Author {
+        public String author_id;
+        public String author_nickname;
+        public String author_thumbnail_url;
+        public String author_thumbnail_url_small;
     }
 }

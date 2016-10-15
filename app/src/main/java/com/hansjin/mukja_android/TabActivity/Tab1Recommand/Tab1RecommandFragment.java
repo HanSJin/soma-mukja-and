@@ -27,6 +27,7 @@ import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.List;
 
@@ -124,40 +125,40 @@ public class Tab1RecommandFragment extends TabParentFragment {
         1. sample데이터로 10개 가져와지는지 확인
         2. 최초 유저 평가 후 제대로 10개 가져와지는지
          */
-        for (int i=0; i<10; i++)
-            adapter.addData(Food.mockFood(i));
+//        for (int i=0; i<10; i++)
+//            adapter.addData(Food.mockFood(i));
         adapter.notifyDataSetChanged();
 
-        SharedPreferences sp = getActivity().getSharedPreferences("TodayFood", getActivity().MODE_PRIVATE);
-        String user_id = sp.getString("user_id", null);
+//        SharedPreferences sp = getActivity().getSharedPreferences("TodayFood", getActivity().MODE_PRIVATE);
+//        String user_id = sp.getString("user_id", "");
 
         LoadingUtil.startLoading(indicator);
-        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.recommendationResult(food,user_id)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Food>>() {
-                    @Override
-                    public final void onCompleted() {
-                        LoadingUtil.stopLoading(indicator);
-                        adapter.notifyDataSetChanged();
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        Log.i("result","서버오류");
-                        LoadingUtil.stopLoading(indicator);
-                        e.printStackTrace();
-                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(List<Food> response) {
-                        if (response != null) {
-                            for (int i=0; i<10; i++)
-                                adapter.addData(response.get(i));
-                        } else {
-                            Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+//        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+//        conn.recommendationResult(food, SharedManager.getInstance().getMe()._id)
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<List<Food>>() {
+//                    @Override
+//                    public final void onCompleted() {
+//                        LoadingUtil.stopLoading(indicator);
+//                        adapter.notifyDataSetChanged();
+//                    }
+//                    @Override
+//                    public final void onError(Throwable e) {
+//                        Log.i("result","서버오류");
+//                        LoadingUtil.stopLoading(indicator);
+//                        e.printStackTrace();
+//                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+//                    }
+//                    @Override
+//                    public final void onNext(List<Food> response) {
+//                        if (response != null) {
+//                            for (int i=0; i<10; i++)
+//                                adapter.addData(response.get(i));
+//                        } else {
+//                            Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
     }
 }

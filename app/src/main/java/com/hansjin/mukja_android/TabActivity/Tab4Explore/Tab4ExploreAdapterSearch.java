@@ -92,7 +92,7 @@ public class Tab4ExploreAdapterSearch extends RecyclerView.Adapter<Tab4ExploreAd
             itemViewHolder.food_desc.setText(tasteStr + countryStr + cookingStr);
 
 
-            new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + food.imageURL);
+            new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + food.image_url);
 
         }
     }

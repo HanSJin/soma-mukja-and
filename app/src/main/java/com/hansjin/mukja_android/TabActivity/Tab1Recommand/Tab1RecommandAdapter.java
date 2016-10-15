@@ -94,7 +94,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
             itemViewHolder.cellFoodHeader.setVisibility(View.GONE);
             itemViewHolder.foodName.setText(food.name);
             //TODO: 정보 띄워주기 서버와 연동 후 화면 테스트해보기
-            Glide.with(context).load(food.image).into(itemViewHolder.food_img);
+            Glide.with(context).load(food.image_url).into(itemViewHolder.food_img);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
             itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
@@ -204,23 +204,25 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     }
 
     private String combine_tag(Food food) {
-        List<List<String>> category = new ArrayList<>();
-        category.add(food.taste);
-        category.add(food.country);
-        category.add(food.cooking);
-
+//        List<List<String>> category = new ArrayList<>();
+//        category.add(food.taste);
+//        category.add(food.country);
+//        category.add(food.cooking);
+//
         String result="";
-        int cnt = 1;
-        for(int i=0;i<3;i++){
-            for (String str:category.get(i)) {
-                if(cnt>7){
-                    result+="…";
-                    return result;
-                }
-                result+=("#"+str+" ");
-                cnt++;
-            }
-        }
+//        int cnt = 1;
+//        if (category != null) {
+//            for(int i=0;i<3;i++){
+//                for (String str:category.get(i)) {
+//                    if(cnt>7){
+//                        result+="…";
+//                        return result;
+//                    }
+//                    result+=("#"+str+" ");
+//                    cnt++;
+//                }
+//            }
+//        }
         return result;
     }
 
@@ -229,10 +231,12 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
         float i =0.5f;
         float total = 0;
         int cnt = 0;
-        for (int dis:food.rate_distribution) {
-            cnt += dis;
-            total+=i*dis;
-            i+=0.5f;
+        if (food.rate_persion != null) {
+            for (int dis:food.rate_distribution) {
+                cnt += dis;
+                total+=i*dis;
+                i+=0.5f;
+            }
         }
         return String.valueOf(total/cnt);
     }

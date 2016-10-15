@@ -43,7 +43,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     protected void onPostExecute(Bitmap result) {
         if(result==null){
-            bmImage.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.backgroundimage1));
+//            bmImage.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.backgroundimage1));
         }else {
             bmImage.setImageBitmap(result);
         }
