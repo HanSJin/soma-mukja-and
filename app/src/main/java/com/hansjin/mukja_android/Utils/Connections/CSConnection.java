@@ -4,12 +4,19 @@ import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.Result;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Model.itemScores;
+import com.squareup.okhttp.RequestBody;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import rx.Observable;
 
@@ -74,5 +81,10 @@ public interface CSConnection {
     //food upload ( 이거 docs api랑 다르게 했어요! id는 자동생성 되어야 할 것 같아서 )
     @POST("food/post")
     Observable<Food> foodPost(@Body Food food);
+
+    @Multipart
+    @PUT("uploads/food/{food_id}")
+    Observable<Food> uploadImage(@Part ("photo") MultipartBody.Part photo, @Path("food_id") String food_id);
+
 }
 

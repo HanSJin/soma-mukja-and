@@ -1,10 +1,21 @@
 package com.hansjin.mukja_android.Activity;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.gesture.Prediction;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,10 +36,15 @@ import android.widget.Toast;
 
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
+import com.hansjin.mukja_android.Utils.RoundedAvatarDrawable;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -38,12 +54,17 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import okhttp3.MultipartBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -61,6 +82,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     Food n_food = new Food();
     Float rate_num = 10.0f;
+
+    private String imagepath=null;
+    SharedPreferences prefs;
 
     @ViewById
     Toolbar cs_toolbar;
@@ -90,9 +114,19 @@ public class RegisterActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),n_food.ingredient.get(0),Toast.LENGTH_SHORT).show();
     }
 
+    @Click
+    void food_image() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, 1);
+    }
+
     @AfterViews
     void afterBindingView() {
         this.activity = this;
+
+        prefs = getSharedPreferences("TodayFood",0);
 
         setSupportActionBar(cs_toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -122,15 +156,83 @@ public class RegisterActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-            finish(); // close this activity and return to preview activity (if there is any)
+            finish();
         }
         if (item.getItemId() == R.id.finish) {
             check_blank();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            if(requestCode == 1){
+                Uri selectedImageUri = data.getData();
+                imagepath = getPath(selectedImageUri);
+                Log.e("imagepath : ", imagepath);
+                Log.e("upload message : ", "Uploading file path:" + imagepath);
+
+                try {
+                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    food_image.setImageBitmap(image_bitmap);
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+    @NonNull
+    private MultipartBody.Part prepareFilePart() {
+        File file = new File(imagepath);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        return MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+    }
+
+    public void uploadImage(String food_id){
+        MultipartBody.Part photo = prepareFilePart();
+
+        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.uploadImage(photo,food_id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        Toast.makeText(getApplicationContext(),"음식 업로드에 성공했습니다!",Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            Log.i("image","success");
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     void RegisterFood(){
@@ -141,10 +243,9 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-                        finish();
                         PredictionIOLearnEvent pio = new PredictionIOLearnEvent(getApplicationContext());
                         if(pio.food_rate(n_food._id)==true)
-                            finish();
+                            uploadImage(n_food._id);
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -164,12 +265,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void check_blank(){
+        //TODO:서버 이미지 처리 : 현재 rate,new_food등록 후 이미지 업로드 하는데 업로드할때 food_id보내므로 해당 food_id활용해서 서버단에서 uri 만든 후 update할 것
         n_food.name = edit_name.getText().toString();
-        //n_food.image = ;
-        //TODO: 이미지 url 추가하기 & 서버 연동 후 테스트
         if(n_food.name==null)
             Snackbar.make(ratingBar, "음식명을 작성해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        else if(n_food.image==null)
+        else if(imagepath==null)
             Snackbar.make(ratingBar, "사진을 등록해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else if(n_food.taste.size()==0||n_food.country.size()==0||n_food.cooking.size()==0)
             Snackbar.make(ratingBar, "맛/국가/조리방식 각 하나이상 선택해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();

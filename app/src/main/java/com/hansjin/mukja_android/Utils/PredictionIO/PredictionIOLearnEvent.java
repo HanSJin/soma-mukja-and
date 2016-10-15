@@ -34,7 +34,7 @@ public class PredictionIOLearnEvent {
 
     public PredictionIOLearnEvent(Context ctx) {
         context = ctx;
-        sp = context.getSharedPreferences("user", context.MODE_PRIVATE);
+        sp = context.getSharedPreferences("TodayFood", context.MODE_PRIVATE);
         user_id = sp.getString("user_id", null);
     }
 

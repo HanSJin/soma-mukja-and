@@ -128,7 +128,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
             adapter.addData(Food.mockFood(i));
         adapter.notifyDataSetChanged();
 
-        SharedPreferences sp = getActivity().getSharedPreferences("user", getActivity().MODE_PRIVATE);
+        SharedPreferences sp = getActivity().getSharedPreferences("TodayFood", getActivity().MODE_PRIVATE);
         String user_id = sp.getString("user_id", null);
 
         LoadingUtil.startLoading(indicator);

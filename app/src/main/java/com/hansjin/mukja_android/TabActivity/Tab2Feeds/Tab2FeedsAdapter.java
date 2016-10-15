@@ -240,7 +240,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
     }
 
     public void report_food(String food_id) {
-        SharedPreferences sp = context.getSharedPreferences("user", context.MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences("TodayFood", context.MODE_PRIVATE);
         String user_id = sp.getString("user_id", null);
 
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);

@@ -2,7 +2,6 @@ package com.hansjin.mukja_android.TabActivity.Tab1Recommand;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -52,7 +51,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
         context = mContext;
         fragment = mFragment;
         mDataset.clear();
-        SharedPreferences sp = context.getSharedPreferences("user", context.MODE_PRIVATE);
         pio = new PredictionIOLearnEvent(context);
     }
 
@@ -66,6 +64,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
     public void clear() {
         mDataset.clear();
+        push_tag.clear();
     }
 
     @Override
@@ -90,7 +89,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                 }
             });
             final ViewHolderFood itemViewHolder = (ViewHolderFood) holder;
-            final Food food = mDataset.get(position);
+            final Food food = mDataset.get(position-1);
 
             itemViewHolder.cellFoodHeader.setVisibility(View.GONE);
             itemViewHolder.foodName.setText(food.name);
@@ -240,7 +239,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
     @Override
     public int getItemViewType(int position) {
-        //if (position == 0)
         if(position == 0) {
             return TYPE_HEADER;
         }

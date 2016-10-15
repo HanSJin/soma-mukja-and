@@ -143,7 +143,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
         handler.post(r);
 
 
-        SharedPreferences sp = getActivity().getSharedPreferences("user", getActivity().MODE_PRIVATE);
+        SharedPreferences sp = getActivity().getSharedPreferences("TodayFood", getActivity().MODE_PRIVATE);
         String user_id = sp.getString("user_id", null);
 
         LoadingUtil.startLoading(indicator);

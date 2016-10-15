@@ -217,6 +217,4 @@ public class ThumbPopupActivity extends Activity {
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
-
-
 }
