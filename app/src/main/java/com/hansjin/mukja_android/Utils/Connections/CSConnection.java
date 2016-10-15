@@ -55,5 +55,6 @@ public interface CSConnection {
     @GET("/foods/{keyword}")
     Observable<List<Food>> getSearchResult(@Path("keyword") String keyword);
 
+
 }
 

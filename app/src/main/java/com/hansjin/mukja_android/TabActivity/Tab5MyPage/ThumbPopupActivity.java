@@ -1,6 +1,7 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
 import android.app.Activity;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -22,13 +23,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.RoundedAvatarDrawable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
+
+import java.util.concurrent.Future;
+
 
 public class ThumbPopupActivity extends Activity {
 
@@ -44,13 +58,14 @@ public class ThumbPopupActivity extends Activity {
 
     private int TAKE_CAMERA = 1;					// 카메라 리턴 코드값 설정
     private int TAKE_GALLERY = 2;				// 앨범선택에 대한 리턴 코드값 설정
+    String path;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thumb_popup);
-
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         prefs = getSharedPreferences("TodayFood",0);
 
         BT_take_a_picture = (Button) findViewById(R.id.BT_take_a_picture);
@@ -154,6 +169,33 @@ public class ThumbPopupActivity extends Activity {
                 uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
 
 
+                path = getPathFromURI(data.getData());
+                Tab5MyPageFragment.profile_image.setImageURI(data.getData());
+
+                File f = new File(path);
+
+                Log.i("Asd", path + " "+f);
+
+                Future uploading = Ion.with(getApplicationContext())
+                        .load(Constants.API_BASE_URL+ "/upload")
+                        .setMultipartFile("image", f)
+                        .asString()
+                        .withResponse()
+                        .setCallback(new FutureCallback<Response<String>>() {
+                            @Override
+                            public void onCompleted(Exception e, Response<String> result) {
+                                try {
+                                    JSONObject jobj = new JSONObject(result.getResult());
+                                    Toast.makeText(getApplicationContext(), jobj.optString("response"), Toast.LENGTH_SHORT).show();
+
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+
+                            }
+                        });
+
+                /*
                 try {
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     //Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
@@ -168,6 +210,7 @@ public class ThumbPopupActivity extends Activity {
                 {
                     e.printStackTrace();
                 }
+                */
 
             }
 
@@ -218,5 +261,13 @@ public class ThumbPopupActivity extends Activity {
         return cursor.getString(column_index);
     }
 
+    private String getPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 
 }
