@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandAdapter;
@@ -36,6 +37,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.hansjin.mukja_android.Sign.SignActivity.context;
@@ -212,7 +215,40 @@ public class Tab5MyPageFragment extends TabParentFragment {
             e.printStackTrace();
         }
 */
+        ArrayList<Food> food = new ArrayList<>();
+        Food food1 = new Food();
+        food1.name = "떡볶이";
+
+        Food food2 = new Food();
+        food2.name = "김치찌개";
+
+        Food food3 = new Food();
+        food3.name = "우동";
+
+        Food food4 = new Food();
+        food4.name = "돈까스";
+
+        Food food5 = new Food();
+        food5.name = "스파게티";
+
+        food.add(food1);
+        food.add(food2);
+        food.add(food3);
+        food.add(food4);
+        food.add(food5);
+
+        uiThread(food);
+
         connectTestCall();
+    }
+
+    //@UiThread
+    void uiThread(List<Food> response) {
+        for (Food food : response) {
+            adapter.addData(food);
+        }
+        adapter.notifyDataSetChanged();
+        Log.i("keyword", ""+adapter);
     }
 
     @Override

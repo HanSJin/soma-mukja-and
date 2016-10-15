@@ -40,6 +40,7 @@ import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.GetDeviceInfo;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import org.json.JSONObject;
 
@@ -160,8 +161,6 @@ public class SignFragment extends Fragment {
             parameters.putString("fields", "id,name,email,gender");
             request.setParameters(parameters);
             request.executeAsync();
-
-
         }
 
 
@@ -186,10 +185,7 @@ public class SignFragment extends Fragment {
         // Inflate the layout for this fragment
         FacebookSdk.sdkInitialize(SignActivity.context);
         View view = inflater.inflate(R.layout.fragment_sign, container, false);
-        Log.i("eNuri", "asd : " + "asd");
-
         initInstance(view);
-
 
         return view;
     }
@@ -230,15 +226,17 @@ public class SignFragment extends Fragment {
         SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String strNow = sdfNow.format(date);
 
-        if(isLoggedIn()){
+//        if(isLoggedIn()){
 
+        // TEST LOGIN - By HanSJin (Facebook API Open 안되서 내가 접근 못함 ..ㅠ)
             Map field = new HashMap();
-            field.put("user_id", prefs.getString("user_id",""));
+            field.put("social_id", prefs.getString("social_id","793160210817466"));
             connectSigninUser(field);
             Intent intent = new Intent(getActivity(), TabActivity_.class);
             startActivity(intent);
             getActivity().finish();
-        }
+
+//        }
 
 
         accessTokenTracker = new AccessTokenTracker() {
@@ -361,7 +359,6 @@ public class SignFragment extends Fragment {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public final void onCompleted() {
-
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -369,9 +366,9 @@ public class SignFragment extends Fragment {
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(com.hansjin.mukja_android.Model.User response) {
+                    public final void onNext(User response) {
                         if (response != null) {
-
+                            SharedManager.getInstance().setMe(response);
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

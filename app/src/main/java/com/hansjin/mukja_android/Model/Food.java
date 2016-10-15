@@ -3,6 +3,7 @@ package com.hansjin.mukja_android.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,30 +14,26 @@ public class Food {
     public String update_date;
     public String create_date;
 
-    public String author;
-
     public String name;
-    public String image;
     public int view_cnt;
     public int like_cnt;
     public int rate_cnt;
+    public Author author = new Author();
+    public String image_url;
 
-    public List<String> taste;
-    public List<String> country;
-    public List<String> cooking;
-    public String imageURL;
-    public List<String> ingredient;
+    public List<String> taste = new ArrayList<>();
+    public List<String> country = new ArrayList<>();
+    public List<String> cooking = new ArrayList<>();
+    public List<String> ingredient = new ArrayList<>();
 
-    public List<String> like_user;
-    public List<String> rate_user;
-    public List<Integer> rate_distribution;
+    public List<String> like_person = new ArrayList<>();
+    public List<String> rate_persion = new ArrayList<>();
+    public List<Integer> rate_distribution = new ArrayList<>();
 
-    // DO NOT USE GET / SET METHOD
-
-    public static Food mockFood(int index) {
-        Food food = new Food();
-        food.author = "승진이" + index;
-        food.name = "해물 떡볶이 " + index;
-        return food;
+    public class Author {
+        public String author_id;
+        public String author_nickname;
+        public String author_thumbnail_url;
+        public String author_thumbnail_url_small;
     }
 }

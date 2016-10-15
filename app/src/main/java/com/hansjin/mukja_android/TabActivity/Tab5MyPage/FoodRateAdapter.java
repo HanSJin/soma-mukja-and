@@ -88,7 +88,7 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             for (String cooking : food.cooking) {
                 cookingStr += ("#" + cooking + ", ");
             }
-            String imgStr = food.imageURL;
+            String imgStr = food.image_url;
 
             itemViewHolder.TV_food_name.setText(food.name);
             itemViewHolder.TV_category.setText(tasteStr + countryStr + cookingStr);

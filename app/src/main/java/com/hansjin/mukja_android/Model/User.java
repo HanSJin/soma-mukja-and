@@ -9,30 +9,31 @@ import java.text.SimpleDateFormat;
 public class User {
     //*->어느 정도 중요한 정보
     //**->가입시 반드시 입력받아야하는 정보
-    String update_date;
-    String create_date;
-    String social_type;//normal or facebook
-    String social_id;//**email
-    String session_key;
-    String session_expire_date;
-    String push_token;
-    Boolean push_use;//회원가입 후, 팝업으로 동의구하기
-    String device_type;
-    String app_version;
-    String access_ip;//타입 Date?
-    String access_last_date;
-    String login_last_date;
-    Integer access_cnt;
-    Integer login_cnt;
-    Integer report_cnt;
-    String thumbnail_url;//*
-    String thumbnail_url_small;
-    String nickname;//** nickname보다는 name이 낫지않나? 왜냐하면 페이스북 가입 유저들은 다 실명쓰는데 일반가입만 익명이면 형평성에 문제가될수도
-    String about_me;//*
-    Integer age;//*
-    Boolean gender;//*
-    String job;//보류?
-    String location;//회원가입 후, 팝업으로 동의구하기
+    public String _id;
+    public String update_date;
+    public String create_date;
+    public String social_type;//normal or facebook
+    public String social_id;//**email
+    public String session_key;
+    public String session_expire_date;
+    public String push_token;
+    public Boolean push_use;//회원가입 후, 팝업으로 동의구하기
+    public String device_type;
+    public String app_version;
+    public String access_ip;//타입 Date?
+    public String access_last_date;
+    public String login_last_date;
+    public Integer access_cnt;
+    public Integer login_cnt;
+    public Integer report_cnt;
+    public String thumbnail_url;//*
+    public String thumbnail_url_small;
+    public String nickname;//** nickname보다는 name이 낫지않나? 왜냐하면 페이스북 가입 유저들은 다 실명쓰는데 일반가입만 익명이면 형평성에 문제가될수도
+    public String about_me;//*
+    public Integer age;//*
+    public Boolean gender;//*
+    public String job;//보류?
+    public String location;//회원가입 후, 팝업으로 동의구하기
     //String password; //**일반가입인 경우만 해당
 
     long now = System.currentTimeMillis();
@@ -69,7 +70,6 @@ public class User {
     }
 
     public User(String social_id, String name, Boolean gender, String device_type, String app_version, String about_me, Integer age, String job, String location, String thumbnail_url, String thumbnail_url_small, String access_ip) {
-
         this.gender = gender;
         this.update_date = strNow;
         this.create_date = strNow;
