@@ -143,10 +143,10 @@ public class SignFragment extends Fragment {
                             Log.i("asd", ""+GetDeviceInfo.getIPAddress(true));
                             Log.i("asd", ""+GetDeviceInfo.getIPAddress(false));
 
-                            User n_user = new User(tempId, tempName, tempGender, device_type, app_version, about_me, age, job, location,
-                                    thumbnail_url, thumbnail_url_small, access_ip);
+//                            User n_user = new User(tempId, tempName, tempGender, device_type, app_version, about_me, age, job, location,
+//                                    thumbnail_url, thumbnail_url_small, access_ip);
                             //User(String social_id, String name, Boolean gender, String device_type, String app_version, String about_me, Integer age, String job, String location, String thumbnail_url, String thumbnail_url_small, String access_ip)
-                            connectCreateUser(n_user);
+//                            connectCreateUser(n_user);
 
 
                             editor.putString("user_id", tempId);

@@ -98,12 +98,12 @@ public interface CSConnection {
     Observable<List<String>> getCookingList();
 
     //food upload ( 이거 docs api랑 다르게 했어요! id는 자동생성 되어야 할 것 같아서 )
-    @POST("food/post")
+    @POST("/food")
     Observable<Food> foodPost(@Body Food food);
 
     @Multipart
     @POST("upload/{image_url}")
-    Call<ResponseBody> uploadImage(@Part ("photo") MultipartBody.Part photo,
+    Call<ResponseBody> uploadImage(@Part("photo") MultipartBody.Part photo,
                                    @Part("name") RequestBody name,
                                    @Path("image_url") String food_id);
 
