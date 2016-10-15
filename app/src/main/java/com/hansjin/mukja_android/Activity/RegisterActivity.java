@@ -192,7 +192,7 @@ public class RegisterActivity extends AppCompatActivity {
                 SimpleDateFormat sdfNow = new SimpleDateFormat("yyMMddHHmmssSSS");
                 String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
                 n_food.image_url = "lmjing_"+current_time;
-                //n_food.image = prefs.getString("info_id","") + "_Profile.jpg";
+
                 try {
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     food_image.setImageBitmap(image_bitmap);
@@ -217,38 +217,6 @@ public class RegisterActivity extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
-    /*
-    public void uploadImage(){
-        File file = new File(imagepath);
-        RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
-        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload_test");
-
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.uploadImage(body,name,n_food.image)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ResponseBody>() {
-                    @Override
-                    public final void onCompleted() {
-                        RegisterFood();
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(ResponseBody response) {
-                        if (response != null) {
-                            Log.i("image","success");
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-    */
     private void uploadFile() {
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         File file = new File(imagepath);
@@ -261,7 +229,6 @@ public class RegisterActivity extends AppCompatActivity {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Response<ResponseBody> response) {
-                Log.v("Upload", "success");
                 RegisterFood();
             }
             @Override
@@ -295,8 +262,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-                        Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
-//                        finish();
+
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -306,7 +272,8 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
-//                            finish();
+                            Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
+                            finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
@@ -394,7 +361,6 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
         }
-
 
     public void getTasteList() {
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);

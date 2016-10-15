@@ -71,9 +71,10 @@ public interface CSConnection {
     Observable<List<Food>> similarResult(@Path("food_id") String food_id);
 
     //recommendation 결과 값
-    @POST("/recommand/{uid}/{category}")
-    Observable<List<Food>> recommendationResult(@Body Food food,
-                                                @Path("uid") String uid);
+    @POST("/recommand/{uid}")
+    Observable<List<Food>> recommendationResult(@Path("uid") String uid,
+                                                @Body Map<String, Object> fields);
+
 
     //피드 가져오기
     @GET("feeds/{uid}/{page}")

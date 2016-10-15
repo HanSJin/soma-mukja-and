@@ -167,7 +167,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                             }
                             if(push_tag.size()==0)
                                 fragment.connectRecommand(null);
-                            fragment.connectRecommand(category_food);
+//                            fragment.connectRecommand(category_food);
                             push_tag.remove(s);
 
                         }else {
@@ -182,7 +182,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                                     category_food.cooking.add(s);
                                     break;
                             }
-                            fragment.connectRecommand(category_food);
+//                            fragment.connectRecommand(category_food);
                             push_tag.add(s);
                             Log.i("please", "눌림");
                         }
