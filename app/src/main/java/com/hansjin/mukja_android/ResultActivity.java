@@ -51,7 +51,7 @@ public class ResultActivity extends AppCompatActivity {
 
     @Click(R.id.similar_btn)
     void similar_btn(){
-        connectSimilarCall();
+        //connectSimilarCall();
     }
     @Click(R.id.buy)
     void buy(){
@@ -129,7 +129,7 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 });
     }
-
+/*
     void connectSimilarCall() {
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
@@ -159,4 +159,5 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 });
     }
+    */
 }

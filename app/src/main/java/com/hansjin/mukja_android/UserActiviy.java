@@ -57,7 +57,7 @@ public class UserActiviy extends AppCompatActivity {
 
     @Click(R.id.Recommendation)
     void Recommendation(){
-        connectRecommendationCall();
+        //connectRecommendationCall();
     }
 
 
@@ -120,6 +120,7 @@ public class UserActiviy extends AppCompatActivity {
                 });
     }
 
+    /*
     void connectRecommendationCall() {
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
@@ -149,4 +150,5 @@ public class UserActiviy extends AppCompatActivity {
                     }
                 });
     }
+    */
 }

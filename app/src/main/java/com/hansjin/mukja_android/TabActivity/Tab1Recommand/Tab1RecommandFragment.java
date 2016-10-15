@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.TabActivity.Tab1Recommand;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,16 +9,30 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.itemScores;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
 import com.hansjin.mukja_android.Template.BaseAdapter;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
+
+import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -87,7 +102,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
             }
         });
 
-        connectRecommand();
+        connectRecommand(null);
     }
 
     @Override
@@ -96,7 +111,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
         endOfPage = false;
         adapter.clear();
         adapter.notifyDataSetChanged();
-        connectRecommand();
+        connectRecommand(null);
     }
 
     @Override
@@ -104,9 +119,45 @@ public class Tab1RecommandFragment extends TabParentFragment {
 
     }
 
-    void connectRecommand() {
+    void connectRecommand(Food food) {
+        /*TODO:추천 결과 10개
+        1. sample데이터로 10개 가져와지는지 확인
+        2. 최초 유저 평가 후 제대로 10개 가져와지는지
+         */
         for (int i=0; i<10; i++)
             adapter.addData(Food.mockFood(i));
         adapter.notifyDataSetChanged();
+
+        SharedPreferences sp = getActivity().getSharedPreferences("user", getActivity().MODE_PRIVATE);
+        String user_id = sp.getString("user_id", null);
+
+        LoadingUtil.startLoading(indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.recommendationResult(food,user_id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Food>>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                        adapter.notifyDataSetChanged();
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        Log.i("result","서버오류");
+                        LoadingUtil.stopLoading(indicator);
+                        e.printStackTrace();
+                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(List<Food> response) {
+                        if (response != null) {
+                            for (int i=0; i<10; i++)
+                                adapter.addData(response.get(i));
+                        } else {
+                            Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
