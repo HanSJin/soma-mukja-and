@@ -113,7 +113,7 @@ public class ThumbPopupActivity extends Activity {
 
                 String str = imagepath.substring(imagepath.indexOf("."));
 
-                uploadFileName = prefs.getString("info_id","") + "_Profile.jpg";
+                uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
 
                 Bitmap bm = (Bitmap) data.getExtras().get("data");
                 Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
@@ -151,7 +151,7 @@ public class ThumbPopupActivity extends Activity {
 
                 String str = imagepath.substring(imagepath.indexOf("."));
 
-                uploadFileName = prefs.getString("info_id","") + "_Profile.jpg";
+                uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
 
 
                 try {

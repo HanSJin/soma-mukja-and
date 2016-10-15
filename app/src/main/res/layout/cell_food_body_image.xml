@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:background="#9988cc" >
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -51,5 +50,4 @@
             android:textSize="10sp"
             android:textStyle="bold"/>
     </RelativeLayout>
-
 </LinearLayout>

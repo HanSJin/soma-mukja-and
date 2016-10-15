@@ -25,6 +25,7 @@ public class Food {
     public List<String> taste;
     public List<String> country;
     public List<String> cooking;
+    public String imageURL;
     public List<String> ingredient;
 
     public List<String> like_user;

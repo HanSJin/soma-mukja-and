@@ -1,17 +1,25 @@
 package com.hansjin.mukja_android.TabActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -21,10 +29,17 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 @EActivity(R.layout.activity_tab)
 public class TabActivity extends AppCompatActivity {
     private long backKeyPressedTime = 0;
     private Toast toast;
+    SharedPreferences sp;
+    public LinearLayout indicator;
+
 
     @ViewById
     AHBottomNavigationViewPager viewPager;
@@ -34,7 +49,7 @@ public class TabActivity extends AppCompatActivity {
     private AHBottomNavigationAdapter navigationAdapter;
     private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 
-
+    //SharedPreferences sp = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
     @AfterViews
     void afterBindingView() {
         AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
@@ -95,12 +110,47 @@ public class TabActivity extends AppCompatActivity {
         adapter = new BottomTabPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         currentFragment = adapter.getCurrentFragment();
+
+        //connAsyncData();
     }
 
+    /*
     @Background
     void connAsyncData() {
+        LoadingUtil.startLoading(indicator);
+        sp = getSharedPreferences("user", MODE_PRIVATE);
 
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.getOneFood(sp.getString("user_id",null))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            item_food = response;
+//                            food.setText(response.getName());
+//                            taste.setText("맛 : "+TextUtils.join(",",response.getTaste()));
+//                            country.setText("국적 : "+TextUtils.join(",",response.getCountry()));
+//                            cooking.setText("조리 : "+TextUtils.join(",",response.getCooking()));
+//                            ingredient.setText("재료 : "+TextUtils.join(",",response.getIngredient()));
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
+    */
 
     @UiThread
     void uiThread() {

@@ -2,37 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="150dp"
     android:layout_marginBottom="18dp"
     android:background="@color/colorWhite">
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
         android:layout_weight="200">
-        <include layout="@layout/cell_food_body_image" android:id="@+id/cell_food_body_image" />
+        <include layout="@layout/cell_rate_food_body_image" android:id="@+id/cell_rate_food_body_image" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
         android:layout_weight="300"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="300">
-            <include layout="@layout/cell_food_header" android:id="@+id/cell_food_header" />
+
+            <include layout="@layout/cell_rate_food_name" android:id="@+id/cell_rate_food_name" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="100">
-            <include layout="@layout/cell_food_body_desc" android:id="@+id/cell_food_body_desc" />
+
+            <include layout="@layout/cell_rate_food_category" android:id="@+id/cell_rate_food_category" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="300">
-            <include layout="@layout/cell_food_tail" android:id="@+id/cell_food_tail" />
+            <include layout="@layout/cell_rate_food_star" android:id="@+id/cell_rate_food_star" />
         </LinearLayout>
 
     </LinearLayout>
@@ -45,10 +49,12 @@
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="300">
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="버튼"/>
+                android:text="버튼"
+                android:id="@+id/button2" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

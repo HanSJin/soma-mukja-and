@@ -84,4 +84,10 @@
             </com.zhy.view.flowlayout.TagFlowLayout>
         </LinearLayout>
     </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="category"
+        android:id="@+id/TV_category"
+        android:paddingLeft="5dp"/>
 </LinearLayout>
