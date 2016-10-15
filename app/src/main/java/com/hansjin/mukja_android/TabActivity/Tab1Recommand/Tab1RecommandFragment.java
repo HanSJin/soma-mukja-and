@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.itemScores;
 import com.hansjin.mukja_android.R;
@@ -105,8 +106,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
                 refresh();
             }
         });
-
-        connectRecommand(getField());
+        connectCategory();
     }
 
     @Override
@@ -132,9 +132,36 @@ public class Tab1RecommandFragment extends TabParentFragment {
         return field;
     }
 
+    void connectCategory() {
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.getCategoryList()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Category>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                        adapter.notifyDataSetChanged();
+                        pullToRefresh.setRefreshing(false);
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public final void onNext(Category response) {
+                        if (response != null) {
+                            SharedManager.getInstance().setCategory(response);
+                            connectRecommand(getField());
+                        }
+                    }
+                });
+    }
+
     void connectRecommand(Map field) {
-
-
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.recommendationResult(SharedManager.getInstance().getMe()._id, field)

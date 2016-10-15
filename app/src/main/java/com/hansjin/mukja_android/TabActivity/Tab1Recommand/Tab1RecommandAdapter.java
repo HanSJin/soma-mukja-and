@@ -127,9 +127,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                 }
             });
 
-            // LOAD MORE
-//            if (position == mDataset.size()-1 && !fragment.endOfPage)
-//                fragment.connectRecommand();
 
         } else if (holder instanceof ViewHolderFoodCategory) {
             final ViewHolderFoodCategory itemViewHolder = (ViewHolderFoodCategory) holder;
@@ -167,7 +164,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                             }
                             if(push_tag.size()==0)
                                 fragment.connectRecommand(null);
-//                            fragment.connectRecommand(category_food);
                             push_tag.remove(s);
 
                         }else {
@@ -204,25 +200,25 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     }
 
     private String combine_tag(Food food) {
-//        List<List<String>> category = new ArrayList<>();
-//        category.add(food.taste);
-//        category.add(food.country);
-//        category.add(food.cooking);
-//
+        List<List<String>> category = new ArrayList<>();
+        category.add(food.taste);
+        category.add(food.country);
+        category.add(food.cooking);
+
         String result="";
-//        int cnt = 1;
-//        if (category != null) {
-//            for(int i=0;i<3;i++){
-//                for (String str:category.get(i)) {
-//                    if(cnt>7){
-//                        result+="…";
-//                        return result;
-//                    }
-//                    result+=("#"+str+" ");
-//                    cnt++;
-//                }
-//            }
-//        }
+        int cnt = 1;
+        if (category != null) {
+            for(int i=0;i<3;i++){
+                for (String str:category.get(i)) {
+                    if(cnt>7){
+                        result+="…";
+                        return result;
+                    }
+                    result+=("#"+str+" ");
+                    cnt++;
+                }
+            }
+        }
         return result;
     }
 

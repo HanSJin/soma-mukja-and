@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.Utils.SharedManager;
 
+import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.User;
 
 /**
@@ -8,6 +9,7 @@ import com.hansjin.mukja_android.Model.User;
 public class SharedManager {
     private volatile static SharedManager single;
     private User me;
+    private Category category;
 
     public static SharedManager getInstance() {
         if (single == null) {
@@ -36,6 +38,21 @@ public class SharedManager {
 
     public User getMe() {
         return this.me;
+    }
+
+
+    public Category getCategory() {
+        return this.category;
+    }
+
+    public boolean setCategory(Category category) {
+        try {
+            this.category = category;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 }
