@@ -2,9 +2,7 @@ package com.hansjin.mukja_android.TabActivity.Tab2Feeds;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Model.Food;
-import com.hansjin.mukja_android.Model.Result;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.R;
