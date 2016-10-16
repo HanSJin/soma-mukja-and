@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
@@ -225,6 +226,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void uploadFile() {
+
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         File file = new File(imagepath);
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -232,7 +234,7 @@ public class RegisterActivity extends AppCompatActivity {
         String descriptionString = n_food.name;
         RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
 
-        Call<ResponseBody> call = conn.uploadImage(body,description,n_food.image_url);
+        Call<ResponseBody> call = conn.uploadImage(body, description, n_food.image_url);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Response<ResponseBody> response) {
@@ -244,6 +246,33 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.e("Upload error:", t.getMessage());
             }
         });
+    }
+
+    private void uploadFile1(Food food) {
+        File file = new File(imagepath);
+        RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), file);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.fileUploadWrite(food._id, fbody)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     void RegisterFood() {
@@ -261,7 +290,6 @@ public class RegisterActivity extends AppCompatActivity {
         field.put("author", n_food.author);
         field.put("image_url", n_food.image_url);
         Log.d("hansjin", "Filed" + field.toString());
-
 
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.foodPost(n_food)
@@ -281,7 +309,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public final void onNext(Food response) {
                         if (response != null) {
                             Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
-                            finish();
+                            uploadFile1(response);
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
@@ -303,7 +331,7 @@ public class RegisterActivity extends AppCompatActivity {
         else if(rate_num==10.0f)
             Snackbar.make(ratingBar, "음식 평가 해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else
-            uploadFile();
+            RegisterFood();
     }
 
     private void initSpinner(final Spinner s, List<String> array, final int type){

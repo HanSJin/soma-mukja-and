@@ -19,7 +19,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     private static final int TYPE_IMAGE_HEADER = 0;
     private static final int TYPE_BODY_DESC = 1;
     private static final int TYPE_RANK_GRAPH = 2;
-    private static final int TYPE_LIKE_FRIEND = 3;
+    private static final int TYPE_LIKE_PERSON = 3;
     private static final int TYPE_TAIL_SIMILAR = 4;
 
 
@@ -42,7 +42,17 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         if (viewType == TYPE_IMAGE_HEADER) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_image_header, parent, false);
             return new ImageHeaderViewHolder(v);
+        } else if (viewType == TYPE_BODY_DESC) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_desc_body, parent, false);
+            return new DescBodyViewHolder(v);
+        } else if (viewType == TYPE_RANK_GRAPH) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_graph_body, parent, false);
+            return new DescBodyViewHolder(v);
+        } else if (viewType == TYPE_LIKE_PERSON) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_person_body, parent, false);
+            return new PersonBodyViewHolder(v);
         }
+
         return null;
     }
 
@@ -50,6 +60,12 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if (holder instanceof ImageHeaderViewHolder) {
             ImageHeaderViewHolder imageHolder = (ImageHeaderViewHolder) holder;
+        } else if (holder instanceof DescBodyViewHolder) {
+            DescBodyViewHolder descBodyViewHolderHolder = (DescBodyViewHolder) holder;
+        } else if (holder instanceof GraphBodyViewHolder) {
+            GraphBodyViewHolder graphBodyViewHolderHolder = (GraphBodyViewHolder) holder;
+        } else if (holder instanceof PersonBodyViewHolder) {
+            PersonBodyViewHolder personBodyViewHolderHolder = (PersonBodyViewHolder) holder;
         }
     }
 
@@ -62,7 +78,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         else if (position == 2)
             return TYPE_RANK_GRAPH;
         else if (position == 3)
-            return TYPE_LIKE_FRIEND;
+            return TYPE_LIKE_PERSON;
         else if (position == 4)
             return TYPE_TAIL_SIMILAR;
         return TYPE_IMAGE_HEADER;
@@ -70,7 +86,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 4;
     }
 
 
@@ -87,6 +103,24 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     public class ImageHeaderViewHolder extends ViewHolder {
         public TextView foodName, foodDesc;
         public ImageHeaderViewHolder(View v) {
+            super(v);
+        }
+    }
+    public class DescBodyViewHolder extends ViewHolder {
+        public TextView foodName, foodDesc;
+        public DescBodyViewHolder(View v) {
+            super(v);
+        }
+    }
+    public class GraphBodyViewHolder extends ViewHolder {
+        public TextView foodName, foodDesc;
+        public GraphBodyViewHolder(View v) {
+            super(v);
+        }
+    }
+    public class PersonBodyViewHolder extends ViewHolder {
+        public TextView foodName, foodDesc;
+        public PersonBodyViewHolder(View v) {
             super(v);
         }
     }
