@@ -38,15 +38,14 @@ public interface CSConnection {
     Observable<Result> buyItem(@Path("user") String user,
                                @Path("food") String food);
 
-    //미정 - 후에 api확실해지면 연동 후 수정
     //먹고싶어요
-    @GET("/like/{uid}/{food_id}")
+    @POST("/like/{uid}/{food_id}")
     Observable<Food> likeFood(@Path("uid") String uid,
                               @Path("food_id") String food_id);
 
     //먹고싶어요 취소
-    @GET("/like/{event_id}")
-    Observable<Food> likeCancle(@Path("event_id") String event_id);
+//    @GET("/like/{event_id}")
+//    Observable<Food> likeCancle(@Path("event_id") String event_id);
 
     //rate점수 전송
     @GET("/rate/{uid}/{food_id}")

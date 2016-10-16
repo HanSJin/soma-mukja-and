@@ -8,13 +8,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderFood;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderFoodCategory;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderParent;
@@ -26,6 +33,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -100,13 +111,16 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
             itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
             //itemViewHolder.friend_like.setText(cal_friend(food));
 
+            itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
+            for (String uid : food.like_person) {
+                if (uid.equals(SharedManager.getInstance().getMe()._id)) {
+                    itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_red));
+                }
+            }
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: if 먹고싶어요 눌렀을 경우
-                    pio.food_like(food._id,itemViewHolder.heart,fragment.getResources().getDrawable(R.drawable.heart_red));
-                    //TODO: if 먹고싶어요 취소
-                    //pio.food_like_cancle(<event_id>,itemViewHolder.heart,fragment.getResources().getDrawable(R.drawable.heart_gray));
+                    food_like(food, position-1);
                 }
             });
 
@@ -120,8 +134,8 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                         @Override
                         public void onDismiss(DialogInterface dialog) {
                             //TODO: pio rate 점수 전송
-                            if(pio.food_rate(food._id)==true)
-                                itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_yellow));
+//                            if(pio.food_rate(food._id)==true)
+//                                itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_yellow));
                         }
                     });
                 }
@@ -158,9 +172,15 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                         String s = array[position];
                         if(push_tag.contains(s)) {
                             switch (entry.getKey()){
-                                case R.array.category_taste:category_food.taste.remove(s); break;
-                                case R.array.category_country:category_food.country.remove(s);break;
-                                case R.array.category_cooking:category_food.cooking.remove(s);break;
+                                case R.array.category_taste:
+                                    category_food.taste.remove(s);
+                                    break;
+                                case R.array.category_country:
+                                    category_food.country.remove(s);
+                                    break;
+                                case R.array.category_cooking:
+                                    category_food.cooking.remove(s);
+                                    break;
                             }
                             if(push_tag.size()==0)
                                 fragment.connectRecommand(null);
@@ -248,5 +268,35 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     @Override
     public int getItemCount() {
         return mDataset.size() + 1; //+1 is for the footer as it's an extra item
+    }
+
+
+    public void food_like(Food food, final int index) {
+        LoadingUtil.startLoading(fragment.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.likeFood(SharedManager.getInstance().getMe()._id, food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(fragment.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            mDataset.get(index).like_cnt = response.like_cnt;
+                            mDataset.get(index).like_person = response.like_person;
+                            notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
