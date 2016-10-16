@@ -129,12 +129,11 @@ public class Tab1RecommandFragment extends TabParentFragment {
 
     }
 
-    private Map getField() {
-        Map field = new HashMap();
-        field.put("taste", new ArrayList<>());
-        field.put("country", new ArrayList<>());
-        field.put("cooking", new ArrayList<>());
-        Log.d("hansjin", "Recomman Field" + field.toString());
+    private Category getField() {
+        Category field = new Category();
+        field.taste = new ArrayList<String>();
+        field.country = new ArrayList<String>();
+        field.cooking = new ArrayList<String>();
         return field;
     }
 
@@ -168,7 +167,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
                 });
     }
 
-    void connectRecommand(Map field) {
+    void connectRecommand(Category field) {
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.recommendationResult(SharedManager.getInstance().getMe()._id, field)

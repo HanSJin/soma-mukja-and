@@ -52,7 +52,7 @@ public class CustomDialog extends Dialog  {
 
     private void set_rating() {
         ratingbar.setIsIndicator(false);
-        ratingbar.setStepSize(0.1f);
+        ratingbar.setStepSize(0.5f);
         ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 
             @Override

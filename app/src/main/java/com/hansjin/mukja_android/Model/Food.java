@@ -28,7 +28,7 @@ public class Food implements Serializable {
     public List<String> ingredient = new ArrayList<>();
 
     public List<String> like_person = new ArrayList<>();
-    public List<String> rate_persion = new ArrayList<>();
+    public List<String> rate_person = new ArrayList<>();
     public List<Integer> rate_distribution = new ArrayList<>();
 
     public class Author implements Serializable {
