@@ -319,9 +319,9 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
-                            Log.i("what",String.valueOf(response.rate_cnt));
                             mDataset.get(index).rate_cnt = response.rate_cnt;
                             mDataset.get(index).rate_person = response.rate_person;
+                            mDataset.get(index).rate_distribution = response.rate_distribution;
                             notifyDataSetChanged();
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
