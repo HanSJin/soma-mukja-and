@@ -54,12 +54,12 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     public ArrayList<Food> mDataset = new ArrayList<>();
     List<String> push_tag = new ArrayList<>();
 
+    //카테고리 띄워주기 위한 리스트들
     private String taste_list[] = new String[]{};
     private String country_list[] = new String[]{};
     private String cooking_list[] = new String[]{};
-
+    //getRecommand에 실어보낼 Map
     private Map<String, List<String>> category_food = new HashMap<String, List<String>>();
-
     private List<String> select_taste = new ArrayList<>();
     private List<String> select_country = new ArrayList<>();
     private List<String> select_cooking = new ArrayList<>();
