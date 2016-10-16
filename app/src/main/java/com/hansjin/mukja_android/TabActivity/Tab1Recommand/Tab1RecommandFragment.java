@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.TabActivity.Tab1Recommand;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.hansjin.mukja_android.Activity.RegisterActivity_;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.itemScores;
@@ -91,7 +94,10 @@ public class Tab1RecommandFragment extends TabParentFragment {
             adapter = new Tab1RecommandAdapter(new Tab1RecommandAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-
+                    Intent intent = new Intent(activity, DetailActivity_.class);
+                    intent.putExtra("food", adapter.mDataset.get(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }

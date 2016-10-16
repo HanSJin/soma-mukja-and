@@ -96,7 +96,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.onItemClick(v, position);
+                    mOnItemClickListener.onItemClick(v, position-1);
                 }
             });
             final ViewHolderFood itemViewHolder = (ViewHolderFood) holder;

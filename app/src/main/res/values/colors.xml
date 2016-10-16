@@ -9,7 +9,7 @@
     <color name="colorBlack">#393939</color>
     <color name="colorGrayBackGround">#F4F4F4</color>
     <color name="colorGrayLine">#AAAAAA</color>
-
+    <color name="colorGrayLineLight">#DDDDDD</color>
     <color name="colorBottomTabBackGround">#393939</color>
 
 
