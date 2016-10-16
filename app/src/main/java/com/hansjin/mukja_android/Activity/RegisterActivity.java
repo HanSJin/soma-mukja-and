@@ -189,10 +189,10 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.e("imagepath : ", imagepath);
                 Log.e("upload message : ", "Uploading file path:" + imagepath);
                 //TODO:임시데이터 넣음 user+현재시간으로 바꿀 것
-                SimpleDateFormat sdfNow = new SimpleDateFormat("yyMMddHHmmss");
+                SimpleDateFormat sdfNow = new SimpleDateFormat("yyMMddHHmmssSSS");
                 String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
                 n_food.image_url = "lmjing_"+current_time;
-                //n_food.image = prefs.getString("info_id","") + "_Profile.jpg";
+
                 try {
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     food_image.setImageBitmap(image_bitmap);
@@ -217,54 +217,18 @@ public class RegisterActivity extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
-    /*
-    public void uploadImage(){
-        File file = new File(imagepath);
-        RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
-        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload_test");
-
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.uploadImage(body,name,n_food.image)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ResponseBody>() {
-                    @Override
-                    public final void onCompleted() {
-                        RegisterFood();
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(ResponseBody response) {
-                        if (response != null) {
-                            Log.i("image","success");
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-    */
     private void uploadFile() {
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         File file = new File(imagepath);
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
         String descriptionString = n_food.name;
-        RequestBody description =
-                RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
 
         Call<ResponseBody> call = conn.uploadImage(body,description,n_food.image_url);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Response<ResponseBody> response) {
-                Log.v("Upload", "success");
                 RegisterFood();
             }
             @Override
@@ -276,6 +240,21 @@ public class RegisterActivity extends AppCompatActivity {
 
     void RegisterFood() {
         n_food.author.author_id = SharedManager.getInstance().getMe()._id;
+        n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
+        n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
+        n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
+
+        Map field = new HashMap();
+        field.put("name", n_food.name);
+        field.put("taste", n_food.taste);
+        field.put("cooking", n_food.cooking);
+        field.put("country", n_food.country);
+        field.put("ingredient", n_food.ingredient);
+        field.put("author", n_food.author);
+        field.put("image_url", n_food.image_url);
+        Log.d("hansjin", "Filed" + field.toString());
+
+
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.foodPost(n_food)
                 .subscribeOn(Schedulers.newThread())
@@ -283,8 +262,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-                        Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
-                        finish();
+
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -294,8 +272,8 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
-                            Log.i("post","succes : "+response.name.toString());
-                            n_food._id = response._id;
+                            Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
+                            finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
@@ -383,7 +361,6 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
         }
-
 
     public void getTasteList() {
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);

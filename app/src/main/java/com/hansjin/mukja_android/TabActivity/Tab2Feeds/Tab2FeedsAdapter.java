@@ -93,10 +93,11 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             final ViewHolderFood itemViewHolder = (ViewHolderFood) holder;
             final Food food = mDataset.get(position);
 
-//            itemViewHolder.authorName.setText(food.author.nickname);
+            itemViewHolder.authorName.setText(food.author.author_nickname);
+            Glide.with(context).load(Constants.IMAGE_BASE_URL+food.author.author_thumbnail_url+".png").into(itemViewHolder.author_image);
             itemViewHolder.foodName.setText(food.name);
-            //TODO: 정보 띄워주기 서버와 연동 후 화면 테스트해보기
-            Glide.with(context).load(Constants.API_BASE_URL+food.image_url).into(itemViewHolder.food_img);
+
+            Glide.with(context).load(Constants.IMAGE_BASE_URL+food.image_url+".png").into(itemViewHolder.food_img);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
             itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");

@@ -29,7 +29,10 @@ import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -103,7 +106,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
             }
         });
 
-        connectRecommand(null);
+        connectRecommand(getField());
     }
 
     @Override
@@ -112,7 +115,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
         endOfPage = false;
         adapter.clear();
         adapter.notifyDataSetChanged();
-        connectRecommand(null);
+        connectRecommand(getField());
     }
 
     @Override
@@ -120,45 +123,45 @@ public class Tab1RecommandFragment extends TabParentFragment {
 
     }
 
-    void connectRecommand(Food food) {
-        /*TODO:추천 결과 10개
-        1. sample데이터로 10개 가져와지는지 확인
-        2. 최초 유저 평가 후 제대로 10개 가져와지는지
-         */
-//        for (int i=0; i<10; i++)
-//            adapter.addData(Food.mockFood(i));
-        adapter.notifyDataSetChanged();
+    private Map getField() {
+        Map field = new HashMap();
+        field.put("taste", new ArrayList<>());
+        field.put("country", new ArrayList<>());
+        field.put("cooking", new ArrayList<>());
+        Log.d("hansjin", "Recomman Field" + field.toString());
+        return field;
+    }
 
-//        SharedPreferences sp = getActivity().getSharedPreferences("TodayFood", getActivity().MODE_PRIVATE);
-//        String user_id = sp.getString("user_id", "");
+    void connectRecommand(Map field) {
+
 
         LoadingUtil.startLoading(indicator);
-//        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-//        conn.recommendationResult(food, SharedManager.getInstance().getMe()._id)
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<List<Food>>() {
-//                    @Override
-//                    public final void onCompleted() {
-//                        LoadingUtil.stopLoading(indicator);
-//                        adapter.notifyDataSetChanged();
-//                    }
-//                    @Override
-//                    public final void onError(Throwable e) {
-//                        Log.i("result","서버오류");
-//                        LoadingUtil.stopLoading(indicator);
-//                        e.printStackTrace();
-//                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-//                    }
-//                    @Override
-//                    public final void onNext(List<Food> response) {
-//                        if (response != null) {
-//                            for (int i=0; i<10; i++)
-//                                adapter.addData(response.get(i));
-//                        } else {
-//                            Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.recommendationResult(SharedManager.getInstance().getMe()._id, field)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Food>>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                        adapter.notifyDataSetChanged();
+                        pullToRefresh.setRefreshing(false);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(List<Food> response) {
+                        if (response != null && response.size()>0) {
+                            for (Food food : response) {
+                                adapter.addData(food);
+                            }
+                        } else {
+                            endOfPage = true;
+                        }
+                    }
+                });
     }
 }
