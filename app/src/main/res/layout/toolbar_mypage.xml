@@ -7,11 +7,14 @@
     android:layout_height="?attr/actionBarSize"
     app:layout_collapseMode="pin"
     app:titleTextAppearance="@style/Toolbar.TitleText">
+
+
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:id="@+id/BT_setting"
-        android:text="setting"
-        android:layout_gravity="right" />
+        android:layout_gravity="right"
+        android:background="@drawable/settings"
+        android:layout_marginRight="10dp"/>
 
 </android.support.v7.widget.Toolbar>

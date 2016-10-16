@@ -2,18 +2,19 @@ package com.hansjin.mukja_android.TabActivity.Tab4Explore;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
-import com.hansjin.mukja_android.Utils.DownloadImageTask;
 
 import java.util.ArrayList;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static com.hansjin.mukja_android.Utils.Constants.Constants.API_BASE_URL;
 
@@ -92,7 +93,9 @@ public class Tab4ExploreAdapterSearch extends RecyclerView.Adapter<Tab4ExploreAd
             itemViewHolder.food_desc.setText(tasteStr + countryStr + cookingStr);
 
 
-            new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + food.image_url);
+            String image_url = API_BASE_URL + "/images/food/" + food.image_url;
+            //new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + food.image_url);
+            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
 
         }
     }

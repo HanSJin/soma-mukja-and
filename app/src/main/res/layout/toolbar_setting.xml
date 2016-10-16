@@ -8,7 +8,7 @@
     app:layout_collapseMode="pin"
     app:titleTextAppearance="@style/Toolbar.TitleText">
     <Button
-        android:layout_width="40dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/BT_X"
         android:text="X"

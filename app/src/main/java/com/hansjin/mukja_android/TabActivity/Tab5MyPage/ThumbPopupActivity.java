@@ -6,42 +6,32 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
-import com.hansjin.mukja_android.Utils.RoundedAvatarDrawable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
 
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 
 import java.util.concurrent.Future;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
 public class ThumbPopupActivity extends Activity {
@@ -131,8 +121,10 @@ public class ThumbPopupActivity extends Activity {
                 uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
 
                 Bitmap bm = (Bitmap) data.getExtras().get("data");
-                Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
-                Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(bm));
+                String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
+                Log.i("url", image_url);
+                Glide.with(getApplicationContext()).load(bm).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
+
                 /*
                 try {
 
@@ -170,7 +162,7 @@ public class ThumbPopupActivity extends Activity {
 
 
                 path = getPathFromURI(data.getData());
-                Tab5MyPageFragment.profile_image.setImageURI(data.getData());
+                Tab5MyPageFragment.IV_profile.setImageURI(data.getData());
 
                 File f = new File(path);
 
