@@ -115,11 +115,11 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
             itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
             setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
-            setImamge(food.rate_person,itemViewHolder.star,R.drawable.star_yellow);
+            setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    food_like(food, position-1);
+                    food_like(food, position);
                     setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
                 }
             });
@@ -133,8 +133,9 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     customDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
-                            food_rate(food, position-1);
-                            setImamge(food.rate_person,itemViewHolder.star,R.drawable.star_yellow);
+                            food.rate_person.add(0,food.newrate(SharedManager.getInstance().getMe()._id,customDialog.getRatenum()));
+                            food_rate(food, position);
+                            setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
                         }
                     });
                 }
@@ -159,8 +160,6 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     popup.show();
                 }
             });
-
-
 
             if (position == mDataset.size()-1 && !fragment.endOfPage)
                 fragment.connectFeed(++fragment.page);
@@ -304,7 +303,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
     public void food_rate(Food food, final int index) {
         LoadingUtil.startLoading(fragment.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.rateFood(SharedManager.getInstance().getMe()._id, food._id)
+        conn.rateFood(food, SharedManager.getInstance().getMe()._id, food._id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Food>() {
@@ -320,8 +319,9 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
-                            mDataset.get(index).like_cnt = response.like_cnt;
-                            mDataset.get(index).like_person = response.like_person;
+                            Log.i("what",String.valueOf(response.rate_cnt));
+                            mDataset.get(index).rate_cnt = response.rate_cnt;
+                            mDataset.get(index).rate_person = response.rate_person;
                             notifyDataSetChanged();
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();

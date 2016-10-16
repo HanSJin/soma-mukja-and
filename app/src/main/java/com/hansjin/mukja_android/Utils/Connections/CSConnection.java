@@ -49,7 +49,8 @@ public interface CSConnection {
 
     //rate점수 전송
     @POST("/rate/{uid}/{food_id}")
-    Observable<Food> rateFood(@Path("uid") String uid,
+    Observable<Food> rateFood(@Body Food food,
+                              @Path("uid") String uid,
                               @Path("food_id") String food_id);
 
     //similar 결과 값
