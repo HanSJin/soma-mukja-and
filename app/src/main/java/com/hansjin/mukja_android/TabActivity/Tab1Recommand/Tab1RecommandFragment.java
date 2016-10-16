@@ -29,6 +29,7 @@ import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
+import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recommand, container, false);
-        initViewSetting(view);
+        connectCategory(view);
         return view;
     }
 
@@ -106,7 +107,6 @@ public class Tab1RecommandFragment extends TabParentFragment {
                 refresh();
             }
         });
-        connectCategory();
     }
 
     @Override
@@ -132,7 +132,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
         return field;
     }
 
-    void connectCategory() {
+    void connectCategory(final View view) {
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.getCategoryList()
                 .subscribeOn(Schedulers.newThread())
@@ -141,8 +141,9 @@ public class Tab1RecommandFragment extends TabParentFragment {
                     @Override
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
-                        adapter.notifyDataSetChanged();
-                        pullToRefresh.setRefreshing(false);
+                        initViewSetting(view);
+                        //adapter.notifyDataSetChanged();
+                        //pullToRefresh.setRefreshing(false);
                     }
 
                     @Override

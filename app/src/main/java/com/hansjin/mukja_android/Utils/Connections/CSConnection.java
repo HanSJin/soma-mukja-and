@@ -59,7 +59,7 @@ public interface CSConnection {
     //recommendation 결과 값
     @POST("/recommand/{uid}")
     Observable<List<Food>> recommendationResult(@Path("uid") String uid,
-                                                @Body Map<String, Object> fields);
+                                                @Body Map<String, List<String>> fields);
 
 
     //피드 가져오기

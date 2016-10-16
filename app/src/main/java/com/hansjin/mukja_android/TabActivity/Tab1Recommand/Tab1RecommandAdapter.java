@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -50,8 +52,17 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     public Tab1RecommandFragment fragment;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
-    private Food category_food = new Food();
     List<String> push_tag = new ArrayList<>();
+
+    private String taste_list[] = new String[]{};
+    private String country_list[] = new String[]{};
+    private String cooking_list[] = new String[]{};
+
+    private Map<String, List<String>> category_food = new HashMap<String, List<String>>();
+
+    private List<String> select_taste = new ArrayList<>();
+    private List<String> select_country = new ArrayList<>();
+    private List<String> select_cooking = new ArrayList<>();
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -63,6 +74,17 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
         fragment = mFragment;
         mDataset.clear();
         pio = new PredictionIOLearnEvent(context);
+
+        taste_list = SharedManager.getInstance().getCategory().taste.toArray(
+                new String[SharedManager.getInstance().getCategory().taste.size()]);
+        country_list = SharedManager.getInstance().getCategory().country.toArray(
+                new String[SharedManager.getInstance().getCategory().country.size()]);
+        cooking_list = SharedManager.getInstance().getCategory().cooking.toArray(
+                new String[SharedManager.getInstance().getCategory().cooking.size()]);
+
+        category_food.put("taste",select_taste);
+        category_food.put("country",select_country);
+        category_food.put("cooking",select_cooking);
     }
 
     public void addData(Food item) {
@@ -143,14 +165,14 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
 
         } else if (holder instanceof ViewHolderFoodCategory) {
+
             final ViewHolderFoodCategory itemViewHolder = (ViewHolderFoodCategory) holder;
-            Map<Integer, TagFlowLayout> tagFlowLayouts = new HashMap<Integer, TagFlowLayout>();
-            tagFlowLayouts.put(R.array.category_taste,itemViewHolder.taste);
-            tagFlowLayouts.put(R.array.category_country,itemViewHolder.country);
-            tagFlowLayouts.put(R.array.category_cooking,itemViewHolder.cooking);
-            for(final Map.Entry<Integer, TagFlowLayout> entry : tagFlowLayouts.entrySet()) {
-                final String[] array = fragment.getResources().getStringArray(entry.getKey());
-                entry.getValue().setAdapter(new TagAdapter<String>(array) {
+            Map<String[], TagFlowLayout> tagFlowLayouts = new HashMap<String[], TagFlowLayout>();
+            tagFlowLayouts.put(taste_list,itemViewHolder.taste);
+            tagFlowLayouts.put(country_list,itemViewHolder.country);
+            tagFlowLayouts.put(cooking_list,itemViewHolder.cooking);
+            for(final Map.Entry<String[], TagFlowLayout> entry : tagFlowLayouts.entrySet()) {
+                entry.getValue().setAdapter(new TagAdapter<String>(entry.getKey()) {
                     @Override
                     public View getView(FlowLayout parent, int position, String s) {
                         TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.category_btn, parent, false);
@@ -169,36 +191,28 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     @Override
                     public boolean onTagClick(View view, int position, FlowLayout parent)
                     {
-                        String s = array[position];
+                        String s = entry.getKey()[position];
                         if(push_tag.contains(s)) {
-                            switch (entry.getKey()){
-                                case R.array.category_taste:
-                                    category_food.taste.remove(s);
-                                    break;
-                                case R.array.category_country:
-                                    category_food.country.remove(s);
-                                    break;
-                                case R.array.category_cooking:
-                                    category_food.cooking.remove(s);
-                                    break;
-                            }
+                            if(entry.getKey()==taste_list)
+                                category_food.get("taste").remove(s);
+                            else if(entry.getKey()==country_list)
+                                category_food.get("country").remove(s);
+                            else if(entry.getKey()==cooking_list)
+                                category_food.get("cooking").remove(s);
+
                             if(push_tag.size()==0)
                                 fragment.connectRecommand(null);
                             push_tag.remove(s);
 
                         }else {
-                            switch (entry.getKey()) {
-                                case R.array.category_taste:
-                                    category_food.taste.add(s);
-                                    break;
-                                case R.array.category_country:
-                                    category_food.country.add(s);
-                                    break;
-                                case R.array.category_cooking:
-                                    category_food.cooking.add(s);
-                                    break;
-                            }
-//                            fragment.connectRecommand(category_food);
+                            if(entry.getKey()==taste_list)
+                                category_food.get("taste").add(s);
+                            else if(entry.getKey()==country_list)
+                                category_food.get("country").add(s);
+                            else if(entry.getKey()==cooking_list)
+                                category_food.get("cooking").add(s);
+
+                            fragment.connectRecommand(category_food);
                             push_tag.add(s);
                             Log.i("please", "눌림");
                         }
