@@ -110,47 +110,7 @@ public class TabActivity extends AppCompatActivity {
         adapter = new BottomTabPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         currentFragment = adapter.getCurrentFragment();
-
-        //connAsyncData();
     }
-
-    /*
-    @Background
-    void connAsyncData() {
-        LoadingUtil.startLoading(indicator);
-        sp = getSharedPreferences("user", MODE_PRIVATE);
-
-        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getOneFood(sp.getString("user_id",null))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Food>() {
-                    @Override
-                    public final void onCompleted() {
-                        LoadingUtil.stopLoading(indicator);
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(Food response) {
-                        if (response != null) {
-                            item_food = response;
-//                            food.setText(response.getName());
-//                            taste.setText("맛 : "+TextUtils.join(",",response.getTaste()));
-//                            country.setText("국적 : "+TextUtils.join(",",response.getCountry()));
-//                            cooking.setText("조리 : "+TextUtils.join(",",response.getCooking()));
-//                            ingredient.setText("재료 : "+TextUtils.join(",",response.getIngredient()));
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-    */
 
     @UiThread
     void uiThread() {

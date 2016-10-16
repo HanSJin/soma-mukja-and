@@ -8,13 +8,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Model.Category;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderFood;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderFoodCategory;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderParent;
@@ -26,6 +34,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -39,8 +52,17 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     public Tab1RecommandFragment fragment;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
-    private Food category_food = new Food();
     List<String> push_tag = new ArrayList<>();
+
+    //카테고리 띄워주기 위한 리스트들
+    private String taste_list[] = new String[]{};
+    private String country_list[] = new String[]{};
+    private String cooking_list[] = new String[]{};
+    //getRecommand에 실어보낼 Map
+    private Map<String, List<String>> category_food = new HashMap<String, List<String>>();
+    private List<String> select_taste = new ArrayList<>();
+    private List<String> select_country = new ArrayList<>();
+    private List<String> select_cooking = new ArrayList<>();
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -52,6 +74,17 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
         fragment = mFragment;
         mDataset.clear();
         pio = new PredictionIOLearnEvent(context);
+
+        taste_list = SharedManager.getInstance().getCategory().taste.toArray(
+                new String[SharedManager.getInstance().getCategory().taste.size()]);
+        country_list = SharedManager.getInstance().getCategory().country.toArray(
+                new String[SharedManager.getInstance().getCategory().country.size()]);
+        cooking_list = SharedManager.getInstance().getCategory().cooking.toArray(
+                new String[SharedManager.getInstance().getCategory().cooking.size()]);
+
+        category_food.put("taste",select_taste);
+        category_food.put("country",select_country);
+        category_food.put("cooking",select_cooking);
     }
 
     public void addData(Food item) {
@@ -100,13 +133,16 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
             itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
             //itemViewHolder.friend_like.setText(cal_friend(food));
 
+            itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
+            for (String uid : food.like_person) {
+                if (uid.equals(SharedManager.getInstance().getMe()._id)) {
+                    itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_red));
+                }
+            }
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: if 먹고싶어요 눌렀을 경우
-                    pio.food_like(food._id,itemViewHolder.heart,fragment.getResources().getDrawable(R.drawable.heart_red));
-                    //TODO: if 먹고싶어요 취소
-                    //pio.food_like_cancle(<event_id>,itemViewHolder.heart,fragment.getResources().getDrawable(R.drawable.heart_gray));
+                    food_like(food, position-1);
                 }
             });
 
@@ -120,26 +156,23 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                         @Override
                         public void onDismiss(DialogInterface dialog) {
                             //TODO: pio rate 점수 전송
-                            if(pio.food_rate(food._id)==true)
-                                itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_yellow));
+//                            if(pio.food_rate(food._id)==true)
+//                                itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_yellow));
                         }
                     });
                 }
             });
 
-            // LOAD MORE
-//            if (position == mDataset.size()-1 && !fragment.endOfPage)
-//                fragment.connectRecommand();
 
         } else if (holder instanceof ViewHolderFoodCategory) {
+
             final ViewHolderFoodCategory itemViewHolder = (ViewHolderFoodCategory) holder;
-            Map<Integer, TagFlowLayout> tagFlowLayouts = new HashMap<Integer, TagFlowLayout>();
-            tagFlowLayouts.put(R.array.category_taste,itemViewHolder.taste);
-            tagFlowLayouts.put(R.array.category_country,itemViewHolder.country);
-            tagFlowLayouts.put(R.array.category_cooking,itemViewHolder.cooking);
-            for(final Map.Entry<Integer, TagFlowLayout> entry : tagFlowLayouts.entrySet()) {
-                final String[] array = fragment.getResources().getStringArray(entry.getKey());
-                entry.getValue().setAdapter(new TagAdapter<String>(array) {
+            Map<String[], TagFlowLayout> tagFlowLayouts = new HashMap<String[], TagFlowLayout>();
+            tagFlowLayouts.put(taste_list,itemViewHolder.taste);
+            tagFlowLayouts.put(country_list,itemViewHolder.country);
+            tagFlowLayouts.put(cooking_list,itemViewHolder.cooking);
+            for(final Map.Entry<String[], TagFlowLayout> entry : tagFlowLayouts.entrySet()) {
+                entry.getValue().setAdapter(new TagAdapter<String>(entry.getKey()) {
                     @Override
                     public View getView(FlowLayout parent, int position, String s) {
                         TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.category_btn, parent, false);
@@ -158,31 +191,28 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     @Override
                     public boolean onTagClick(View view, int position, FlowLayout parent)
                     {
-                        String s = array[position];
+                        String s = entry.getKey()[position];
                         if(push_tag.contains(s)) {
-                            switch (entry.getKey()){
-                                case R.array.category_taste:category_food.taste.remove(s); break;
-                                case R.array.category_country:category_food.country.remove(s);break;
-                                case R.array.category_cooking:category_food.cooking.remove(s);break;
-                            }
+                            if(entry.getKey()==taste_list)
+                                category_food.get("taste").remove(s);
+                            else if(entry.getKey()==country_list)
+                                category_food.get("country").remove(s);
+                            else if(entry.getKey()==cooking_list)
+                                category_food.get("cooking").remove(s);
+
                             if(push_tag.size()==0)
                                 fragment.connectRecommand(null);
-//                            fragment.connectRecommand(category_food);
                             push_tag.remove(s);
 
                         }else {
-                            switch (entry.getKey()) {
-                                case R.array.category_taste:
-                                    category_food.taste.add(s);
-                                    break;
-                                case R.array.category_country:
-                                    category_food.country.add(s);
-                                    break;
-                                case R.array.category_cooking:
-                                    category_food.cooking.add(s);
-                                    break;
-                            }
-//                            fragment.connectRecommand(category_food);
+                            if(entry.getKey()==taste_list)
+                                category_food.get("taste").add(s);
+                            else if(entry.getKey()==country_list)
+                                category_food.get("country").add(s);
+                            else if(entry.getKey()==cooking_list)
+                                category_food.get("cooking").add(s);
+
+                            fragment.connectRecommand(category_food);
                             push_tag.add(s);
                             Log.i("please", "눌림");
                         }
@@ -204,25 +234,25 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     }
 
     private String combine_tag(Food food) {
-//        List<List<String>> category = new ArrayList<>();
-//        category.add(food.taste);
-//        category.add(food.country);
-//        category.add(food.cooking);
-//
+        List<List<String>> category = new ArrayList<>();
+        category.add(food.taste);
+        category.add(food.country);
+        category.add(food.cooking);
+
         String result="";
-//        int cnt = 1;
-//        if (category != null) {
-//            for(int i=0;i<3;i++){
-//                for (String str:category.get(i)) {
-//                    if(cnt>7){
-//                        result+="…";
-//                        return result;
-//                    }
-//                    result+=("#"+str+" ");
-//                    cnt++;
-//                }
-//            }
-//        }
+        int cnt = 1;
+        if (category != null) {
+            for(int i=0;i<3;i++){
+                for (String str:category.get(i)) {
+                    if(cnt>7){
+                        result+="…";
+                        return result;
+                    }
+                    result+=("#"+str+" ");
+                    cnt++;
+                }
+            }
+        }
         return result;
     }
 
@@ -252,5 +282,35 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     @Override
     public int getItemCount() {
         return mDataset.size() + 1; //+1 is for the footer as it's an extra item
+    }
+
+
+    public void food_like(Food food, final int index) {
+        LoadingUtil.startLoading(fragment.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.likeFood(SharedManager.getInstance().getMe()._id, food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(fragment.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            mDataset.get(index).like_cnt = response.like_cnt;
+                            mDataset.get(index).like_person = response.like_person;
+                            notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

@@ -18,6 +18,7 @@ import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.Result;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
@@ -110,13 +111,16 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             */
             itemViewHolder.write_time.setText(cal_time(food));
 
+            itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
+            for (String uid : food.like_person) {
+                if (uid.equals(SharedManager.getInstance().getMe()._id)) {
+                    itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_red));
+                }
+            }
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: if 먹고싶어요 눌렀을 경우
-                    pio.food_like(food._id,itemViewHolder.heart,fragment.getResources().getDrawable(R.drawable.heart_red));
-                    //TODO: if 먹고싶어요 취소
-                    //pio.food_like_cancle(<event_id>,itemViewHolder.heart,fragment.getResources().getDrawable(R.drawable.heart_gray));
+                    food_like(food, position);
                 }
             });
 
@@ -130,8 +134,8 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
                             //TODO: pio rate 점수 전송
-                            if(pio.food_rate(food._id)==true)
-                                itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_yellow));
+//                            if(pio.food_rate(food._id)==true)
+//                                itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_yellow));
                         }
                     });
                 }
@@ -243,6 +247,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
     }
 
     public void report_food(String food_id) {
+        LoadingUtil.startLoading(fragment.indicator);
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.reportFood(SharedManager.getInstance().getMe()._id, food_id)
                 .subscribeOn(Schedulers.newThread())
@@ -250,7 +255,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                 .subscribe(new Subscriber<GlobalResponse>() {
                     @Override
                     public final void onCompleted() {
-
+                        LoadingUtil.stopLoading(fragment.indicator);
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -261,6 +266,35 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     public final void onNext(GlobalResponse response) {
                         if (response != null && response.code == 0 && response.message.equals("success")) {
                             Toast.makeText(context, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void food_like(Food food, final int index) {
+        LoadingUtil.startLoading(fragment.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.likeFood(SharedManager.getInstance().getMe()._id, food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(fragment.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            mDataset.get(index).like_cnt = response.like_cnt;
+                            mDataset.get(index).like_person = response.like_person;
+                            notifyDataSetChanged();
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

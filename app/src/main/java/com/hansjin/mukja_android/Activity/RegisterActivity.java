@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
@@ -70,9 +71,9 @@ TODO: 현재는 음식 명 입력하는대로 food데이터에 무조건 넣는�
 public class RegisterActivity extends AppCompatActivity {
     RegisterActivity activity;
 
-    String taste_list[] = new String[]{};
-    String country_list[] = new String[]{};
-    String cooking_list[] = new String[]{};
+    List<String> taste_list = new ArrayList<>();
+    List<String> country_list = new ArrayList<>();
+    List<String> cooking_list = new ArrayList<>();
 
     List<String> category_list = new ArrayList<String>();
 
@@ -131,17 +132,23 @@ public class RegisterActivity extends AppCompatActivity {
 
         //TODO: 카테고리 서버 연동 테스트
         //only android code test
-        taste_list = new String[]{"[맛]","매콤","새콤","달콤"};
-        country_list = new String[]{"[국가]","한식","중식","일식"};
-        cooking_list = new String[]{"[조리방식]","조림","국","탕"};
+        taste_list.add("[맛]");
+        country_list.add("[국가]");
+        cooking_list.add("[조리방식]");
+
+        for (String taste : SharedManager.getInstance().getCategory().taste) {
+            taste_list.add(taste);
+        }
+        for (String country : SharedManager.getInstance().getCategory().country) {
+            country_list.add(country);
+        }
+        for (String cooking : SharedManager.getInstance().getCategory().cooking) {
+            cooking_list.add(cooking);
+        }
         initSpinner(taste_spinner,taste_list,1);
         initSpinner(country_spinner,country_list,2);
         initSpinner(cooking_spinner,cooking_list,3);
-        /*
-        getTasteList();
-        getCountryList();
-        getCookingList();
-        */
+
         set_rating();
     }
     @Override
@@ -214,6 +221,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onResponse(Response<ResponseBody> response) {
                 RegisterFood();
             }
+
             @Override
             public void onFailure(Throwable t) {
                 Log.e("Upload error:", t.getMessage());
@@ -281,16 +289,16 @@ public class RegisterActivity extends AppCompatActivity {
             uploadFile();
     }
 
-    private void initSpinner(final Spinner s, String[] array, final int type){
+    private void initSpinner(final Spinner s, List<String> array, final int type){
         ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(),R.layout.spin,array);
 
         s.setAdapter(adapter);
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!s.getSelectedItem().toString().equals("[맛]")
-                        &&!s.getSelectedItem().toString().equals("[국가]")
-                        &&!s.getSelectedItem().toString().equals("[조리방식]")){
+                if (!s.getSelectedItem().toString().equals("[맛]")
+                        && !s.getSelectedItem().toString().equals("[국가]")
+                        && !s.getSelectedItem().toString().equals("[조리방식]")) {
                     switch (type) {
                         case 1:
                             n_food.taste.add(s.getSelectedItem().toString());
@@ -306,8 +314,10 @@ public class RegisterActivity extends AppCompatActivity {
                     addFlowChart(category_result, category_list.toArray(new String[category_list.size()]));
                 }
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 
@@ -327,100 +337,20 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void addFlowChart(final TagFlowLayout mFlowLayout, String[] array){
+    private void addFlowChart(final TagFlowLayout mFlowLayout, String[] array) {
         final LayoutInflater mInflater = LayoutInflater.from(getApplication());
-        mFlowLayout.setAdapter(new TagAdapter<String>(array){
-                @Override
-                public View getView(FlowLayout parent, int position, String s) {
-                    TextView tv = (TextView) mInflater.inflate(R.layout.tag_result, mFlowLayout, false);
-                    tv.setText(s);
-                    return tv;
-                }
+        mFlowLayout.setAdapter(new TagAdapter<String>(array) {
+            @Override
+            public View getView(FlowLayout parent, int position, String s) {
+                TextView tv = (TextView) mInflater.inflate(R.layout.tag_result, mFlowLayout, false);
+                tv.setText(s);
+                return tv;
+            }
 
-                @Override
-                public boolean setSelected(int position, String s)
-                {
-                    return s.equals("Android");
-                }
-            });
-        }
-
-    public void getTasteList() {
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getTasteList()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<String>>() {
-                    @Override
-                    public final void onCompleted() {
-                        initSpinner(taste_spinner,taste_list,1);
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(List<String> response) {
-                        if (response != null) {
-                            response.add(0,"[맛]");
-                            taste_list = response.toArray(new String[response.size()]);
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-    public void getCountryList() {
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getCountryList()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<String>>() {
-                    @Override
-                    public final void onCompleted() {
-                        initSpinner(country_spinner,country_list,2);
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(List<String> response) {
-                        if (response != null) {
-                            response.add(0,"[국가]");
-                            country_list = response.toArray(new String[response.size()]);
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-    public void getCookingList() {
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getCookingList()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<String>>() {
-                    @Override
-                    public final void onCompleted() {
-                        initSpinner(cooking_spinner,cooking_list,3);
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(List<String> response) {
-                        if (response != null) {
-                            response.add(0,"[조리방식]");
-                            cooking_list = response.toArray(new String[response.size()]);
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+            @Override
+            public boolean setSelected(int position, String s) {
+                return s.equals("Android");
+            }
+        });
     }
 }

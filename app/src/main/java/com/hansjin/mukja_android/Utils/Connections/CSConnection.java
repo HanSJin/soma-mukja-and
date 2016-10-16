@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.Utils.Connections;
 
+import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Model.Result;
@@ -33,33 +34,18 @@ public interface CSConnection {
     Observable<Food> getOneFood(@Path("id") String id,
                                 @Path("user") String user);
 
-    @POST("/users")
-    Observable<User> createUser(@Body User user);
-
-    @GET("/pio/create_items")
-    Observable<Result> createAllItems();
-
     @GET("/pio/buy/{user}/{food}")
     Observable<Result> buyItem(@Path("user") String user,
                                @Path("food") String food);
 
-    /* 이전 ver
-    @GET("/pio/similar/{food}")
-    Observable<List<itemScores>> similarResult(@Path("food") String food);
-
-    @GET("/pio/recommendation/{user}")
-    Observable<List<itemScores>> recommendationResult(@Path("user") String user);
-    */
-
-    //미정 - 후에 api확실해지면 연동 후 수정
     //먹고싶어요
-    @GET("/like/{uid}/{food_id}")
+    @POST("/like/{uid}/{food_id}")
     Observable<Food> likeFood(@Path("uid") String uid,
                               @Path("food_id") String food_id);
 
     //먹고싶어요 취소
-    @GET("/like/{event_id}")
-    Observable<Food> likeCancle(@Path("event_id") String event_id);
+//    @GET("/like/{event_id}")
+//    Observable<Food> likeCancle(@Path("event_id") String event_id);
 
     //rate점수 전송
     @GET("/rate/{uid}/{food_id}")
@@ -73,7 +59,7 @@ public interface CSConnection {
     //recommendation 결과 값
     @POST("/recommand/{uid}")
     Observable<List<Food>> recommendationResult(@Path("uid") String uid,
-                                                @Body Map<String, Object> fields);
+                                                @Body Map<String, List<String>> fields);
 
 
     //피드 가져오기
@@ -86,24 +72,15 @@ public interface CSConnection {
     Observable<GlobalResponse> reportFood(@Path("uid") String uid,
                                           @Path("food_id") String food_id);
 
-    //taste 목록 가져오기
-    @GET("/food/taste")
-    Observable<List<String>> getTasteList();
+    //카테고리 목록 가져오기
+    @GET("/category")
+    Observable<Category> getCategoryList();
 
-    //country 목록 가져오기
-    @GET("/food/country")
-    Observable<List<String>> getCountryList();
-
-    //cooking 목록 가져오기
-    @GET("/food/cooking")
-    Observable<List<String>> getCookingList();
-
-    //food upload ( 이거 docs api랑 다르게 했어요! id는 자동생성 되어야 할 것 같아서 )
-    @POST("/food")
+    @POST("/food/post")
     Observable<Food> foodPost(@Body Food food);
 
     @Multipart
-    @POST("upload/{image_url}")
+    @POST("upload/food/{image_url}")
     Call<ResponseBody> uploadImage(@Part("photo") MultipartBody.Part photo,
                                    @Part("name") RequestBody name,
                                    @Path("image_url") String food_id);
