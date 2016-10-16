@@ -26,7 +26,7 @@
             android:orientation="horizontal"
             android:layout_marginLeft="10dp">
             <TextView
-                android:layout_width="55dp"
+                android:layout_width="45dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="맛"
@@ -37,6 +37,7 @@
                 xmlns:zhy="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/taste_flowlayout"
                 zhy:max_select="-1"
+                android:layout_marginBottom="5dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
             </com.zhy.view.flowlayout.TagFlowLayout>
@@ -47,7 +48,7 @@
             android:orientation="horizontal"
             android:layout_marginLeft="10dp">
             <TextView
-                android:layout_width="55dp"
+                android:layout_width="45dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="국가"
@@ -57,6 +58,7 @@
             <com.zhy.view.flowlayout.TagFlowLayout
                 xmlns:zhy="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/country_flowlayout"
+                android:layout_marginBottom="5dp"
                 zhy:max_select="-1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
@@ -68,7 +70,7 @@
             android:orientation="horizontal"
             android:layout_marginLeft="10dp">
             <TextView
-                android:layout_width="55dp"
+                android:layout_width="45dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="조리 방식"
@@ -84,10 +86,4 @@
             </com.zhy.view.flowlayout.TagFlowLayout>
         </LinearLayout>
     </LinearLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="category"
-        android:id="@+id/TV_category"
-        android:paddingLeft="5dp"/>
 </LinearLayout>
