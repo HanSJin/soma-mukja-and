@@ -100,8 +100,7 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
 
         public ItemViewHolder(View v) {
             super(v);
-            TV_ranking_keyword_name = (TextView) v.findViewById(R.id.cell_ranking_keyword_name).findViewById(R.id.TV_ranking_keyword_name);
-
+            TV_ranking_keyword_name = (TextView) v.findViewById(R.id.TV_ranking_keyword_name);
             IV_food = (ImageView) v.findViewById(R.id.IV_food);
         }
     }

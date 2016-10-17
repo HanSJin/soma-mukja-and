@@ -145,9 +145,10 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             @Override
             public void onClick(View v) {
                 if(!BT_search_bool) {
-                    Drawable drawable = getResources().getDrawable(R.drawable.category_btn);
+                    Drawable drawable = getResources().getDrawable(R.drawable.tumyeong);
                     BT_search.setText("취소");
                     BT_search.setBackground(drawable);
+                    BT_search.setTextColor(getResources().getColor(R.color.colorGrayText));
                     BT_search_bool = true;
 
                     connectTestCall_Search(ET_search.getText().toString());
@@ -155,8 +156,9 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                     LL_search.setVisibility(LinearLayout.VISIBLE);
                     LL_rank.setVisibility(LinearLayout.GONE);
                 }else{
-                    Drawable drawable = getResources().getDrawable(R.drawable.category_btn_selected);
-                    BT_search.setText("검색");
+                    Drawable drawable = getResources().getDrawable(R.drawable.search2);
+                    BT_search.setText("");
+                    BT_search.setBackground(drawable);
                     BT_search_bool = false;
 
                     refresh();
