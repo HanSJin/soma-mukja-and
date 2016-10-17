@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="260dp"
     android:background="@color/colorWhite"
     android:layout_marginTop="16dp">
 
@@ -18,12 +18,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp">
+        android:layout_height="130dp">
         <org.eazegraph.lib.charts.ValueLineChart
             android:id="@+id/linechart"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="10dp"
             app:egUseCubic="true"
             app:egUseOverlapFill="true"
             app:egCurveSmoothness="0.6"
@@ -41,7 +41,7 @@
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="#F5C25A"
         android:paddingLeft="16dp"
@@ -53,70 +53,153 @@
             android:layout_height="wrap_content"
             android:text="0.5"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="1.0"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="1.5"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="2.0"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="2.5"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="3.0"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="3.5"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="4.0"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="4.5"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="5.0"
             android:textSize="10dp"
-            android:textColor="@color/colorGrayText"/>
+            android:textColor="@color/colorGrayLine"/>
+    </LinearLayout>
 
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:background="#F5C25A"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingBottom="5dp">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="2.1"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="left">
+            <TextView
+                android:id="@+id/rank_average"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="평균별점"
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp"/>
+        </LinearLayout>
+        <View
+            android:layout_width="0.3dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            android:layout_marginBottom="16dp"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="left"
+            android:paddingLeft="20dp">
+            <TextView
+                android:id="@+id/rank_cnt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="평가자수"
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp"/>
+        </LinearLayout>
+        <View
+            android:layout_width="0.3dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            android:layout_marginBottom="16dp"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="left"
+            android:paddingLeft="20dp">
+            <TextView
+                android:id="@+id/rank_max"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="많이 준 별점"
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
