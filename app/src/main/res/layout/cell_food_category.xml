@@ -19,17 +19,6 @@
             android:textSize="12sp"
             android:textColor="@color/colorGrayText"
             android:textStyle="bold"/>
-        <ImageView
-            android:id="@+id/expand_btn"
-            android:layout_width="20dp"
-            android:layout_height="12dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:scaleType="centerInside"
-            android:src="@drawable/expand_down"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="24dp"/>
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/layout_category"

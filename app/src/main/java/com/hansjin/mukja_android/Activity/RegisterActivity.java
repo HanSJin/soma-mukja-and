@@ -150,14 +150,6 @@ public class RegisterActivity extends AppCompatActivity {
         initSpinner(country_spinner,country_list,2);
         initSpinner(cooking_spinner,cooking_list,3);
 
-        taste_spinner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
-            }
-        });
-
         set_rating();
     }
     @Override
