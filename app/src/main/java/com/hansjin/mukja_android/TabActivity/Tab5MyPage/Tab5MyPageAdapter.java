@@ -76,7 +76,10 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
             itemViewHolder.TV_food_name.setText(food.name);
 
             String image_url = IMAGE_BASE_URL + food.image_url;
-            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
+            Glide.with(context).
+                    load(image_url).
+                    thumbnail(0.1f).
+                    into(itemViewHolder.IV_food);
         }
     }
 

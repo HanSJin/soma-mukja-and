@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,15 +23,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
+import com.hansjin.mukja_android.TabActivity.Tab2Feeds.Tab2FeedsAdapter;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
+
+import org.androidannotations.annotations.UiThread;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -98,40 +103,30 @@ public class Tab5MyPageFragment extends TabParentFragment {
         BT_food_rate = (Button) view.findViewById(R.id.BT_food_rate);
         IV_profile = (ImageView) view.findViewById(R.id.IV_profile);
 
-        BT_edit_about_me = (Button) view.findViewById(R.id.BT_edit_about_me);
-
-
         Toolbar cs_toolbar = (Toolbar)view.findViewById(R.id.cs_toolbar);
-        Log.i("toolbar", ""+ cs_toolbar);
+
         activity.setSupportActionBar(cs_toolbar);
         activity.getSupportActionBar().setTitle("내 정보");
 
         TV_user_name = (TextView) view.findViewById(R.id.TV_user_name);
         TV_about_me = (TextView) view.findViewById(R.id.TV_about_me);
 
-
-        TV_user_name.setText(prefs.getString("user_name",""));
-        TV_about_me.setText(prefs.getString("user_about_me",""));
+        TV_user_name.setText(SharedManager.getInstance().getMe().nickname);
+        TV_about_me.setText(SharedManager.getInstance().getMe().about_me);
 
         if (recyclerView == null) {
-//            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-//            recyclerView.setHasFixedSize(true);
-//            layoutManager = new LinearLayoutManager(activity);
-//            recyclerView.setLayoutManager(layoutManager);
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
             recyclerView.setHasFixedSize(true);
-
-            //layoutManager = new LinearLayoutManager(activity);
-            //recyclerView.setLayoutManager(layoutManager);
             recyclerView.setLayoutManager(new GridLayoutManager(activity, 2));
-
         }
-
         if (adapter == null) {
             adapter = new Tab5MyPageAdapter(new Tab5MyPageAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-
+                    Intent intent = new Intent(activity, DetailActivity_.class);
+                    intent.putExtra("food", adapter.mDataset.get(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
@@ -144,13 +139,8 @@ public class Tab5MyPageFragment extends TabParentFragment {
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
                 refresh();
-
             }
         });
-
-
-
-        //http://graph.facebook.com/fid값 입력/picture
 
         BT_setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +151,6 @@ public class Tab5MyPageFragment extends TabParentFragment {
         BT_pref_anal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //finish();
             }
         });
         BT_food_rate.setOnClickListener(new View.OnClickListener() {
@@ -176,28 +165,19 @@ public class Tab5MyPageFragment extends TabParentFragment {
                 startActivity(new Intent(getActivity(), ThumbPopupActivity.class));
             }
         });
-        BT_edit_about_me.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
-            }
-        });
-
-        //String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
+//        BT_edit_about_me.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
+//            }
+//        });
         String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?type=large";
-        Log.i("url", image_url);
-        Glide.with(getActivity()).load(image_url).bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
+        Glide.with(getActivity()).
+                load(image_url).
+                thumbnail(0.1f).
+                bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
 
         connectTestCall();
-    }
-
-    //@UiThread
-    void uiThread(List<Food> response) {
-        for (Food food : response) {
-            adapter.addData(food);
-        }
-        adapter.notifyDataSetChanged();
-        Log.i("keyword", ""+adapter);
     }
 
     @Override
@@ -215,6 +195,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
     }
 
     void connectTestCall() {
+        Log.d("hansjin", "connectTestCall");
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.getLikedFood(SharedManager.getInstance().getMe()._id)
@@ -233,10 +214,10 @@ public class Tab5MyPageFragment extends TabParentFragment {
                     @Override
                     public final void onNext(List<Food> response) {
                         if (response != null) {
-                            uiThread(response);
-                            for(Food food : response )
-                            Log.i("response", "" + food.name);
-
+                            for (Food food : response) {
+                                adapter.addData(food);
+                            }
+                            adapter.notifyDataSetChanged();
                         } else {
                             Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
