@@ -105,6 +105,9 @@ public interface CSConnection {
     Observable<GlobalResponse> foodView(@Path("uid") String uid,
                                         @Path("food_id") String food_id);
 
+    @GET("/users/{uid}/mylist")
+    Observable<List<Food>> getLikedFood(@Path("uid") String uid);
+
     @GET("explore")
     Observable<List<Explore>> getExploreRanking();
 

@@ -42,6 +42,14 @@ public class Food implements Serializable {
     public class RatePerson implements Serializable {
         public String user_id;
         public float rate_num;
+
+        public String getUser_id() {
+            return user_id;
+        }
+
+        public float getRate_num() {
+            return rate_num;
+        }
     }
 
     public List<String> rate_person_id(){

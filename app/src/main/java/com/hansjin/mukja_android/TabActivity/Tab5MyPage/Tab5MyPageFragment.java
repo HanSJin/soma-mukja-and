@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,19 +20,31 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
+import com.hansjin.mukja_android.TabActivity.Tab2Feeds.Tab2FeedsAdapter;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
+
+import org.androidannotations.annotations.UiThread;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -90,40 +103,30 @@ public class Tab5MyPageFragment extends TabParentFragment {
         BT_food_rate = (Button) view.findViewById(R.id.BT_food_rate);
         IV_profile = (ImageView) view.findViewById(R.id.IV_profile);
 
-        BT_edit_about_me = (Button) view.findViewById(R.id.BT_edit_about_me);
-
-
         Toolbar cs_toolbar = (Toolbar)view.findViewById(R.id.cs_toolbar);
-        Log.i("toolbar", ""+ cs_toolbar);
+
         activity.setSupportActionBar(cs_toolbar);
         activity.getSupportActionBar().setTitle("내 정보");
 
         TV_user_name = (TextView) view.findViewById(R.id.TV_user_name);
         TV_about_me = (TextView) view.findViewById(R.id.TV_about_me);
 
-
-        TV_user_name.setText(prefs.getString("user_name",""));
-        TV_about_me.setText(prefs.getString("user_about_me",""));
+        TV_user_name.setText(SharedManager.getInstance().getMe().nickname);
+        TV_about_me.setText(SharedManager.getInstance().getMe().about_me);
 
         if (recyclerView == null) {
-//            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-//            recyclerView.setHasFixedSize(true);
-//            layoutManager = new LinearLayoutManager(activity);
-//            recyclerView.setLayoutManager(layoutManager);
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
             recyclerView.setHasFixedSize(true);
-
-            //layoutManager = new LinearLayoutManager(activity);
-            //recyclerView.setLayoutManager(layoutManager);
             recyclerView.setLayoutManager(new GridLayoutManager(activity, 2));
-
         }
-
         if (adapter == null) {
             adapter = new Tab5MyPageAdapter(new Tab5MyPageAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-
+                    Intent intent = new Intent(activity, DetailActivity_.class);
+                    intent.putExtra("food", adapter.mDataset.get(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
@@ -139,10 +142,6 @@ public class Tab5MyPageFragment extends TabParentFragment {
             }
         });
 
-
-
-        //http://graph.facebook.com/fid값 입력/picture
-
         BT_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,7 +151,6 @@ public class Tab5MyPageFragment extends TabParentFragment {
         BT_pref_anal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //finish();
             }
         });
         BT_food_rate.setOnClickListener(new View.OnClickListener() {
@@ -167,52 +165,19 @@ public class Tab5MyPageFragment extends TabParentFragment {
                 startActivity(new Intent(getActivity(), ThumbPopupActivity.class));
             }
         });
-        BT_edit_about_me.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
-            }
-        });
-
-        //String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
+//        BT_edit_about_me.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
+//            }
+//        });
         String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?type=large";
-        Log.i("url", image_url);
-        Glide.with(getActivity()).load(image_url).bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
-
-        ArrayList<Food> food = new ArrayList<>();
-        Food food1 = new Food();
-        food1.name = "떡볶이";
-
-        Food food2 = new Food();
-        food2.name = "김치찌개";
-
-        Food food3 = new Food();
-        food3.name = "우동";
-
-        Food food4 = new Food();
-        food4.name = "돈까스";
-
-        Food food5 = new Food();
-        food5.name = "스파게티";
-
-        food.add(food1);
-        food.add(food2);
-        food.add(food3);
-        food.add(food4);
-        food.add(food5);
-
-        uiThread(food);
+        Glide.with(getActivity()).
+                load(image_url).
+                thumbnail(0.1f).
+                bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
 
         connectTestCall();
-    }
-
-    //@UiThread
-    void uiThread(List<Food> response) {
-        for (Food food : response) {
-            adapter.addData(food);
-        }
-        adapter.notifyDataSetChanged();
-        Log.i("keyword", ""+adapter);
     }
 
     @Override
@@ -230,51 +195,33 @@ public class Tab5MyPageFragment extends TabParentFragment {
     }
 
     void connectTestCall() {
-
-    }
-
-//    private Bitmap loadImageFromNetwork(URL url){
-//        try {
-//            Log.i("asd", url.toString());
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setDoInput(true);
-//            conn.connect();
-//
-//            InputStream is = conn.getInputStream();
-//            bitmap = BitmapFactory.decodeStream(is);
-//            Log.i("asd3", ""+bitmap);
-//        } catch(IOException ex){
-//            ex.printStackTrace();
-//        }
-//
-//        return bitmap;
-//    }
-//
-//    private class DownloadImageTask extends AsyncTask<URL, Void, Bitmap> {
-//        /** The system calls this to perform work in a worker thread and
-//         * delivers it the parameters given to AsyncTask.execute() */
-//        protected Bitmap doInBackground(URL... urls) {
-//
-//            Log.i("asd2", ""+urls[0].toString());
-//            return loadImageFromNetwork(urls[0]);
-//        }
-//
-//        /** The system calls this to perform work in the UI thread and delivers
-//         * the result from doInBackground() */
-//        protected void onPostExecute(Bitmap result) {
-//            profile_image.setImageBitmap(result);
-//            Log.i("asd", ""+result);
-//        }
-//    }
-
-    public static Bitmap getFacebookProfilePicture(String userID){
-        try {
-            URL imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?width=78&height=78");
-            Bitmap bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-            return bitmap;
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
+        Log.d("hansjin", "connectTestCall");
+        LoadingUtil.startLoading(indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.getLikedFood(SharedManager.getInstance().getMe()._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Food>>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(List<Food> response) {
+                        if (response != null) {
+                            for (Food food : response) {
+                                adapter.addData(food);
+                            }
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
