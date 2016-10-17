@@ -38,7 +38,6 @@
                 android:gravity="left|center_vertical"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
-                android:textStyle="bold"
                 android:text="food_name"/>
                 <TextView
                     android:id="@+id/TV_category"
@@ -49,6 +48,7 @@
                     android:layout_height="wrap_content"
                     android:text="category"
                     android:textSize="12sp"
+                    android:textColor="@color/colorGrayText"
                     android:layout_marginLeft="10dp"/>
                 <RatingBar
                     android:id="@+id/ratingBar"
