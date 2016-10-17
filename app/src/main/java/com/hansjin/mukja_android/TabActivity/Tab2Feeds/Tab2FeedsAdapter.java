@@ -2,14 +2,13 @@ package com.hansjin.mukja_android.TabActivity.Tab2Feeds;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -17,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Model.Food;
-import com.hansjin.mukja_android.Model.Result;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
 import com.hansjin.mukja_android.R;
@@ -112,15 +110,14 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             itemViewHolder.write_time.setText(cal_time(food));
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
-            for (String uid : food.like_person) {
-                if (uid.equals(SharedManager.getInstance().getMe()._id)) {
-                    itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_red));
-                }
-            }
+            itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
+            setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
+            setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     food_like(food, position);
+                    setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
                 }
             });
 
@@ -133,9 +130,9 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     customDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
-                            //TODO: pio rate 점수 전송
-//                            if(pio.food_rate(food._id)==true)
-//                                itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_yellow));
+                            food.rate_person.add(0,food.newrate(SharedManager.getInstance().getMe()._id,customDialog.getRatenum()));
+                            food_rate(food, position);
+                            setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
                         }
                     });
                 }
@@ -160,8 +157,6 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     popup.show();
                 }
             });
-
-
 
             if (position == mDataset.size()-1 && !fragment.endOfPage)
                 fragment.connectFeed(++fragment.page);
@@ -300,5 +295,43 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                         }
                     }
                 });
+    }
+
+    public void food_rate(Food food, final int index) {
+        LoadingUtil.startLoading(fragment.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.rateFood(food, SharedManager.getInstance().getMe()._id, food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(fragment.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            mDataset.get(index).rate_cnt = response.rate_cnt;
+                            mDataset.get(index).rate_person = response.rate_person;
+                            mDataset.get(index).rate_distribution = response.rate_distribution;
+                            notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void setImamge(List<String> array, ImageView imageview, int image) {
+        for (String uid : array) {
+            if (uid.equals(SharedManager.getInstance().getMe()._id)) {
+                imageview.setImageDrawable(fragment.getResources().getDrawable(image));
+            }
+        }
     }
 }

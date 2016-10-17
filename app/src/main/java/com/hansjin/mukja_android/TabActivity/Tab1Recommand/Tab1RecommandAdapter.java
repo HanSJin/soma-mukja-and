@@ -59,10 +59,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     private String country_list[] = new String[]{};
     private String cooking_list[] = new String[]{};
     //getRecommand에 실어보낼 Map
-    private Map<String, List<String>> category_food = new HashMap<String, List<String>>();
-    private List<String> select_taste = new ArrayList<>();
-    private List<String> select_country = new ArrayList<>();
-    private List<String> select_cooking = new ArrayList<>();
+    private Category category_food = new Category();
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -82,9 +79,9 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
         cooking_list = SharedManager.getInstance().getCategory().cooking.toArray(
                 new String[SharedManager.getInstance().getCategory().cooking.size()]);
 
-        category_food.put("taste",select_taste);
-        category_food.put("country",select_country);
-        category_food.put("cooking",select_cooking);
+        category_food.taste = new ArrayList<String>();
+        category_food.country = new ArrayList<String>();
+        category_food.cooking = new ArrayList<String>();
     }
 
     public void addData(Food item) {
@@ -134,15 +131,14 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
             //itemViewHolder.friend_like.setText(cal_friend(food));
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
-            for (String uid : food.like_person) {
-                if (uid.equals(SharedManager.getInstance().getMe()._id)) {
-                    itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_red));
-                }
-            }
+            itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
+            setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
+            setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     food_like(food, position-1);
+                    setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
                 }
             });
 
@@ -155,9 +151,9 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     customDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
-                            //TODO: pio rate 점수 전송
-//                            if(pio.food_rate(food._id)==true)
-//                                itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_yellow));
+                            food.rate_person.add(0,food.newrate(SharedManager.getInstance().getMe()._id,customDialog.getRatenum()));
+                            food_rate(food, position-1);
+                            setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
                         }
                     });
                 }
@@ -194,23 +190,23 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                         String s = entry.getKey()[position];
                         if(push_tag.contains(s)) {
                             if(entry.getKey()==taste_list)
-                                category_food.get("taste").remove(s);
+                                category_food.taste.remove(s);
                             else if(entry.getKey()==country_list)
-                                category_food.get("country").remove(s);
+                                category_food.country.remove(s);
                             else if(entry.getKey()==cooking_list)
-                                category_food.get("cooking").remove(s);
+                                category_food.cooking.remove(s);
 
-                            if(push_tag.size()==0)
-                                fragment.connectRecommand(null);
+                            fragment.connectRecommand(category_food);
+
                             push_tag.remove(s);
 
                         }else {
                             if(entry.getKey()==taste_list)
-                                category_food.get("taste").add(s);
+                                category_food.taste.add(s);
                             else if(entry.getKey()==country_list)
-                                category_food.get("country").add(s);
+                                category_food.country.add(s);
                             else if(entry.getKey()==cooking_list)
-                                category_food.get("cooking").add(s);
+                                category_food.cooking.add(s);
 
                             fragment.connectRecommand(category_food);
                             push_tag.add(s);
@@ -219,6 +215,14 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                         return true;
                     }
                 });
+            }
+        }
+    }
+
+    private void setImamge(List<String> array, ImageView imageview, int image) {
+        for (String uid : array) {
+            if (uid.equals(SharedManager.getInstance().getMe()._id)) {
+                imageview.setImageDrawable(fragment.getResources().getDrawable(image));
             }
         }
     }
@@ -261,7 +265,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
         float i =0.5f;
         float total = 0;
         int cnt = 0;
-        if (food.rate_persion != null) {
+        if (food.rate_person != null) {
             for (int dis:food.rate_distribution) {
                 cnt += dis;
                 total+=i*dis;
@@ -306,6 +310,36 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                         if (response != null) {
                             mDataset.get(index).like_cnt = response.like_cnt;
                             mDataset.get(index).like_person = response.like_person;
+                            notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void food_rate(Food food, final int index) {
+        LoadingUtil.startLoading(fragment.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.rateFood(food, SharedManager.getInstance().getMe()._id, food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(fragment.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            mDataset.get(index).rate_cnt = response.rate_cnt;
+                            mDataset.get(index).rate_person = response.rate_person;
+                            mDataset.get(index).rate_distribution = response.rate_distribution;
                             notifyDataSetChanged();
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();

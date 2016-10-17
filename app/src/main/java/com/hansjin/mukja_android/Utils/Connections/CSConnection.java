@@ -48,8 +48,9 @@ public interface CSConnection {
 //    Observable<Food> likeCancle(@Path("event_id") String event_id);
 
     //rate점수 전송
-    @GET("/rate/{uid}/{food_id}")
-    Observable<Food> rateFood(@Path("uid") String uid,
+    @POST("/rate/{uid}/{food_id}")
+    Observable<Food> rateFood(@Body Food food,
+                              @Path("uid") String uid,
                               @Path("food_id") String food_id);
 
     //similar 결과 값
@@ -59,7 +60,7 @@ public interface CSConnection {
     //recommendation 결과 값
     @POST("/recommand/{uid}")
     Observable<List<Food>> recommendationResult(@Path("uid") String uid,
-                                                @Body Map<String, List<String>> fields);
+                                                @Body Category fields);
 
 
     //피드 가져오기
