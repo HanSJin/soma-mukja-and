@@ -88,7 +88,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if (holder instanceof ImageHeaderViewHolder) {
             ImageHeaderViewHolder imageHolder = (ImageHeaderViewHolder) holder;
-            Glide.with(context).load(Constants.IMAGE_BASE_URL+food.image_url).into(imageHolder.foodImage);
+            Glide.with(context).
+                    load(Constants.IMAGE_BASE_URL+food.image_url).
+                    thumbnail(0.1f).
+                    into(imageHolder.foodImage);
             imageHolder.foodName.setText(food.name);
             imageHolder.viewCnt.setText("View "+food.view_cnt);
             imageHolder.foodRateNum.setText(cal_rate(food)+"");
@@ -138,34 +141,40 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             DescBodyViewHolder descBodyViewHolder = (DescBodyViewHolder) holder;
             descBodyViewHolder.txt_category.setText(combine_tag(food)+"");
             descBodyViewHolder.txt_ingredient.setText(combine_ingredient_tag(food)+"");
-            descBodyViewHolder.txt_people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
+            if (food.like_cnt==0)
+                descBodyViewHolder.txt_people_like.setText("가장 먼저 좋아요를 눌러주세요!");
+            else
+                descBodyViewHolder.txt_people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
         } else if (holder instanceof GraphBodyViewHolder) {
-            GraphBodyViewHolder graphBodyViewHolderHolder = (GraphBodyViewHolder) holder;
+            GraphBodyViewHolder graphBodyViewHolder = (GraphBodyViewHolder) holder;
 
             ValueLineSeries series = new ValueLineSeries();
             series.setColor(0xFFF5C25A);
+            series.addPoint(new ValueLinePoint(0));
+            for (float rank : food.rate_distribution) {
+                series.addPoint(new ValueLinePoint(rank));
+            }
+            series.addPoint(new ValueLinePoint(0));
+            graphBodyViewHolder.lineChart.addSeries(series);
 
-            series.addPoint(new ValueLinePoint(3.5f));
-            series.addPoint(new ValueLinePoint(2.4f));
-            series.addPoint(new ValueLinePoint(0.4f));
-            series.addPoint(new ValueLinePoint(3.4f));
-            series.addPoint(new ValueLinePoint(2.5f));
-            series.addPoint(new ValueLinePoint(1.0f));
-            series.addPoint(new ValueLinePoint(4.4f));
-            series.addPoint(new ValueLinePoint(2.4f));
-            series.addPoint(new ValueLinePoint(3.2f));
-            series.addPoint(new ValueLinePoint(2.6f));
-            series.addPoint(new ValueLinePoint(5.0f));
-            series.addPoint(new ValueLinePoint(3.5f));
-            series.addPoint(new ValueLinePoint(2.4f));
-            series.addPoint(new ValueLinePoint(0.4f));
-            series.addPoint(new ValueLinePoint(3.4f));
-            series.addPoint(new ValueLinePoint(2.5f));
-            series.addPoint(new ValueLinePoint(1.0f));
-            series.addPoint(new ValueLinePoint(4.2f));
-
-            graphBodyViewHolderHolder.lineChart.addSeries(series);
-
+            int cnt = 1;
+            int total_cnt = 0; // 평가자 수
+            float total_point = 0; // 총 별점
+            int max_index = 0; // 최대 평점 인덱스
+            float max = 0;
+            for (float rank : food.rate_distribution) {
+                total_cnt += rank;
+                total_point += (rank*((float)cnt/2.0));
+                if (max < rank) {
+                    max = rank;
+                    max_index = cnt;
+                }
+                cnt++;
+            }
+            Log.d("hansjin", "11~"+total_point/(float)total_cnt+"/"+total_cnt + "/"+total_point);
+            graphBodyViewHolder.rank_average.setText(String.format("%.2f",total_point/(float)total_cnt)+"");
+            graphBodyViewHolder.rank_cnt.setText(total_cnt+"");
+            graphBodyViewHolder.rank_max.setText((float)max_index/2+"");
         } else if (holder instanceof PersonBodyViewHolder) {
             PersonBodyViewHolder personBodyViewHolderHolder = (PersonBodyViewHolder) holder;
         } else if (holder instanceof SimiralTailViewHolder) {
@@ -236,9 +245,14 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
     public class GraphBodyViewHolder extends ViewHolder {
         public ValueLineChart lineChart;
+        public TextView rank_average, rank_cnt, rank_max;
         public GraphBodyViewHolder(View v) {
             super(v);
             lineChart = (ValueLineChart) v.findViewById(R.id.linechart);
+            lineChart.setShowIndicator(false);
+            rank_average = (TextView) v.findViewById(R.id.rank_average);
+            rank_cnt = (TextView) v.findViewById(R.id.rank_cnt);
+            rank_max = (TextView) v.findViewById(R.id.rank_max);
         }
     }
 

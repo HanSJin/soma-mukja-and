@@ -124,14 +124,16 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
             itemViewHolder.cellFoodHeader.setVisibility(View.GONE);
             itemViewHolder.foodName.setText(food.name);
             //TODO: 정보 띄워주기 서버와 연동 후 화면 테스트해보기
-            Glide.with(context).load(Constants.IMAGE_BASE_URL+food.image_url).into(itemViewHolder.food_img);
+            Glide.with(context).
+                    load(Constants.IMAGE_BASE_URL+food.image_url).
+                    thumbnail(0.1f).
+                    into(itemViewHolder.food_img);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
             if (food.like_cnt==0)
-                itemViewHolder.layout_like_people.setVisibility(View.GONE);
+                itemViewHolder.people_like.setText("가장 먼저 좋아요를 눌러주세요!");
             else
-                itemViewHolder.layout_like_people.setVisibility(View.VISIBLE);
-            itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
+                itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
             //itemViewHolder.friend_like.setText(cal_friend(food));
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
