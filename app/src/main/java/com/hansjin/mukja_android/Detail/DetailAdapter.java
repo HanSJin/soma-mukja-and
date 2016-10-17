@@ -144,28 +144,12 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
             ValueLineSeries series = new ValueLineSeries();
             series.setColor(0xFFF5C25A);
-
-            series.addPoint(new ValueLinePoint(3.5f));
-            series.addPoint(new ValueLinePoint(2.4f));
-            series.addPoint(new ValueLinePoint(0.4f));
-            series.addPoint(new ValueLinePoint(3.4f));
-            series.addPoint(new ValueLinePoint(2.5f));
-            series.addPoint(new ValueLinePoint(1.0f));
-            series.addPoint(new ValueLinePoint(4.4f));
-            series.addPoint(new ValueLinePoint(2.4f));
-            series.addPoint(new ValueLinePoint(3.2f));
-            series.addPoint(new ValueLinePoint(2.6f));
-            series.addPoint(new ValueLinePoint(5.0f));
-            series.addPoint(new ValueLinePoint(3.5f));
-            series.addPoint(new ValueLinePoint(2.4f));
-            series.addPoint(new ValueLinePoint(0.4f));
-            series.addPoint(new ValueLinePoint(3.4f));
-            series.addPoint(new ValueLinePoint(2.5f));
-            series.addPoint(new ValueLinePoint(1.0f));
-            series.addPoint(new ValueLinePoint(4.2f));
-
+            series.addPoint(new ValueLinePoint(0));
+            for (float rank : food.rate_distribution) {
+                series.addPoint(new ValueLinePoint(rank));
+            }
+            series.addPoint(new ValueLinePoint(0));
             graphBodyViewHolderHolder.lineChart.addSeries(series);
-
         } else if (holder instanceof PersonBodyViewHolder) {
             PersonBodyViewHolder personBodyViewHolderHolder = (PersonBodyViewHolder) holder;
         } else if (holder instanceof SimiralTailViewHolder) {
@@ -239,6 +223,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         public GraphBodyViewHolder(View v) {
             super(v);
             lineChart = (ValueLineChart) v.findViewById(R.id.linechart);
+            lineChart.setShowIndicator(false);
         }
     }
 

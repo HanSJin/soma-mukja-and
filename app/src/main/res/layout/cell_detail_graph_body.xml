@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="250dp"
     android:background="@color/colorWhite"
     android:layout_marginTop="16dp">
 
@@ -16,22 +16,107 @@
         android:textSize="13sp"
         android:textColor="@color/colorGrayLine"/>
 
-    <org.eazegraph.lib.charts.ValueLineChart
-        android:id="@+id/linechart"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginTop="20dp"
-        app:egUseCubic="false"
-        app:egUseOverlapFill="true"
-        app:egCurveSmoothness="10"
-        app:egLegendHeight="30dp"
-        app:egActivateIndicatorShadow="false"
-        app:egUseDynamicScaling="true"/>
+        android:layout_height="170dp">
+        <org.eazegraph.lib.charts.ValueLineChart
+            android:id="@+id/linechart"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="20dp"
+            app:egUseCubic="true"
+            app:egUseOverlapFill="true"
+            app:egCurveSmoothness="0.6"
+            app:egLineStroke="1dp"
+            app:egLegendHeight="0dp"
+            app:egActivateIndicatorShadow="false"
+            app:egUseDynamicScaling="true"
+            app:egShowLegendBeneathIndicator="false"
+            app:egShowStandardValue="true"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F5C25A"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#F5C25A">
+        android:orientation="horizontal"
+        android:background="#F5C25A"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="20dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="0.5"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="1.0"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="1.5"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="2.0"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="2.5"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="3.0"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="3.5"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="4.0"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="4.5"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="5.0"
+            android:textSize="10dp"
+            android:textColor="@color/colorGrayText"/>
 
     </LinearLayout>
 </LinearLayout>
