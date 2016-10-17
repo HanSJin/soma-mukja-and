@@ -71,20 +71,13 @@
                     android:textSize="14sp"
                     android:background="@color/colorWhite"
                     android:padding="10dp"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0px"
-                    android:layout_weight="200">
-
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recycler_view_search"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="#F3F3F3"
+                        android:background="@color/colorWhite"
                         android:paddingBottom="56dp"
                         android:scrollbars="vertical" />
-
-                </LinearLayout>
 
             </LinearLayout>
 
