@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -55,7 +57,7 @@ import java.util.Locale;
 
 
 
-public class NearByRestaurant extends FragmentActivity implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.MapViewEventListener, MapView.POIItemEventListener {
+public class NearByRestaurant extends AppCompatActivity implements MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, MapView.MapViewEventListener, MapView.POIItemEventListener {
 
     private static final String LOG_TAG = "MapActivity";
     public final String DAUM_MAPS_ANDROID_APP_API_KEY = "32573ae520e55ed29aeafdb325ae7977";
@@ -83,6 +85,8 @@ public class NearByRestaurant extends FragmentActivity implements MapView.Curren
      */
     private GoogleApiClient client;
 
+    Button BT_X;
+
     Handler mHandler;
 
     @Override
@@ -90,6 +94,9 @@ public class NearByRestaurant extends FragmentActivity implements MapView.Curren
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_near_by_restaurant);
+        Toolbar cs_toolbar = (Toolbar)findViewById(R.id.cs_toolbar);
+        setSupportActionBar(cs_toolbar);
+        getSupportActionBar().setTitle("근처 음식점");
 
         keyword = getIntent().getStringExtra("food_name");
 
@@ -104,10 +111,18 @@ public class NearByRestaurant extends FragmentActivity implements MapView.Curren
 
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
 
-        mEditTextQuery = (EditText) findViewById(R.id.editTextQuery); // 검색창
+        mEditTextQuery = (EditText) findViewById(R.id.ET_searchbar); // 검색창
         mEditTextQuery.setText(keyword);
 
-        mButtonSearch = (Button) findViewById(R.id.buttonSearch); // 검색버튼
+        mButtonSearch = (Button) findViewById(R.id.BT_search); // 검색버튼
+
+        BT_X = (Button) findViewById(R.id.BT_X);
+        BT_X.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         mButtonSearch.setOnClickListener(new View.OnClickListener() { // 검색버튼 클릭 이벤트 리스너
             @Override

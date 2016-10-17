@@ -138,9 +138,9 @@ public class SplashActivity extends AppCompatActivity {
             lat = loc.getLatitude();
             lon = loc.getLongitude();
             //좌표 정보 얻어 토스트메세지 출력
-            Toast.makeText(getBaseContext(), "Location changed : Lat" + lat +
+            /*Toast.makeText(getBaseContext(), "Location changed : Lat" + lat +
                     "Lng: " + lon, Toast.LENGTH_SHORT).show();
-
+*/
             // 도시명 구하기
             String cityName = null;
             Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
@@ -153,7 +153,7 @@ public class SplashActivity extends AppCompatActivity {
             }catch(IOException e){
                 e.printStackTrace();
             }
-            String s = lon + "n" + lat + "nn당신의 현재 도시명 : " + cityName;
+            String s = "현재, <" + cityName + ">에 계시군요 !";
             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
             locationManager.removeUpdates(locationListener);
         }
