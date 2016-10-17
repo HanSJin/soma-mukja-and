@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.NearbyRestaurant.NearByRestaurant;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
@@ -33,6 +36,7 @@ import org.eazegraph.lib.models.ValueLineSeries;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -51,6 +55,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     public Context context;
     private OnItemClickListener mOnItemClickListener;
     public Food food;
+    public List<User> personList = new ArrayList<>();
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -180,7 +185,38 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             graphBodyViewHolder.rank_cnt.setText(total_cnt+"");
             graphBodyViewHolder.rank_max.setText((float)max_index/2+"");
         } else if (holder instanceof PersonBodyViewHolder) {
-            PersonBodyViewHolder personBodyViewHolderHolder = (PersonBodyViewHolder) holder;
+            PersonBodyViewHolder personBodyViewHolder = (PersonBodyViewHolder) holder;
+            DisplayMetrics dm = context.getResources().getDisplayMetrics();
+            int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, dm);
+            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, dm);
+
+            int cnt = 0;
+            if (personList.size() > 0) {
+                personBodyViewHolder.layout_person.removeAllViews();
+            }
+            for (User person : personList) {
+                ImageView iv = new ImageView(context);
+                iv.setImageResource(R.drawable.icon_cart);
+                iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                iv.setPadding(padding, padding, padding, padding);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, width);
+                iv.setLayoutParams(layoutParams);
+
+                personBodyViewHolder.layout_person.addView(iv);
+                Glide.with(context).
+                        load(Constants.IMAGE_BASE_URL + person.thumbnail_url + ".png").
+                        thumbnail(0.1f).
+                        bitmapTransform(new CropCircleTransformation(context)).into(iv);
+
+                if (cnt > 10)
+                    break;
+                cnt++;
+            }
+            if (personList.size() == 0) {
+                personBodyViewHolder.no_person.setVisibility(View.VISIBLE);
+            } else {
+                personBodyViewHolder.no_person.setVisibility(View.GONE);
+            }
         } else if (holder instanceof SimiralTailViewHolder) {
             SimiralTailViewHolder simiralTailViewHolder = (SimiralTailViewHolder) holder;
         }
@@ -261,9 +297,12 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     }
 
     public class PersonBodyViewHolder extends ViewHolder {
-        public TextView foodName, foodDesc;
+        public LinearLayout layout_person;
+        public TextView no_person;
         public PersonBodyViewHolder(View v) {
             super(v);
+            layout_person = (LinearLayout) v.findViewById(R.id.layout_person);
+            no_person = (TextView) v.findViewById(R.id.no_person);
         }
     }
 

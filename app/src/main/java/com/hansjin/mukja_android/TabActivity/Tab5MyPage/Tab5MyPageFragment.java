@@ -171,9 +171,8 @@ public class Tab5MyPageFragment extends TabParentFragment {
 //                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
 //            }
 //        });
-        String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?type=large";
         Glide.with(getActivity()).
-                load(image_url).
+                load(Constants.IMAGE_BASE_URL + SharedManager.getInstance().getMe().thumbnail_url + ".png").
                 thumbnail(0.1f).
                 bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
 
@@ -195,7 +194,6 @@ public class Tab5MyPageFragment extends TabParentFragment {
     }
 
     void connectTestCall() {
-        Log.d("hansjin", "connectTestCall");
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.getLikedFood(SharedManager.getInstance().getMe()._id)

@@ -40,7 +40,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#F3F3F3"
-                        android:paddingBottom="56dp"
                         android:scrollbars="vertical" />
 
                 </android.support.v4.widget.SwipeRefreshLayout>

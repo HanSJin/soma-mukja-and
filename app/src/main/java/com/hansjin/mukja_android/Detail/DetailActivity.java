@@ -90,12 +90,15 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         connFoodView();
+        connLikedPerson();
     }
 
     void refresh() {
         adapter.notifyDataSetChanged();
         LoadingUtil.stopLoading(indicator);
         pullToRefresh.setRefreshing(false);
+        connFoodView();
+        connLikedPerson();
     }
 
 
@@ -128,17 +131,43 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public final void onCompleted() {
                     }
+
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
+
                     @Override
                     public final void onNext(GlobalResponse response) {
-                        if (response != null && response.code==0) {
+                        if (response != null && response.code == 0) {
                             food.view_cnt++;
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    @Background
+    void connLikedPerson() {
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.getLikedPerson(food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<User>>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                    @Override
+                    public final void onNext(List<User> response) {
+                        if (response != null && response.size()>0) {
+                            adapter.personList = response;
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 });

@@ -2,20 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="24dp"
+    android:layout_marginBottom="4dp"
     android:orientation="vertical"
     android:padding="15dp"
     android:background="@color/colorWhite">
     <!--태그 목록이 두줄 이상 생길 수도 있어서 height 145->wrap으로 변경-->
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="특별히 찾으시는 음식이 있으세요?"
-        android:layout_marginBottom="10dp"
-        android:textSize="12sp"
-        android:textColor="@color/colorGrayText"
-        android:textStyle="bold"/>
+        android:background="@color/colorWhite">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="특별히 찾으시는 음식이 있으세요?"
+            android:paddingBottom="10dp"
+            android:textSize="12sp"
+            android:textColor="@color/colorGrayText"
+            android:textStyle="bold"/>
+        <ImageView
+            android:id="@+id/expand_btn"
+            android:layout_width="20dp"
+            android:layout_height="12dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:scaleType="centerInside"
+            android:src="@drawable/expand_down"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="24dp"/>
+    </RelativeLayout>
     <LinearLayout
+        android:id="@+id/layout_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
