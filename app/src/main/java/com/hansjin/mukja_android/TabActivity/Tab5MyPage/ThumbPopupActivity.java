@@ -53,49 +53,49 @@ public class ThumbPopupActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thumb_popup);
 //        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
-        prefs = getSharedPreferences("TodayFood",0);
-
-        BT_take_a_picture = (Button) findViewById(R.id.BT_take_a_picture);
-        BT_choose_a_picture = (Button) findViewById(R.id.BT_choose_a_picture);
-        BT_close_up_a_picture = (Button) findViewById(R.id.BT_close_up_a_picture);
-        BT_remove_a_picture = (Button) findViewById(R.id.BT_remove_a_picture);
-        BT_close = (Button) findViewById(R.id.BT_close);
-
-        BT_take_a_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, TAKE_CAMERA);
-            }
-        });
-        BT_choose_a_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                startActivityForResult(intent, TAKE_GALLERY);
-            }
-        });
-        BT_close_up_a_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //finish();
-            }
-        });
-        BT_remove_a_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //finish();
-            }
-        });
-        BT_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+//        prefs = getSharedPreferences("TodayFood",0);
+//
+//        BT_take_a_picture = (Button) findViewById(R.id.BT_take_a_picture);
+//        BT_choose_a_picture = (Button) findViewById(R.id.BT_choose_a_picture);
+//        BT_close_up_a_picture = (Button) findViewById(R.id.BT_close_up_a_picture);
+//        BT_remove_a_picture = (Button) findViewById(R.id.BT_remove_a_picture);
+//        BT_close = (Button) findViewById(R.id.BT_close);
+//
+//        BT_take_a_picture.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent();
+//                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//                startActivityForResult(intent, TAKE_CAMERA);
+//            }
+//        });
+//        BT_choose_a_picture.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent();
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                intent.setType("image/*");
+//                startActivityForResult(intent, TAKE_GALLERY);
+//            }
+//        });
+//        BT_close_up_a_picture.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //finish();
+//            }
+//        });
+//        BT_remove_a_picture.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //finish();
+//            }
+//        });
+//        BT_close.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
     }
 //
 //    @Override
