@@ -136,7 +136,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
                 refresh();
-                uiThread(keyword);
+
             }
         });
 
@@ -192,6 +192,8 @@ public class Tab4ExploreFragment  extends TabParentFragment {
 
         adapterSearch.clear();
         adapterSearch.notifyDataSetChanged();
+
+
     }
 
     @Override

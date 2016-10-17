@@ -9,11 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
 
 import java.util.ArrayList;
+
+import static com.hansjin.mukja_android.Utils.Constants.Constants.IMAGE_BASE_URL;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -71,7 +74,9 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
             Food food = mDataset.get(position);
 
             itemViewHolder.TV_food_name.setText(food.name);
-            //itemViewHolder.IV_food.setBackground();
+
+            String image_url = IMAGE_BASE_URL + food.image_url;
+            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
         }
     }
 

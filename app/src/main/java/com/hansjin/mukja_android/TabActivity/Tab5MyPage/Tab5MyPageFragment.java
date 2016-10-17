@@ -19,12 +19,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.net.URL;
@@ -32,6 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -136,6 +144,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
                 refresh();
+
             }
         });
 
@@ -179,30 +188,6 @@ public class Tab5MyPageFragment extends TabParentFragment {
         Log.i("url", image_url);
         Glide.with(getActivity()).load(image_url).bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
 
-        ArrayList<Food> food = new ArrayList<>();
-        Food food1 = new Food();
-        food1.name = "떡볶이";
-
-        Food food2 = new Food();
-        food2.name = "김치찌개";
-
-        Food food3 = new Food();
-        food3.name = "우동";
-
-        Food food4 = new Food();
-        food4.name = "돈까스";
-
-        Food food5 = new Food();
-        food5.name = "스파게티";
-
-        food.add(food1);
-        food.add(food2);
-        food.add(food3);
-        food.add(food4);
-        food.add(food5);
-
-        uiThread(food);
-
         connectTestCall();
     }
 
@@ -230,51 +215,32 @@ public class Tab5MyPageFragment extends TabParentFragment {
     }
 
     void connectTestCall() {
+        LoadingUtil.startLoading(indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.getLikedFood(SharedManager.getInstance().getMe()._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Food>>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(List<Food> response) {
+                        if (response != null) {
+                            uiThread(response);
+                            for(Food food : response )
+                            Log.i("response", "" + food.name);
 
-    }
-
-//    private Bitmap loadImageFromNetwork(URL url){
-//        try {
-//            Log.i("asd", url.toString());
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setDoInput(true);
-//            conn.connect();
-//
-//            InputStream is = conn.getInputStream();
-//            bitmap = BitmapFactory.decodeStream(is);
-//            Log.i("asd3", ""+bitmap);
-//        } catch(IOException ex){
-//            ex.printStackTrace();
-//        }
-//
-//        return bitmap;
-//    }
-//
-//    private class DownloadImageTask extends AsyncTask<URL, Void, Bitmap> {
-//        /** The system calls this to perform work in a worker thread and
-//         * delivers it the parameters given to AsyncTask.execute() */
-//        protected Bitmap doInBackground(URL... urls) {
-//
-//            Log.i("asd2", ""+urls[0].toString());
-//            return loadImageFromNetwork(urls[0]);
-//        }
-//
-//        /** The system calls this to perform work in the UI thread and delivers
-//         * the result from doInBackground() */
-//        protected void onPostExecute(Bitmap result) {
-//            profile_image.setImageBitmap(result);
-//            Log.i("asd", ""+result);
-//        }
-//    }
-
-    public static Bitmap getFacebookProfilePicture(String userID){
-        try {
-            URL imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?width=78&height=78");
-            Bitmap bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-            return bitmap;
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
+                        } else {
+                            Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

@@ -128,6 +128,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     load(Constants.IMAGE_BASE_URL+food.image_url).
                     thumbnail(0.1f).
                     into(itemViewHolder.food_img);
+            Log.i("zxczxc", Constants.IMAGE_BASE_URL+food.image_url);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
             if (food.like_cnt==0)
