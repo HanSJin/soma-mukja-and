@@ -2,9 +2,12 @@ package com.hansjin.mukja_android.TabActivity.Tab4Explore;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hansjin.mukja_android.Model.Food;
@@ -22,7 +25,7 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
     public Context context;
     public Tab4ExploreFragment fragment;
     private OnItemClickListener mOnItemClickListener;
-    public ArrayList<Food> mDataset = new ArrayList<>();
+    public ArrayList<String> mDataset = new ArrayList<>();
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -35,11 +38,11 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
         mDataset.clear();
     }
 
-    public void addData(Food item) {
+    public void addData(String item) {
         mDataset.add(item);
     }
 
-    public Food getItem(int position) {
+    public String getItem(int position) {
         return mDataset.get(position);
     }
 
@@ -50,7 +53,7 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
     @Override
     public Tab4ExploreAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_food_default_item, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_ranking_keyword, parent, false);
             return new ItemViewHolder(v);
         }
         return null;
@@ -66,7 +69,11 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
                 }
             });
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            Food food = mDataset.get(position);
+            String keyword = mDataset.get(position);
+            Log.i("keyword", keyword);
+
+            int tempPosition = position+1;
+            itemViewHolder.TV_ranking_keyword_name.setText("선호키워드 " + tempPosition + " - '" +keyword + "' TOP 30");
         }
     }
 
@@ -80,10 +87,6 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
         return mDataset.size();
     }
 
-
-    /*
-        ViewHolder
-     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View container;
         public ViewHolder(View itemView) {
@@ -92,11 +95,14 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
         }
     }
     public class ItemViewHolder extends ViewHolder {
-        public TextView foodName, foodDesc;
+        public TextView TV_ranking_keyword_name;
+        ImageView IV_food;
+
         public ItemViewHolder(View v) {
             super(v);
-            foodName = (TextView) v.findViewById(R.id.food_name);
-            foodDesc = (TextView) v.findViewById(R.id.food_desc);
+            TV_ranking_keyword_name = (TextView) v.findViewById(R.id.cell_ranking_keyword_name).findViewById(R.id.TV_ranking_keyword_name);
+
+            IV_food = (ImageView) v.findViewById(R.id.IV_food);
         }
     }
 

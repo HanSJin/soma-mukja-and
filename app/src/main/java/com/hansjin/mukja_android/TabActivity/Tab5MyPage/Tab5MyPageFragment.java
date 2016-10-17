@@ -1,20 +1,37 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
-import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandAdapter;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -29,6 +46,19 @@ public class Tab5MyPageFragment extends TabParentFragment {
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
+    Button BT_setting;
+    Button BT_pref_anal;
+    Button BT_food_rate;
+    public static ImageView IV_profile;
+
+    TextView TV_user_name;
+    public static TextView TV_about_me;
+
+    SharedPreferences prefs;
+
+    Bitmap bitmap;
+
+    Button BT_edit_about_me;
 
     /**
      * Create a new instance of the fragment
@@ -53,15 +83,40 @@ public class Tab5MyPageFragment extends TabParentFragment {
         final TabActivity tabActivity = (TabActivity) getActivity();
         this.activity = tabActivity;
 
+        prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
+
+        BT_setting = (Button)view.findViewById(R.id.BT_setting);
+        BT_pref_anal = (Button) view.findViewById(R.id.BT_pref_anal);
+        BT_food_rate = (Button) view.findViewById(R.id.BT_food_rate);
+        IV_profile = (ImageView) view.findViewById(R.id.IV_profile);
+
+        BT_edit_about_me = (Button) view.findViewById(R.id.BT_edit_about_me);
+
+
         Toolbar cs_toolbar = (Toolbar)view.findViewById(R.id.cs_toolbar);
+        Log.i("toolbar", ""+ cs_toolbar);
         activity.setSupportActionBar(cs_toolbar);
-        activity.getSupportActionBar().setTitle("내정보");
+        activity.getSupportActionBar().setTitle("내 정보");
+
+        TV_user_name = (TextView) view.findViewById(R.id.TV_user_name);
+        TV_about_me = (TextView) view.findViewById(R.id.TV_about_me);
+
+
+        TV_user_name.setText(prefs.getString("user_name",""));
+        TV_about_me.setText(prefs.getString("user_about_me",""));
 
         if (recyclerView == null) {
+//            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+//            recyclerView.setHasFixedSize(true);
+//            layoutManager = new LinearLayoutManager(activity);
+//            recyclerView.setLayoutManager(layoutManager);
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
             recyclerView.setHasFixedSize(true);
-            layoutManager = new LinearLayoutManager(activity);
-            recyclerView.setLayoutManager(layoutManager);
+
+            //layoutManager = new LinearLayoutManager(activity);
+            //recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setLayoutManager(new GridLayoutManager(activity, 2));
+
         }
 
         if (adapter == null) {
@@ -84,7 +139,79 @@ public class Tab5MyPageFragment extends TabParentFragment {
             }
         });
 
+
+
+        //http://graph.facebook.com/fid값 입력/picture
+
+        BT_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), Setting.class));
+            }
+        });
+        BT_pref_anal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //finish();
+            }
+        });
+        BT_food_rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), FoodRate_.class));
+            }
+        });
+        IV_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ThumbPopupActivity.class));
+            }
+        });
+        BT_edit_about_me.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
+            }
+        });
+
+        String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
+        Log.i("url", image_url);
+        Glide.with(getActivity()).load(image_url).bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
+
+        ArrayList<Food> food = new ArrayList<>();
+        Food food1 = new Food();
+        food1.name = "떡볶이";
+
+        Food food2 = new Food();
+        food2.name = "김치찌개";
+
+        Food food3 = new Food();
+        food3.name = "우동";
+
+        Food food4 = new Food();
+        food4.name = "돈까스";
+
+        Food food5 = new Food();
+        food5.name = "스파게티";
+
+        food.add(food1);
+        food.add(food2);
+        food.add(food3);
+        food.add(food4);
+        food.add(food5);
+
+        uiThread(food);
+
         connectTestCall();
+    }
+
+    //@UiThread
+    void uiThread(List<Food> response) {
+        for (Food food : response) {
+            adapter.addData(food);
+        }
+        adapter.notifyDataSetChanged();
+        Log.i("keyword", ""+adapter);
     }
 
     @Override
@@ -103,5 +230,50 @@ public class Tab5MyPageFragment extends TabParentFragment {
 
     void connectTestCall() {
 
+    }
+
+//    private Bitmap loadImageFromNetwork(URL url){
+//        try {
+//            Log.i("asd", url.toString());
+//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            conn.setDoInput(true);
+//            conn.connect();
+//
+//            InputStream is = conn.getInputStream();
+//            bitmap = BitmapFactory.decodeStream(is);
+//            Log.i("asd3", ""+bitmap);
+//        } catch(IOException ex){
+//            ex.printStackTrace();
+//        }
+//
+//        return bitmap;
+//    }
+//
+//    private class DownloadImageTask extends AsyncTask<URL, Void, Bitmap> {
+//        /** The system calls this to perform work in a worker thread and
+//         * delivers it the parameters given to AsyncTask.execute() */
+//        protected Bitmap doInBackground(URL... urls) {
+//
+//            Log.i("asd2", ""+urls[0].toString());
+//            return loadImageFromNetwork(urls[0]);
+//        }
+//
+//        /** The system calls this to perform work in the UI thread and delivers
+//         * the result from doInBackground() */
+//        protected void onPostExecute(Bitmap result) {
+//            profile_image.setImageBitmap(result);
+//            Log.i("asd", ""+result);
+//        }
+//    }
+
+    public static Bitmap getFacebookProfilePicture(String userID){
+        try {
+            URL imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?width=78&height=78");
+            Bitmap bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+            return bitmap;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

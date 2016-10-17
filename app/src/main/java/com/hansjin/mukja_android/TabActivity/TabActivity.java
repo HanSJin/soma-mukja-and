@@ -1,17 +1,25 @@
 package com.hansjin.mukja_android.TabActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -21,10 +29,17 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 @EActivity(R.layout.activity_tab)
 public class TabActivity extends AppCompatActivity {
     private long backKeyPressedTime = 0;
     private Toast toast;
+    SharedPreferences sp;
+    public LinearLayout indicator;
+
 
     @ViewById
     AHBottomNavigationViewPager viewPager;
@@ -34,7 +49,7 @@ public class TabActivity extends AppCompatActivity {
     private AHBottomNavigationAdapter navigationAdapter;
     private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 
-
+    //SharedPreferences sp = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
     @AfterViews
     void afterBindingView() {
         AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
@@ -95,11 +110,6 @@ public class TabActivity extends AppCompatActivity {
         adapter = new BottomTabPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         currentFragment = adapter.getCurrentFragment();
-    }
-
-    @Background
-    void connAsyncData() {
-
     }
 
     @UiThread

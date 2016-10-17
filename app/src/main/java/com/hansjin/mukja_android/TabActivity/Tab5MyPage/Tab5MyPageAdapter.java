@@ -1,10 +1,12 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hansjin.mukja_android.Model.Food;
@@ -50,7 +52,7 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
     @Override
     public Tab5MyPageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_food_default_item, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_liked_food, parent, false);
             return new ItemViewHolder(v);
         }
         return null;
@@ -67,6 +69,9 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
             });
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             Food food = mDataset.get(position);
+
+            itemViewHolder.TV_food_name.setText(food.name);
+            //itemViewHolder.IV_food.setBackground();
         }
     }
 
@@ -92,11 +97,14 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
         }
     }
     public class ItemViewHolder extends ViewHolder {
-        public TextView foodName, foodDesc;
+        public TextView TV_food_name;
+        public ImageView IV_food;
+
         public ItemViewHolder(View v) {
             super(v);
-            foodName = (TextView) v.findViewById(R.id.food_name);
-            foodDesc = (TextView) v.findViewById(R.id.food_desc);
+            TV_food_name = (TextView) v.findViewById(R.id.TV_food_name);
+            IV_food = (ImageView) v.findViewById(R.id.IV_food);
+
         }
     }
 

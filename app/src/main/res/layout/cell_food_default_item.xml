@@ -19,7 +19,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="@color/com_facebook_blue"/>
 
     <TextView
         android:id="@+id/food_desc"

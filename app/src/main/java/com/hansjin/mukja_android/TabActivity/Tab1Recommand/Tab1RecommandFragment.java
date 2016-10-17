@@ -1,5 +1,7 @@
 package com.hansjin.mukja_android.TabActivity.Tab1Recommand;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,16 +10,38 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.hansjin.mukja_android.Activity.RegisterActivity_;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
+import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.itemScores;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
 import com.hansjin.mukja_android.Template.BaseAdapter;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
+import com.zhy.view.flowlayout.TagFlowLayout;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -48,7 +72,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recommand, container, false);
-        initViewSetting(view);
+        connectCategory(view);
         return view;
     }
 
@@ -71,7 +95,10 @@ public class Tab1RecommandFragment extends TabParentFragment {
             adapter = new Tab1RecommandAdapter(new Tab1RecommandAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-
+                    Intent intent = new Intent(activity, DetailActivity_.class);
+                    intent.putExtra("food", adapter.mDataset.get(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
@@ -86,8 +113,6 @@ public class Tab1RecommandFragment extends TabParentFragment {
                 refresh();
             }
         });
-
-        connectRecommand();
     }
 
     @Override
@@ -96,7 +121,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
         endOfPage = false;
         adapter.clear();
         adapter.notifyDataSetChanged();
-        connectRecommand();
+        connectRecommand(getField());
     }
 
     @Override
@@ -104,9 +129,73 @@ public class Tab1RecommandFragment extends TabParentFragment {
 
     }
 
-    void connectRecommand() {
-        for (int i=0; i<10; i++)
-            adapter.addData(Food.mockFood(i));
-        adapter.notifyDataSetChanged();
+    private Category getField() {
+        Category field = new Category();
+        field.taste = new ArrayList<String>();
+        field.country = new ArrayList<String>();
+        field.cooking = new ArrayList<String>();
+        return field;
+    }
+
+    void connectCategory(final View view) {
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.getCategoryList()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Category>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                        initViewSetting(view);
+                        //adapter.notifyDataSetChanged();
+                        //pullToRefresh.setRefreshing(false);
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public final void onNext(Category response) {
+                        if (response != null) {
+                            SharedManager.getInstance().setCategory(response);
+                            connectRecommand(getField());
+                        }
+                    }
+                });
+    }
+
+    void connectRecommand(Category field) {
+        LoadingUtil.startLoading(indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.recommendationResult(SharedManager.getInstance().getMe()._id, field)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Food>>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                        adapter.notifyDataSetChanged();
+                        pullToRefresh.setRefreshing(false);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(List<Food> response) {
+                        adapter.mDataset.clear();
+                        if (response != null && response.size()>0) {
+                            for (Food food : response) {
+                                adapter.addData(food);
+                            }
+                        } else {
+                            endOfPage = true;
+                        }
+                    }
+                });
     }
 }
