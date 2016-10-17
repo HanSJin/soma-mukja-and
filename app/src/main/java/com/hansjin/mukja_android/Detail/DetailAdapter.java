@@ -145,6 +145,11 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 descBodyViewHolder.txt_people_like.setText("가장 먼저 좋아요를 눌러주세요!");
             else
                 descBodyViewHolder.txt_people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
+            String friend = Constants.mockMyFriendText(position);
+            if (friend.equals(""))
+                descBodyViewHolder.txt_friend_like.setText("아직 이 음식을 좋아한 친구가 없어요.");
+            else
+                descBodyViewHolder.txt_friend_like.setText("회원님의 친구 "+friend+" 님이 좋아해요.");
         } else if (holder instanceof GraphBodyViewHolder) {
             GraphBodyViewHolder graphBodyViewHolder = (GraphBodyViewHolder) holder;
 
@@ -171,7 +176,6 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 }
                 cnt++;
             }
-            Log.d("hansjin", "11~"+total_point/(float)total_cnt+"/"+total_cnt + "/"+total_point);
             graphBodyViewHolder.rank_average.setText(String.format("%.2f",total_point/(float)total_cnt)+"");
             graphBodyViewHolder.rank_cnt.setText(total_cnt+"");
             graphBodyViewHolder.rank_max.setText((float)max_index/2+"");
