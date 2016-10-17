@@ -11,55 +11,65 @@
         android:layout_weight="200">
         <include layout="@layout/cell_rate_food_body_image" android:id="@+id/cell_rate_food_body_image" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
-        android:layout_weight="300"
+        android:layout_weight="340"
         android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_weight="300">
-
-            <include layout="@layout/cell_rate_food_name" android:id="@+id/cell_rate_food_name" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_weight="100">
-
-            <include layout="@layout/cell_rate_food_category" android:id="@+id/cell_rate_food_category" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_weight="300">
-            <include layout="@layout/cell_rate_food_star" android:id="@+id/cell_rate_food_star" />
-        </LinearLayout>
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="40"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_weight="300">
-
-            <Button
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="버튼"
-                android:id="@+id/button2" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_weight="660"></LinearLayout>
+                android:layout_height="match_parent">
+                <TextView
+                android:id="@+id/TV_food_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="left|center_vertical"
+                android:textSize="20sp"
+                android:textColor="#885588"
+                android:textStyle="bold"
+                android:text="food_name"/>
+                <TextView
+                    android:id="@+id/TV_category"
+                    android:layout_below="@+id/TV_food_name"
+                    android:layout_width="wrap_content"
+                    android:paddingTop="10dp"
+                    android:layout_height="50dp"
+                    android:text="category"
+                    android:paddingLeft="10dp"/>
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_below="@+id/TV_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="20dp"
+                    style="@style/CustomRatingBar"/>
+            </RelativeLayout>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0px"-->
+            <!--android:layout_weight="200">-->
+
+            <!--<include layout="@layout/cell_rate_food_name" android:id="@+id/cell_rate_food_name" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0px"-->
+            <!--android:layout_weight="250">-->
+
+            <!--<include layout="@layout/cell_rate_food_category" android:id="@+id/cell_rate_food_category" />-->
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0px"-->
+            <!--android:layout_weight="250">-->
+            <!--<include layout="@layout/cell_rate_food_star" android:id="@+id/cell_rate_food_star" />-->
+        <!--</LinearLayout>-->
+
     </LinearLayout>
 
     <!--<include layout="@layout/cell_food_header" android:id="@+id/cell_food_header" />-->

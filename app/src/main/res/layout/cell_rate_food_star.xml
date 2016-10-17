@@ -3,71 +3,36 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="45dp"
-    android:background="@color/colorWhite">
+    android:background="@color/colorWhite"
+    android:layout_below="@id/TV_category">
 
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="40"></LinearLayout>
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="80">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="*"
-            android:padding="5dp"
-            android:id="@+id/BT_star_1"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="80">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="*"
-            android:padding="5dp"
-            android:id="@+id/BT_star_2"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="80">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="*"
-            android:padding="5dp"
-            android:id="@+id/BT_star_3"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="80">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="*"
-            android:padding="5dp"
-            android:id="@+id/BT_star_4"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="80">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="*"
-            android:padding="5dp"
-            android:id="@+id/BT_star_5"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="100"></LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RatingBar android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            style="@style/CustomRatingBar"/>
+    </RelativeLayout>
+    <!--<LinearLayout-->
+        <!--android:layout_width="0px"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="40"></LinearLayout>-->
+    <!--<LinearLayout-->
+        <!--android:layout_width="0px"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="400">-->
+        <!--<RatingBar android:id="@+id/ratingBar"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--style="@style/CustomRatingBar"/>-->
+    <!--</LinearLayout>-->
+    <!--<LinearLayout-->
+        <!--android:layout_width="0px"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="100"></LinearLayout>-->
 
 
 

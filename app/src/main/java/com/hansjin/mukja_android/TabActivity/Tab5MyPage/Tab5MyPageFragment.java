@@ -174,7 +174,8 @@ public class Tab5MyPageFragment extends TabParentFragment {
             }
         });
 
-        String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
+        //String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
+        String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?type=large";
         Log.i("url", image_url);
         Glide.with(getActivity()).load(image_url).bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
 

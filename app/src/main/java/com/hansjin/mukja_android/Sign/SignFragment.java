@@ -218,14 +218,6 @@ public class SignFragment extends Fragment {
 
         info = (TextView) view.findViewById(R.id.info);
 
-
-        long now = System.currentTimeMillis();
-        // 현재 시간을 저장 한다.
-        Date date = new Date(now);
-        // 시간 포맷으로 만든다.
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String strNow = sdfNow.format(date);
-
 //        if(isLoggedIn()){
 
         // TEST LOGIN - By HanSJin (Facebook API Open 안되서 내가 접근 못함 ..ㅠ)
