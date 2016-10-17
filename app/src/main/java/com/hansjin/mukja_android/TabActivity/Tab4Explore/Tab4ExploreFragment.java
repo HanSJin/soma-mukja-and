@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.TabActivity.Tab4Explore;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -144,7 +145,9 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             @Override
             public void onClick(View v) {
                 if(!BT_search_bool) {
+                    Drawable drawable = getResources().getDrawable(R.drawable.category_btn);
                     BT_search.setText("취소");
+                    BT_search.setBackground(drawable);
                     BT_search_bool = true;
 
                     connectTestCall_Search(ET_search.getText().toString());
@@ -152,6 +155,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                     LL_search.setVisibility(LinearLayout.VISIBLE);
                     LL_rank.setVisibility(LinearLayout.GONE);
                 }else{
+                    Drawable drawable = getResources().getDrawable(R.drawable.category_btn_selected);
                     BT_search.setText("검색");
                     BT_search_bool = false;
 
@@ -264,7 +268,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), "검색 결과가 없습니다", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "검색 결과가 없습니다", Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public final void onNext(List<Food> response) {
@@ -272,7 +276,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                             refresh();
                             uiThread_Search(response);
                         } else {
-                            Toast.makeText(getApplicationContext(), "검색 결과가 없습니다", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "검색 결과가 없습니다", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

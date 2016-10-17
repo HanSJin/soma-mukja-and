@@ -1,11 +1,7 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +9,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
-import com.hansjin.mukja_android.Utils.DownloadImageTask;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static com.hansjin.mukja_android.Utils.Constants.Constants.API_BASE_URL;
 
@@ -93,7 +89,9 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             itemViewHolder.TV_food_name.setText(food.name);
             itemViewHolder.TV_category.setText(tasteStr + countryStr + cookingStr);
 
-            new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + imgStr);
+            String image_url = API_BASE_URL + "/images/food/" + imgStr;
+            //new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + imgStr);
+            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
 
         }
     }
