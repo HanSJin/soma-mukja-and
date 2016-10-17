@@ -232,7 +232,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadFile1(Food food) {
+    private void uploadFile1(final Food food) {
         File file = new File(imagepath);
         RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), file);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
@@ -242,6 +242,10 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
+                        n_food = food;
+                        n_food.rate_person.add(0,n_food.newrate(SharedManager.getInstance().getMe()._id,rate_num));
+                        food_rate(food);
+                        finish();
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -251,7 +255,6 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
-                            finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
@@ -282,8 +285,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-                        n_food.rate_person.add(0,n_food.newrate(SharedManager.getInstance().getMe()._id,rate_num));
-                        food_rate();
+
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -384,14 +386,15 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    public void food_rate() {
+    public void food_rate(Food food) {
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.rateFood(n_food, SharedManager.getInstance().getMe()._id, n_food._id)
+        conn.rateFood(food, SharedManager.getInstance().getMe()._id, food._id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
+                        RegisterFood();
                     }
                     @Override
                     public final void onError(Throwable e) {
