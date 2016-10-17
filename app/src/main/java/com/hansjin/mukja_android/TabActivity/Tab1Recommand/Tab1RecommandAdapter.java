@@ -55,7 +55,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
     List<String> push_tag = new ArrayList<>();
-    boolean isExpanded = true;
 
     //카테고리 띄워주기 위한 리스트들
     private String taste_list[] = new String[]{};
@@ -228,39 +227,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     }
                 });
             }
-
-            itemViewHolder.expand_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (isExpanded) {
-                        itemViewHolder.layout_category.animate()
-                                .translationY(-itemViewHolder.layout_category.getHeight())
-                                .setDuration(300)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        itemViewHolder.layout_category.setVisibility(View.GONE);
-                                        isExpanded = !isExpanded;
-                                        itemViewHolder.expand_btn.setImageResource(R.drawable.expand_up);
-                                    }
-                                });
-                    } else {
-                        itemViewHolder.layout_category.animate()
-                                .translationY(10)
-                                .setDuration(300)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        itemViewHolder.layout_category.setVisibility(View.VISIBLE);
-                                        isExpanded = !isExpanded;
-                                        itemViewHolder.expand_btn.setImageResource(R.drawable.expand_down);
-                                    }
-                                });
-                    }
-                }
-            });
         }
     }
 
