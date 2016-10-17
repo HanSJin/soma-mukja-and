@@ -81,8 +81,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
         super.onResume();
 
         Drawable drawable = getResources().getDrawable(R.drawable.search2);
-        BT_search.setText("");
-        BT_search.setBackground(drawable);
+        BT_search.setText("검색");
         BT_search_bool = false;
 
         refresh();
@@ -131,9 +130,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             adapter = new Tab4ExploreAdapter(new Tab4ExploreAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    Drawable drawable = getResources().getDrawable(R.drawable.tumyeong);
                     BT_search.setText("취소");
-                    BT_search.setBackground(drawable);
                     BT_search_bool = true;
 
                     connectTestCall_Search(adapter.mDataset.get(position).title);
@@ -175,9 +172,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             @Override
             public void onClick(View v) {
                 if(!BT_search_bool) {
-                    Drawable drawable = getResources().getDrawable(R.drawable.tumyeong);
                     BT_search.setText("취소");
-                    BT_search.setBackground(drawable);
                     BT_search_bool = true;
 
                     connectTestCall_Search(ET_search.getText().toString());
@@ -185,13 +180,10 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                     LL_search.setVisibility(LinearLayout.VISIBLE);
                     LL_rank.setVisibility(LinearLayout.GONE);
                 }else{
-                    Drawable drawable = getResources().getDrawable(R.drawable.search2);
-                    BT_search.setText("");
-                    BT_search.setBackground(drawable);
+                    BT_search.setText("검색");
                     BT_search_bool = false;
 
                     refresh();
-
 
                     //키워드별 랭킹 뷰 나오면서 기존에 있던 검색 결과 화면 invisible
                     LL_rank.setVisibility(LinearLayout.VISIBLE);

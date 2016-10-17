@@ -240,7 +240,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 4;
     }
 
 

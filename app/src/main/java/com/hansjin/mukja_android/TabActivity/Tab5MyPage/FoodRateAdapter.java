@@ -108,24 +108,18 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             List<String> rate_person_id = food.rate_person_id();
 
             if(rate_person_id.contains(SharedManager.getInstance().getMe()._id)) { //이미 rating 했었다면
-                boolean flag = false;
                 for(int i=0;i<food.rate_person.size();i++){
                     if(food.rate_person.get(i).getUser_id().equals(SharedManager.getInstance().getMe()._id)){
 //                        itemViewHolder.ratingBar1.setRating(food.rate_person.get(i).getRate_num());
-                        flag = true;
                         break;
                     }
-                }
-                if (!flag) {
-//                    itemViewHolder.ratingBar1.setRating(0);
                 }
             }
 
             itemViewHolder.ratingBar1.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    Log.d("hansjin", "123");
-//                    food.rate_person.add(0,food.newrate(SharedManager.getInstance().getMe()._id,rating));
-//                    food_rate(food, position);
+                    food.rate_person.add(0,food.newrate(SharedManager.getInstance().getMe()._id,rating));
+                    food_rate(food, position);
                 }
             });
 

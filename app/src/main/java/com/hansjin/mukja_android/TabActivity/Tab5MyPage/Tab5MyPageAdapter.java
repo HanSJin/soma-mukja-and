@@ -53,7 +53,7 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
     }
 
     @Override
-    public Tab5MyPageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+     public Tab5MyPageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_liked_food, parent, false);
             return new ItemViewHolder(v);

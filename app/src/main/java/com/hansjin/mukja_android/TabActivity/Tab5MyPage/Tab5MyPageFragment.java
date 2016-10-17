@@ -194,6 +194,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
     }
 
     void connectTestCall() {
+        Log.d("hansjin", "connectTestCall");
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.getLikedFood(SharedManager.getInstance().getMe()._id)
