@@ -96,7 +96,10 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             Glide.with(context).load(Constants.IMAGE_BASE_URL+food.author.author_thumbnail_url+".png").into(itemViewHolder.author_image);
             itemViewHolder.foodName.setText(food.name);
 
-            Glide.with(context).load(Constants.IMAGE_BASE_URL+food.image_url).into(itemViewHolder.food_img);
+            Glide.with(context).
+                    load(Constants.IMAGE_BASE_URL + food.image_url).
+                    thumbnail(0.1f).
+                    into(itemViewHolder.food_img);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
             if (food.like_cnt==0)

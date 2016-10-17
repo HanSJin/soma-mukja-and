@@ -88,7 +88,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if (holder instanceof ImageHeaderViewHolder) {
             ImageHeaderViewHolder imageHolder = (ImageHeaderViewHolder) holder;
-            Glide.with(context).load(Constants.IMAGE_BASE_URL+food.image_url).into(imageHolder.foodImage);
+            Glide.with(context).
+                    load(Constants.IMAGE_BASE_URL+food.image_url).
+                    thumbnail(0.1f).
+                    into(imageHolder.foodImage);
             imageHolder.foodName.setText(food.name);
             imageHolder.viewCnt.setText("View "+food.view_cnt);
             imageHolder.foodRateNum.setText(cal_rate(food)+"");
