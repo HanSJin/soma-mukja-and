@@ -24,6 +24,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.GlobalResponse;
@@ -179,6 +182,13 @@ public class RegisterActivity extends AppCompatActivity {
                 String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
                 n_food.image_url = "lmjing_"+current_time;
 
+                Glide.with(activity).load(imagepath).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        food_image.setImageBitmap(resource);
+                    }
+                });
+                /*
                 try {
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     food_image.setImageBitmap(image_bitmap);
@@ -192,6 +202,7 @@ public class RegisterActivity extends AppCompatActivity {
                 {
                     e.printStackTrace();
                 }
+                */
             }
         }
     }
@@ -201,29 +212,6 @@ public class RegisterActivity extends AppCompatActivity {
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
-    }
-
-    private void uploadFile() {
-
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        File file = new File(imagepath);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
-        String descriptionString = n_food.name;
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
-
-        Call<ResponseBody> call = conn.uploadImage(body, description, n_food.image_url);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Response<ResponseBody> response) {
-                RegisterFood();
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.e("Upload error:", t.getMessage());
-            }
-        });
     }
 
     private void uploadFile1(final Food food) {

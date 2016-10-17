@@ -84,6 +84,7 @@ public class DetailActivity extends AppCompatActivity {
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                LoadingUtil.startLoading(indicator);
                 refresh();
             }
         });
@@ -93,6 +94,7 @@ public class DetailActivity extends AppCompatActivity {
 
     void refresh() {
         adapter.notifyDataSetChanged();
+        LoadingUtil.stopLoading(indicator);
         pullToRefresh.setRefreshing(false);
     }
 

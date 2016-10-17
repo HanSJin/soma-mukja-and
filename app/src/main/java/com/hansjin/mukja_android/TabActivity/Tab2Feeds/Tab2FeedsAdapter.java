@@ -106,13 +106,12 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                 itemViewHolder.people_like.setText("가장 먼저 좋아요를 눌러주세요!");
             else
                 itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
-            //itemViewHolder.friend_like.setText(cal_friend(food));
-            //헤더 부분
-            /*
-            Glide.with(context)
-                    .load("https://graph.facebook.com/" + <facebook_id> + "/picture?type=normal")
-                    .into(itemViewHolder.author_image);
-            */
+            String friend = Constants.mockMyFriendText(position);
+            if (friend.equals(""))
+                itemViewHolder.friend_like.setText("아직 이 음식을 좋아한 친구가 없어요.");
+            else
+                itemViewHolder.friend_like.setText("회원님의 친구 "+friend+" 님이 좋아해요.");
+
             itemViewHolder.write_time.setText(cal_time(food));
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
