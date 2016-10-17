@@ -1,6 +1,7 @@
 package com.hansjin.mukja_android.Activity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -147,6 +149,14 @@ public class RegisterActivity extends AppCompatActivity {
         initSpinner(taste_spinner,taste_list,1);
         initSpinner(country_spinner,country_list,2);
         initSpinner(cooking_spinner,cooking_list,3);
+
+        taste_spinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
+            }
+        });
 
         set_rating();
     }
@@ -311,6 +321,7 @@ public class RegisterActivity extends AppCompatActivity {
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 if (!s.getSelectedItem().toString().equals("[맛]")
                         && !s.getSelectedItem().toString().equals("[국가]")
                         && !s.getSelectedItem().toString().equals("[조리방식]")) {

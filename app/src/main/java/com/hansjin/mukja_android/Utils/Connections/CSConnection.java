@@ -111,5 +111,10 @@ public interface CSConnection {
     @GET("explore")
     Observable<List<Explore>> getExploreRanking();
 
+    @GET("/like/{food_id}")
+    Observable<List<User>> getLikedPerson(@Path("food_id") String food_id);
+
+
+
 }
 
