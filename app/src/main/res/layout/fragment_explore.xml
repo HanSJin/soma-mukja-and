@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp" >
+        android:layout_marginTop="80dp" >
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -23,25 +23,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="0px"
-                    android:layout_weight="10">
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0px"
-                    android:layout_weight="20">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="랭킹"
-                        android:textSize="15dp"
-                        android:paddingLeft="10dp"/>
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:text="랭킹"
+                    android:textSize="14sp"
+                    android:background="@color/colorWhite"
+                    android:padding="10dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:orientation="vertical"
                     android:layout_height="0px"
                     android:layout_weight="200">
 
@@ -72,22 +64,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="0px"
-                    android:layout_weight="10">
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0px"
-                    android:layout_weight="20">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="검색결과"
-                        android:textSize="15dp"
-                        android:paddingLeft="10dp"/>
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:text="검색결과"
+                    android:textSize="14sp"
+                    android:background="@color/colorWhite"
+                    android:padding="10dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0px"

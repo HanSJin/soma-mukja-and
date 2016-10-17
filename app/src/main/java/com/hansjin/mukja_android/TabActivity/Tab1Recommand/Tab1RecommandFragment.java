@@ -126,7 +126,11 @@ public class Tab1RecommandFragment extends TabParentFragment {
 
     @Override
     public void reload() {
-
+        page = 1;
+        endOfPage = false;
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        connectRecommand(getField());
     }
 
     private Category getField() {
