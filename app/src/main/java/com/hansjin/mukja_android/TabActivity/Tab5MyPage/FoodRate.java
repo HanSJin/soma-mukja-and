@@ -127,9 +127,6 @@ public class FoodRate extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 
     void refresh() {

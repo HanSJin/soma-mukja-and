@@ -2,20 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:layout_marginBottom="18dp"
+    android:layout_height="100dp"
+    android:layout_marginTop="18dp"
     android:background="@color/colorWhite">
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
-        android:layout_weight="200">
-        <include layout="@layout/cell_rate_food_body_image" android:id="@+id/cell_rate_food_body_image" />
+        android:layout_weight="20"></LinearLayout>
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="150">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/IV_food"
+            android:scaleType="fitXY"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
-        android:layout_weight="340"
+        android:layout_weight="370"
         android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -24,11 +33,11 @@
                 android:id="@+id/TV_food_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
+                android:layout_marginLeft="10dp"
                 android:layout_gravity="left|center_vertical"
                 android:gravity="left|center_vertical"
-                android:textSize="20sp"
-                android:textColor="#885588"
+                android:textSize="15sp"
+                android:textColor="@color/colorBlack"
                 android:textStyle="bold"
                 android:text="food_name"/>
                 <TextView
@@ -36,16 +45,18 @@
                     android:layout_below="@+id/TV_food_name"
                     android:layout_width="wrap_content"
                     android:paddingTop="10dp"
-                    android:layout_height="50dp"
+                    android:paddingBottom="10dp"
+                    android:layout_height="wrap_content"
                     android:text="category"
-                    android:paddingLeft="10dp"/>
+                    android:textSize="12sp"
+                    android:layout_marginLeft="10dp"/>
                 <RatingBar
                     android:id="@+id/ratingBar"
                     android:layout_below="@+id/TV_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
                     style="@style/CustomRatingBar"/>
             </RelativeLayout>
         <!--<LinearLayout-->

@@ -23,6 +23,7 @@ import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Subscriber;
@@ -30,6 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.hansjin.mukja_android.Utils.Constants.Constants.API_BASE_URL;
+import static com.hansjin.mukja_android.Utils.Constants.Constants.IMAGE_BASE_URL;
 
 /**
  * Created by kksd0900 on 16. 9. 30..
@@ -99,25 +101,34 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             for (String cooking : food.cooking) {
                 cookingStr += ("#" + cooking + ", ");
             }
-            String imgStr = food.image_url;
 
             itemViewHolder.TV_food_name.setText(food.name);
             itemViewHolder.TV_category.setText(tasteStr + countryStr + cookingStr);
-            itemViewHolder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-                public void onRatingChanged(RatingBar ratingBar, float rating,
-                                            boolean fromUser) {
 
-                    //txtRatingValue.setText(String.valueOf(rating));
+            List<String> rate_person_id = food.rate_person_id();
+
+            if(rate_person_id.contains(SharedManager.getInstance().getMe()._id)) { //이미 rating 했었다면
+                //itemViewHolder.ratingBar.setRating(food.rate_person.indexOf("user_id"));
+                //Log.i("makejin", ""+food.rate_person.get(i).getUser_id());
+                for(int i=0;i<food.rate_person.size();i++){
+                    if(food.rate_person.get(i).getUser_id().equals(SharedManager.getInstance().getMe()._id)){
+                        itemViewHolder.ratingBar.setRating(food.rate_person.get(i).getRate_num());
+                        break;
+                    }
+                }
+            }
+
+
+            itemViewHolder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                     food.rate_person.add(0,food.newrate(SharedManager.getInstance().getMe()._id,rating));
-                    Log.i("zxczx",""+ rating);
                     food_rate(food, position);
                 }
             });
 
-            String image_url = API_BASE_URL + "/images/food/" + imgStr;
-            //new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + imgStr);
-            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
 
+            String image_url = IMAGE_BASE_URL + food.image_url;
+            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
         }
     }
 
@@ -159,6 +170,7 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     }
 
     public void food_rate(Food food, final int index) {
+        Log.d("hansjin", "rood_rate");
         LoadingUtil.startLoading(foodRate.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.rateFood(food, SharedManager.getInstance().getMe()._id, food._id)
