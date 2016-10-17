@@ -131,7 +131,11 @@ public class Tab2FeedsFragment extends TabParentFragment {
 
     @Override
     public void reload() {
-
+        page = 1;
+        endOfPage = false;
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        connectFeed(page);
     }
 
     void connectFeed(final int page_num) {
