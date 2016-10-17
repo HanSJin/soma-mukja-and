@@ -214,29 +214,6 @@ public class RegisterActivity extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
-    private void uploadFile() {
-
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        File file = new File(imagepath);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
-        String descriptionString = n_food.name;
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
-
-        Call<ResponseBody> call = conn.uploadImage(body, description, n_food.image_url);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Response<ResponseBody> response) {
-                RegisterFood();
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.e("Upload error:", t.getMessage());
-            }
-        });
-    }
-
     private void uploadFile1(final Food food) {
         File file = new File(imagepath);
         RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), file);

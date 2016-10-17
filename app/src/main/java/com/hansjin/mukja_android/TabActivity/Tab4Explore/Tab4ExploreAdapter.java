@@ -10,9 +10,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
 
 import java.util.ArrayList;
 
@@ -25,7 +28,7 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
     public Context context;
     public Tab4ExploreFragment fragment;
     private OnItemClickListener mOnItemClickListener;
-    public ArrayList<String> mDataset = new ArrayList<>();
+    public ArrayList<Explore> mDataset = new ArrayList<>();
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -38,11 +41,11 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
         mDataset.clear();
     }
 
-    public void addData(String item) {
+    public void addData(Explore item) {
         mDataset.add(item);
     }
 
-    public String getItem(int position) {
+    public Explore getItem(int position) {
         return mDataset.get(position);
     }
 
@@ -69,11 +72,11 @@ public class Tab4ExploreAdapter extends RecyclerView.Adapter<Tab4ExploreAdapter.
                 }
             });
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            String keyword = mDataset.get(position);
-            Log.i("keyword", keyword);
+            Explore keyword = mDataset.get(position);
 
             int tempPosition = position+1;
-            itemViewHolder.TV_ranking_keyword_name.setText("선호키워드 " + tempPosition + " - '" +keyword + "' TOP 30");
+            itemViewHolder.TV_ranking_keyword_name.setText("선호키워드 " + tempPosition + " - '" +keyword.show_title+"'");
+            Glide.with(context).load(Constants.IMAGE_BASE_URL+keyword.image).into(itemViewHolder.IV_food);
         }
     }
 

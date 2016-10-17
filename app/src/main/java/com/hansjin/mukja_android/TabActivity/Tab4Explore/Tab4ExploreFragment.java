@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
@@ -136,7 +137,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
                 refresh();
-                uiThread(keyword);
+                setRankingMainList();
             }
         });
 
@@ -148,7 +149,6 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                     Drawable drawable = getResources().getDrawable(R.drawable.tumyeong);
                     BT_search.setText("취소");
                     BT_search.setBackground(drawable);
-                    BT_search.setTextColor(getResources().getColor(R.color.colorGrayText));
                     BT_search_bool = true;
 
                     connectTestCall_Search(ET_search.getText().toString());
@@ -177,7 +177,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
         keyword.add("중식");
         keyword.add("매콤");
 
-        uiThread(keyword);
+        setRankingMainList();
 
 
 
@@ -202,40 +202,20 @@ public class Tab4ExploreFragment  extends TabParentFragment {
     }
 
     //@UiThread
-    void uiThread(List<String> response) {
-        for (String keyword : response) {
-            adapter.addData(keyword);
+    void uiThread(List<Explore> response) {
+        for (Explore food : response) {
+            adapter.addData(food);
         }
         adapter.notifyDataSetChanged();
-        Log.i("keyword", ""+adapter);
     }
 
-    //@UiThread
-    void uiThread_Search(List<Food> response) {
-        for (Food food : response) {
-            adapterSearch.addData(food);
-        }
-        adapterSearch.notifyDataSetChanged();
-        Log.i("keyword", ""+adapterSearch);
-    }
-
-    /*
-    //일단 임시데이터 넣어놓기
-    //1.한식 2.닭 3.튀김 4.중식 5.매콤
-    String [] keyword = new String[5];
-    keyword[0] = "한식";
-    keyword[1] = "닭";
-    keyword[2] = "튀김";
-    keyword[3] = "중식";
-    keyword[4] = "매콤";
-    */
-    void connectTestCall_Ranking(String user_id) {
+    private void setRankingMainList() {
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getAllKeyword(user_id)
+        conn.getExploreRanking()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<String>>() {
+                .subscribe(new Subscriber<List<Explore>>() {
                     @Override
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
@@ -246,7 +226,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(List<String> response) {
+                    public final void onNext(List<Explore> response) {
                         if (response != null) {
                             uiThread(response);
                         } else {
@@ -254,6 +234,15 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                         }
                     }
                 });
+    }
+
+    //@UiThread
+    void uiThread_Search(List<Food> response) {
+        for (Food food : response) {
+            adapterSearch.addData(food);
+        }
+        adapterSearch.notifyDataSetChanged();
+        Log.i("keyword", ""+adapterSearch);
     }
 
     void connectTestCall_Search(String keyword) {

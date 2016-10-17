@@ -1,6 +1,7 @@
 package com.hansjin.mukja_android.Utils.Connections;
 
 import com.hansjin.mukja_android.Model.Category;
+import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Model.Result;
@@ -76,12 +77,6 @@ public interface CSConnection {
     @POST("/food/post")
     Observable<Food> foodPost(@Body Food food);
 
-    @Multipart
-    @POST("upload/food/{image_url}")
-    Call<ResponseBody> uploadImage(@Part("photo") MultipartBody.Part photo,
-                                   @Part("name") RequestBody name,
-                                   @Path("image_url") String food_id);
-
     @POST("/sign/up")
     Observable<User> signupUser(@Body User user);
 
@@ -109,6 +104,9 @@ public interface CSConnection {
     @GET("food/{food_id}/{uid}/view")
     Observable<GlobalResponse> foodView(@Path("uid") String uid,
                                         @Path("food_id") String food_id);
+
+    @GET("explore")
+    Observable<List<Explore>> getExploreRanking();
 
 }
 
