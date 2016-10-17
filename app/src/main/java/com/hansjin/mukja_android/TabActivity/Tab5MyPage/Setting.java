@@ -35,7 +35,7 @@ public class Setting extends AppCompatActivity {
     private void initViewSetting() {
         Toolbar cs_toolbar = (Toolbar)findViewById(R.id.cs_toolbar);
         setSupportActionBar(cs_toolbar);
-        getSupportActionBar().setTitle("내 정보");
+        getSupportActionBar().setTitle("설정");
 
         BT_X = (Button) findViewById(R.id.BT_X);
         BT_food_rate = (Button) findViewById(R.id.BT_food_rate);

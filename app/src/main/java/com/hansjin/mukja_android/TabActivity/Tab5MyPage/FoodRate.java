@@ -28,6 +28,7 @@ import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -106,11 +107,11 @@ public class FoodRate extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 refresh();
-                connectTestCall();
+                connectTestCall(SharedManager.getInstance().getMe()._id);
             }
         });
 
-        connectTestCall();
+        connectTestCall(SharedManager.getInstance().getMe()._id);
 
         BT_X.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,10 +135,10 @@ public class FoodRate extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    void connectTestCall() {
+    void connectTestCall(String uid) {
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getAllFood()
+        conn.getFoodsForUser(uid)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Food>>() {
