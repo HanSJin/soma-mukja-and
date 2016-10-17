@@ -3,6 +3,7 @@ package com.hansjin.mukja_android.TabActivity.Tab2Feeds;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -180,6 +181,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
 
     private String cal_time(Food food) {
         //food.update 형식 : 2011-10-05T14:48:00.000Z
+        Log.i("aa","time : "+food.create_date);
 
         SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
