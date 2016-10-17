@@ -250,6 +250,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
+                            setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
                             finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();

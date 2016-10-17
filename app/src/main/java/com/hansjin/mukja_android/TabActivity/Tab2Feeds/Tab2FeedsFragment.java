@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.hansjin.mukja_android.Activity.RegisterActivity;
 import com.hansjin.mukja_android.Activity.RegisterActivity_;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
@@ -86,7 +87,10 @@ public class Tab2FeedsFragment extends TabParentFragment {
             adapter = new Tab2FeedsAdapter(new Tab2FeedsAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-
+                    Intent intent = new Intent(activity, DetailActivity_.class);
+                    intent.putExtra("food", adapter.mDataset.get(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
@@ -109,7 +113,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
                 //TODO: 음식 업로드 페이지로 이동
                 Intent intent = new Intent(activity, RegisterActivity_.class);
                 //intent.putExtra("UserInfo", user); //user 정보가 들어있는 객체 전달
-                startActivity(intent);
+                startActivityForResult(intent, Constants.ACTIVITY_CODE_TAB2_REFRESH_REQUEST);
             }
         });
 
@@ -159,5 +163,17 @@ public class Tab2FeedsFragment extends TabParentFragment {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d("hansjin", "onActivityResult");
+        if (requestCode == Constants.ACTIVITY_CODE_TAB2_REFRESH_REQUEST) {
+            if (resultCode == Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT) {
+                Log.d("hansjin", "refresh");
+            }
+        }
     }
 }
