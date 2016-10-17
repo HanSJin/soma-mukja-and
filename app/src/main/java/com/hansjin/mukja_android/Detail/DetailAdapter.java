@@ -133,6 +133,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(activity, NearByRestaurant.class);
+                    intent.putExtra("food_name",food.name);
                     activity.startActivity(intent);
                 }
             });
