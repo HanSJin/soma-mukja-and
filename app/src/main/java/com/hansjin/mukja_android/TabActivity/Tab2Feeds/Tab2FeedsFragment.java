@@ -71,6 +71,16 @@ public class Tab2FeedsFragment extends TabParentFragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        page = 1;
+        endOfPage = false;
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        connectFeed(page);
+    }
+
     private void initViewSetting(View view) {
         final TabActivity tabActivity = (TabActivity) getActivity();
         this.activity = tabActivity;
@@ -113,7 +123,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
             }
         });
 
-        connectFeed(1);
+        //connectFeed(1);
     }
 
     @Override

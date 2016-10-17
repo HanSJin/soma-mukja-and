@@ -31,6 +31,7 @@ import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
@@ -281,7 +282,8 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-
+                        n_food.rate_person.add(0,n_food.newrate(SharedManager.getInstance().getMe()._id,rate_num));
+                        food_rate();
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -351,7 +353,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void set_rating() {
         ratingBar.setIsIndicator(false);
-        ratingBar.setStepSize(0.1f);
+        ratingBar.setStepSize(0.5f);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 
             @Override
@@ -380,5 +382,29 @@ public class RegisterActivity extends AppCompatActivity {
                 return s.equals("Android");
             }
         });
+    }
+
+    public void food_rate() {
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.rateFood(n_food, SharedManager.getInstance().getMe()._id, n_food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
