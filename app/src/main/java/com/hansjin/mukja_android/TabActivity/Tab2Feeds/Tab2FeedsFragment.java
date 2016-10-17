@@ -173,6 +173,11 @@ public class Tab2FeedsFragment extends TabParentFragment {
         if (requestCode == Constants.ACTIVITY_CODE_TAB2_REFRESH_REQUEST) {
             if (resultCode == Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT) {
                 Log.d("hansjin", "refresh");
+                page = 1;
+                endOfPage = false;
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+                connectFeed(page);
             }
         }
     }
