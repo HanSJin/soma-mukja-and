@@ -43,10 +43,6 @@ public interface CSConnection {
     Observable<Food> likeFood(@Path("uid") String uid,
                               @Path("food_id") String food_id);
 
-    //먹고싶어요 취소
-//    @GET("/like/{event_id}")
-//    Observable<Food> likeCancle(@Path("event_id") String event_id);
-
     //rate점수 전송
     @POST("/rate/{uid}/{food_id}")
     Observable<Food> rateFood(@Body Food food,
@@ -109,6 +105,10 @@ public interface CSConnection {
 
     @GET("/{uid}/foods")
     Observable<List<Food>> getFoodsForUser(@Path("uid") String uid);
+
+    @GET("food/{food_id}/{uid}/view")
+    Observable<GlobalResponse> foodView(@Path("uid") String uid,
+                                        @Path("food_id") String food_id);
 
 }
 
