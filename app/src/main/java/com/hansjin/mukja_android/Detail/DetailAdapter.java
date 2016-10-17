@@ -267,18 +267,15 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     }
 
     private String combine_ingredient_tag(Food food) {
-        List<List<String>> category = new ArrayList<>();
-        category.add(food.ingredient);
-
         String result ="";
         int cnt = 1;
         for(int i=0;i<3;i++){
-            for (String str:category.get(i)) {
+            for (String str:food.ingredient) {
                 if(cnt>7){
                     result+="…";
                     return result;
                 }
-                result+=("#"+str+" ");
+                result+=(""+str+", ");
                 cnt++;
             }
         }
