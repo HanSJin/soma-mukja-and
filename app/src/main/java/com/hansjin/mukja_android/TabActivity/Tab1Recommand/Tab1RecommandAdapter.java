@@ -322,7 +322,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     }
                 });
     }
-
     public void food_rate(Food food, final int index) {
         LoadingUtil.startLoading(fragment.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
@@ -352,4 +351,5 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     }
                 });
     }
+
 }

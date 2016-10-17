@@ -1,21 +1,33 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.hansjin.mukja_android.Utils.Constants.Constants.API_BASE_URL;
 
@@ -28,15 +40,18 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     public Context context;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
+    public FoodRate foodRate;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
 
-    public FoodRateAdapter(OnItemClickListener onItemClickListener, Context mContext) {
+    public FoodRateAdapter(OnItemClickListener onItemClickListener, Context mContext, FoodRate mFoodRate) {
+
         mOnItemClickListener = onItemClickListener;
         context = mContext;
         mDataset.clear();
+        foodRate = mFoodRate;
     }
 
     public void addData(Food item) {
@@ -70,7 +85,7 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
                 }
             });
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            Food food = mDataset.get(position);
+            final Food food = mDataset.get(position);
 
             String tasteStr = "";
             for (String taste : food.taste) {
@@ -88,6 +103,16 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
 
             itemViewHolder.TV_food_name.setText(food.name);
             itemViewHolder.TV_category.setText(tasteStr + countryStr + cookingStr);
+            itemViewHolder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                public void onRatingChanged(RatingBar ratingBar, float rating,
+                                            boolean fromUser) {
+
+                    //txtRatingValue.setText(String.valueOf(rating));
+                    food.rate_person.add(0,food.newrate(SharedManager.getInstance().getMe()._id,rating));
+                    Log.i("zxczx",""+ rating);
+                    food_rate(food, position);
+                }
+            });
 
             String image_url = API_BASE_URL + "/images/food/" + imgStr;
             //new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + imgStr);
@@ -119,24 +144,47 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     }
     public class ItemViewHolder extends ViewHolder {
         public TextView TV_food_name, TV_category;
-        Button BT_star_1;
-        Button BT_star_2;
-        Button BT_star_3;
-        Button BT_star_4;
-        Button BT_star_5;
+
         ImageView IV_food;
+        RatingBar ratingBar;
 
         public ItemViewHolder(View v) {
             super(v);
-            TV_food_name = (TextView) v.findViewById(R.id.cell_rate_food_name).findViewById(R.id.TV_food_name);
-            TV_category = (TextView) v.findViewById(R.id.cell_rate_food_category).findViewById(R.id.TV_category);
+            TV_food_name = (TextView) v.findViewById(R.id.TV_food_name);
+            TV_category = (TextView) v.findViewById(R.id.TV_category);
 
-            BT_star_1 = (Button) v.findViewById(R.id.BT_star_1);
-            BT_star_2 = (Button) v.findViewById(R.id.BT_star_2);
-            BT_star_3 = (Button) v.findViewById(R.id.BT_star_3);
-            BT_star_4 = (Button) v.findViewById(R.id.BT_star_4);
-            BT_star_5 = (Button) v.findViewById(R.id.BT_star_5);
             IV_food = (ImageView) v.findViewById(R.id.IV_food);
+            ratingBar = (RatingBar) v.findViewById(R.id.ratingBar);
         }
+    }
+
+    public void food_rate(Food food, final int index) {
+        LoadingUtil.startLoading(foodRate.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.rateFood(food, SharedManager.getInstance().getMe()._id, food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(foodRate.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            mDataset.get(index).rate_cnt = response.rate_cnt;
+                            mDataset.get(index).rate_person = response.rate_person;
+                            mDataset.get(index).rate_distribution = response.rate_distribution;
+                            notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
