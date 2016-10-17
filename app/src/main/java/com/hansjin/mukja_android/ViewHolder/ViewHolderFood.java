@@ -14,7 +14,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by kksd0900 on 16. 10. 11..
  */
 public class ViewHolderFood extends ViewHolderParent {
-    public LinearLayout cellFoodHeader, cellFoodBodyImage, cellFoodBodyDesc, cellFoodTail, eat_btn, rate_btn;
+    public LinearLayout cellFoodHeader, cellFoodBodyImage, cellFoodBodyDesc, cellFoodTail, eat_btn, rate_btn, layout_like_people;
     public TextView foodName, authorName, rate_num, category_tag, people_like, friend_like, write_time;
     public ImageView heart,star,food_img, report_btn;
     public CircleImageView author_image;
@@ -28,6 +28,7 @@ public class ViewHolderFood extends ViewHolderParent {
         eat_btn = (LinearLayout) v.findViewById(R.id.eat_btn);
         rate_btn = (LinearLayout) v.findViewById(R.id.rate_btn);
 
+        layout_like_people = (LinearLayout) v.findViewById(R.id.layout_like_people);
         foodName = (TextView) v.findViewById(R.id.food_name);
         authorName = (TextView) v.findViewById(R.id.author_name);
         rate_num = (TextView) v.findViewById(R.id.food_rate_num);

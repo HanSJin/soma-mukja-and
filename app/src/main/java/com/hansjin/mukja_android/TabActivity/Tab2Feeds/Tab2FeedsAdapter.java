@@ -99,6 +99,10 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             Glide.with(context).load(Constants.IMAGE_BASE_URL+food.image_url).into(itemViewHolder.food_img);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
+            if (food.like_cnt==0)
+                itemViewHolder.layout_like_people.setVisibility(View.GONE);
+            else
+                itemViewHolder.layout_like_people.setVisibility(View.VISIBLE);
             itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
             //itemViewHolder.friend_like.setText(cal_friend(food));
             //헤더 부분

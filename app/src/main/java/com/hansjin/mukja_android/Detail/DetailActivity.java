@@ -134,7 +134,7 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(GlobalResponse response) {
                         if (response != null && response.code==0) {
-
+                            food.view_cnt++;
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

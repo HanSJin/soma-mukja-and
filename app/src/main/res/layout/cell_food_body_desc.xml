@@ -24,6 +24,7 @@
             android:textColor="@color/colorBlack"/>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/layout_like_people"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"

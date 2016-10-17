@@ -2,8 +2,10 @@ package com.hansjin.mukja_android.Detail;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.NearbyRestaurant.NearByRestaurant;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
@@ -25,6 +28,7 @@ import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import org.androidannotations.annotations.UiThread;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -66,7 +70,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             return new DescBodyViewHolder(v);
         } else if (viewType == TYPE_RANK_GRAPH) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_graph_body, parent, false);
-            return new DescBodyViewHolder(v);
+            return new GraphBodyViewHolder(v);
         } else if (viewType == TYPE_LIKE_PERSON) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_person_body, parent, false);
             return new PersonBodyViewHolder(v);
@@ -122,12 +126,17 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             imageHolder.layoutNearby.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(activity, NearByRestaurant.class);
+                    activity.startActivity(intent);
                 }
             });
 
         } else if (holder instanceof DescBodyViewHolder) {
-            DescBodyViewHolder descBodyViewHolderHolder = (DescBodyViewHolder) holder;
+            DescBodyViewHolder descBodyViewHolder = (DescBodyViewHolder) holder;
+            descBodyViewHolder.txt_category.setText(combine_tag(food)+"");
+            descBodyViewHolder.txt_ingredient.setText(combine_ingredient_tag(food)+"");
+            descBodyViewHolder.txt_people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
+
         } else if (holder instanceof GraphBodyViewHolder) {
             GraphBodyViewHolder graphBodyViewHolderHolder = (GraphBodyViewHolder) holder;
         } else if (holder instanceof PersonBodyViewHolder) {
@@ -168,6 +177,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             container = itemView;
         }
     }
+
     public class ImageHeaderViewHolder extends ViewHolder {
         public TextView foodName, viewCnt, foodRateNum;
         public ImageView foodImage, heartImg, starImg;
@@ -185,24 +195,32 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             layoutNearby = (LinearLayout) v.findViewById(R.id.layout_nearby);
         }
     }
+
     public class DescBodyViewHolder extends ViewHolder {
-        public TextView foodName, foodDesc;
+        public TextView txt_category, txt_ingredient, txt_people_like, txt_friend_like;
         public DescBodyViewHolder(View v) {
             super(v);
+            txt_category = (TextView) v.findViewById(R.id.txt_category);
+            txt_ingredient = (TextView) v.findViewById(R.id.txt_ingredient);
+            txt_people_like = (TextView) v.findViewById(R.id.txt_people_like);
+            txt_friend_like = (TextView) v.findViewById(R.id.txt_friend_like);
         }
     }
+
     public class GraphBodyViewHolder extends ViewHolder {
         public TextView foodName, foodDesc;
         public GraphBodyViewHolder(View v) {
             super(v);
         }
     }
+
     public class PersonBodyViewHolder extends ViewHolder {
         public TextView foodName, foodDesc;
         public PersonBodyViewHolder(View v) {
             super(v);
         }
     }
+
     public class SimiralTailViewHolder extends ViewHolder {
         public TextView foodName, foodDesc;
         public SimiralTailViewHolder(View v) {
@@ -225,6 +243,46 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             i+=0.5f;
         }
         return String.valueOf(total/cnt);
+    }
+
+    private String combine_tag(Food food) {
+        List<List<String>> category = new ArrayList<>();
+        category.add(food.taste);
+        category.add(food.country);
+        category.add(food.cooking);
+
+        String result ="";
+        int cnt = 1;
+        for(int i=0;i<3;i++){
+            for (String str:category.get(i)) {
+                if(cnt>7){
+                    result+="…";
+                    return result;
+                }
+                result+=("#"+str+" ");
+                cnt++;
+            }
+        }
+        return result;
+    }
+
+    private String combine_ingredient_tag(Food food) {
+        List<List<String>> category = new ArrayList<>();
+        category.add(food.ingredient);
+
+        String result ="";
+        int cnt = 1;
+        for(int i=0;i<3;i++){
+            for (String str:category.get(i)) {
+                if(cnt>7){
+                    result+="…";
+                    return result;
+                }
+                result+=("#"+str+" ");
+                cnt++;
+            }
+        }
+        return result;
     }
 
     public void food_like(Food mFood) {
