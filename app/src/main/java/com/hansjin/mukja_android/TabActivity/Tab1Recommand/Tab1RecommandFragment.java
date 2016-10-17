@@ -187,6 +187,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
                     }
                     @Override
                     public final void onNext(List<Food> response) {
+                        adapter.mDataset.clear();
                         if (response != null && response.size()>0) {
                             for (Food food : response) {
                                 adapter.addData(food);
