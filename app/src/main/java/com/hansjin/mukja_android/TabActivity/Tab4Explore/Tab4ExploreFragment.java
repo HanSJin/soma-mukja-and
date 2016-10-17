@@ -245,7 +245,6 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                 });
     }
 
-    //@UiThread
     void uiThread_Search(List<Food> response) {
         for (Food food : response) {
             adapterSearch.addData(food);
