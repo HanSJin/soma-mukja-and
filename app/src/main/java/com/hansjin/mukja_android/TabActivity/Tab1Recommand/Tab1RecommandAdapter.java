@@ -283,7 +283,9 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                 i+=0.5f;
             }
         }
-        return String.valueOf(total/cnt);
+
+        String str = String.format("%.2f", total/cnt);
+        return str;
     }
 
     @Override

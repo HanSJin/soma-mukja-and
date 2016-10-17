@@ -1,8 +1,10 @@
 package com.hansjin.mukja_android.TabActivity.Tab4Explore;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
@@ -72,6 +75,24 @@ public class Tab4ExploreFragment  extends TabParentFragment {
         return fragment;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Drawable drawable = getResources().getDrawable(R.drawable.search2);
+        BT_search.setText("");
+        BT_search.setBackground(drawable);
+        BT_search_bool = false;
+
+        refresh();
+
+
+        //키워드별 랭킹 뷰 나오면서 기존에 있던 검색 결과 화면 invisible
+        LL_rank.setVisibility(LinearLayout.VISIBLE);
+        LL_search.setVisibility(LinearLayout.GONE);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -110,7 +131,15 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             adapter = new Tab4ExploreAdapter(new Tab4ExploreAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
+                    Drawable drawable = getResources().getDrawable(R.drawable.tumyeong);
+                    BT_search.setText("취소");
+                    BT_search.setBackground(drawable);
+                    BT_search_bool = true;
 
+                    connectTestCall_Search(adapter.mDataset.get(position).title);
+                    //검색 결과 화면 나오면서 기존에 있던 키워드별 랭킹 뷰 invisible
+                    LL_search.setVisibility(LinearLayout.VISIBLE);
+                    LL_rank.setVisibility(LinearLayout.GONE);
                 }
             }, activity, this);
         }
@@ -121,7 +150,10 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             adapterSearch = new Tab4ExploreAdapterSearch(new Tab4ExploreAdapterSearch.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-
+                    Intent intent = new Intent(activity, DetailActivity_.class);
+                    intent.putExtra("food", adapterSearch.mDataset.get(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
@@ -178,7 +210,6 @@ public class Tab4ExploreFragment  extends TabParentFragment {
         adapter.notifyDataSetChanged();
         adapterSearch.clear();
         adapterSearch.notifyDataSetChanged();
-
         setRankingMainList();
     }
 
@@ -226,8 +257,10 @@ public class Tab4ExploreFragment  extends TabParentFragment {
     void uiThread_Search(List<Food> response) {
         for (Food food : response) {
             adapterSearch.addData(food);
+            Log.i("test",food.name);
         }
         adapterSearch.notifyDataSetChanged();
+        Log.i("test","total : "+adapterSearch.mDataset.size());
         Log.i("keyword", ""+adapterSearch);
     }
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
 
 import java.util.ArrayList;
 
@@ -57,7 +58,7 @@ public class Tab4ExploreAdapterSearch extends RecyclerView.Adapter<Tab4ExploreAd
     @Override
     public Tab4ExploreAdapterSearch.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_search, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
             return new ItemViewHolder(v);
         }
         return null;
@@ -92,11 +93,12 @@ public class Tab4ExploreAdapterSearch extends RecyclerView.Adapter<Tab4ExploreAd
             itemViewHolder.food_name.setText(food.name);
             itemViewHolder.food_desc.setText(tasteStr + countryStr + cookingStr);
 
-
-            String image_url = API_BASE_URL + "/images/food/" + food.image_url;
+            Glide.with(context).
+                    load(Constants.IMAGE_BASE_URL+food.image_url).
+                    thumbnail(0.1f).
+                    into(itemViewHolder.IV_food);
             //new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + food.image_url);
-            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
-
+            //Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
         }
     }
 

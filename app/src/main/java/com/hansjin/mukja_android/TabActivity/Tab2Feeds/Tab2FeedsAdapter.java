@@ -243,7 +243,9 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             total+=i*dis;
             i+=0.5f;
         }
-        return String.valueOf(total/cnt);
+
+        String str = String.format("%.2f", total/cnt);
+        return str;
     }
 
     public void report_food(String food_id) {
