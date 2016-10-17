@@ -1,16 +1,34 @@
 package com.hansjin.mukja_android.Detail;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
+
+import org.androidannotations.annotations.UiThread;
 
 import java.util.ArrayList;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by kksd0900 on 16. 10. 16..
@@ -22,7 +40,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     private static final int TYPE_LIKE_PERSON = 3;
     private static final int TYPE_TAIL_SIMILAR = 4;
 
-
+    public DetailActivity activity;
     public Context context;
     private OnItemClickListener mOnItemClickListener;
     public Food food;
@@ -31,9 +49,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         void onItemClick(View view, int position);
     }
 
-    public DetailAdapter(OnItemClickListener onItemClickListener, Context mContext, Food mFood) {
+    public DetailAdapter(OnItemClickListener onItemClickListener, Context mContext, DetailActivity mActivity, Food mFood) {
         mOnItemClickListener = onItemClickListener;
         context = mContext;
+        activity = mActivity;
         food = mFood;
     }
 
@@ -51,8 +70,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         } else if (viewType == TYPE_LIKE_PERSON) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_person_body, parent, false);
             return new PersonBodyViewHolder(v);
+        } else if (viewType == TYPE_TAIL_SIMILAR) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_simiral_tail, parent, false);
+            return new SimiralTailViewHolder(v);
         }
-
         return null;
     }
 
@@ -60,12 +81,59 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if (holder instanceof ImageHeaderViewHolder) {
             ImageHeaderViewHolder imageHolder = (ImageHeaderViewHolder) holder;
+            Glide.with(context).load(Constants.IMAGE_BASE_URL+food.image_url).into(imageHolder.foodImage);
+            imageHolder.foodName.setText(food.name);
+            imageHolder.viewCnt.setText("View "+food.view_cnt);
+            imageHolder.foodRateNum.setText(cal_rate(food)+"");
+            imageHolder.heartImg.setImageDrawable(context.getResources().getDrawable(R.drawable.heart_gray));
+            for (String uid : food.like_person) {
+                if (uid.equals(SharedManager.getInstance().getMe()._id)) {
+                    imageHolder.heartImg.setImageDrawable(context.getResources().getDrawable(R.drawable.heart_red));
+                }
+            }
+            imageHolder.eatBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    food_like(food);
+                }
+            });
+
+            imageHolder.starImg.setImageDrawable(context.getResources().getDrawable(R.drawable.star_gray));
+            for (String uid : food.rate_person_id()) {
+                if (uid.equals(SharedManager.getInstance().getMe()._id)) {
+                    imageHolder.starImg.setImageDrawable(context.getResources().getDrawable(R.drawable.star_yellow));
+                }
+            }
+            imageHolder.rateBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //if 하트 누른 상태라면(db에서 상태가져오거나 확인해서
+                    final CustomDialog customDialog = new CustomDialog(context,food.name);
+                    customDialog.show();
+                    customDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            food.rate_person.add(0, food.newrate(SharedManager.getInstance().getMe()._id, customDialog.getRatenum()));
+                            food_rate(food);
+                        }
+                    });
+                }
+            });
+            imageHolder.layoutNearby.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
         } else if (holder instanceof DescBodyViewHolder) {
             DescBodyViewHolder descBodyViewHolderHolder = (DescBodyViewHolder) holder;
         } else if (holder instanceof GraphBodyViewHolder) {
             GraphBodyViewHolder graphBodyViewHolderHolder = (GraphBodyViewHolder) holder;
         } else if (holder instanceof PersonBodyViewHolder) {
             PersonBodyViewHolder personBodyViewHolderHolder = (PersonBodyViewHolder) holder;
+        } else if (holder instanceof SimiralTailViewHolder) {
+            SimiralTailViewHolder simiralTailViewHolder = (SimiralTailViewHolder) holder;
         }
     }
 
@@ -86,7 +154,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 5;
     }
 
 
@@ -101,9 +169,20 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         }
     }
     public class ImageHeaderViewHolder extends ViewHolder {
-        public TextView foodName, foodDesc;
+        public TextView foodName, viewCnt, foodRateNum;
+        public ImageView foodImage, heartImg, starImg;
+        public LinearLayout eatBtn, rateBtn, layoutNearby;
         public ImageHeaderViewHolder(View v) {
             super(v);
+            foodImage = (ImageView) v.findViewById(R.id.food_image);
+            heartImg = (ImageView) v.findViewById(R.id.heart_img);
+            starImg = (ImageView) v.findViewById(R.id.star_img);
+            foodName = (TextView) v.findViewById(R.id.food_name);
+            foodRateNum = (TextView) v.findViewById(R.id.food_rate_num);
+            viewCnt = (TextView) v.findViewById(R.id.view_cnt);
+            eatBtn = (LinearLayout) v.findViewById(R.id.eat_btn);
+            rateBtn = (LinearLayout) v.findViewById(R.id.rate_btn);
+            layoutNearby = (LinearLayout) v.findViewById(R.id.layout_nearby);
         }
     }
     public class DescBodyViewHolder extends ViewHolder {
@@ -123,5 +202,84 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         public PersonBodyViewHolder(View v) {
             super(v);
         }
+    }
+    public class SimiralTailViewHolder extends ViewHolder {
+        public TextView foodName, foodDesc;
+        public SimiralTailViewHolder(View v) {
+            super(v);
+        }
+    }
+
+
+
+
+
+    private String cal_rate(Food food) {
+        //TODO: 분포 0.5부터로 해놨는데 아니면 바꿀 것
+        float i =0.5f;
+        float total = 0;
+        int cnt = 0;
+        for (int dis:food.rate_distribution) {
+            cnt += dis;
+            total+=i*dis;
+            i+=0.5f;
+        }
+        return String.valueOf(total/cnt);
+    }
+
+    public void food_like(Food mFood) {
+        LoadingUtil.startLoading(activity.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.likeFood(SharedManager.getInstance().getMe()._id, mFood._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(activity.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            food = response;
+                            notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void food_rate(final Food mFood) {
+        LoadingUtil.startLoading(activity.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.rateFood(mFood, SharedManager.getInstance().getMe()._id, mFood._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(activity.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            food = response;
+                            notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

@@ -178,7 +178,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                             tv.setBackground(r);
                             tv.setTextColor(0xFFFFFFFF);
                         }
-
                         return tv;
                     }
                 });

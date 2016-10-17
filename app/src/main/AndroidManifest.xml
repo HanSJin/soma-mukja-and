@@ -49,14 +49,31 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".TabActivity.Tab5MyPage.Setting" />
-        <activity android:name=".TabActivity.Tab5MyPage.Agreement" />
-        <activity android:name=".TabActivity.Tab5MyPage.PrivacyRule" />
-        <activity android:name=".TabActivity.Tab5MyPage.FoodRate" />
+        <activity
+            android:name=".TabActivity.Tab5MyPage.Setting"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".TabActivity.Tab5MyPage.Agreement"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".TabActivity.Tab5MyPage.PrivacyRule"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".TabActivity.Tab5MyPage.FoodRate"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
-        <activity android:name=".Activity.RegisterActivity_" />
+        <activity
+            android:name=".Activity.RegisterActivity_" />
         <activity
             android:name=".TabActivity.Tab5MyPage.FoodRate_"
             android:launchMode="singleTask"
@@ -65,7 +82,11 @@
         <activity
             android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
-        <activity android:name=".Sign.SignActivity" />
+        <activity
+            android:name=".Sign.SignActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -75,6 +96,11 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
         <activity
             android:name=".Detail.DetailActivity_"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".NearbyRestaurant.NearByRestaurant"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />

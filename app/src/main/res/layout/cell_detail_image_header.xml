@@ -18,6 +18,34 @@
             android:layout_height="match_parent"
             android:src="@drawable/img_timeline_shadow"
             android:scaleType="fitXY"/>
+
+        <TextView
+            android:layout_width="54dp"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:background="@color/colorWhite"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="8dp"
+            android:paddingLeft="5dp"
+            android:text="평점"
+            android:textColor="@color/colorAccent"
+            android:textSize="10sp"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/food_rate_num"
+            android:layout_width="24dp"
+            android:layout_height="16dp"
+            android:gravity="center"
+            android:background="@color/colorAccent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="14dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="10sp"
+            android:textStyle="bold"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,7 +61,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="FOOD_NAME"
             android:textSize="23sp"
             android:textColor="@color/colorBlack"
             android:textStyle="bold"
@@ -45,7 +72,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="View 333"
             android:textSize="12sp"
             android:textColor="@color/colorGrayLine"
             android:layout_alignParentRight="true"
@@ -104,6 +130,7 @@
         android:layout_height="0.7dp"
         android:background="@color/colorGrayLineLight" />
     <LinearLayout
+        android:id="@+id/layout_nearby"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"

@@ -77,7 +77,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onItemClick(View view, int position) {
 
                 }
-            }, this, food);
+            }, this, this, food);
         }
         recyclerView.setAdapter(adapter);
 
