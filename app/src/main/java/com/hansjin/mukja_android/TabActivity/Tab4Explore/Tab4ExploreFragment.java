@@ -86,14 +86,13 @@ public class Tab4ExploreFragment  extends TabParentFragment {
         final TabActivity tabActivity = (TabActivity) getActivity();
         this.activity = tabActivity;
 
-        LinearLayout searchView = (LinearLayout) view.findViewById(R.id.view_searchbar);
         LL_rank = (LinearLayout) view.findViewById(R.id.LL_rank);
         LL_search = (LinearLayout) view.findViewById(R.id.LL_search);
 
         LL_search.setVisibility(LinearLayout.GONE);
 
         ET_search = (EditText) view.findViewById(R.id.view_searchbar).findViewById(R.id.ET_searchbar);
-
+        ET_search.setHint("음식 혹은 음식점을 검색해보세요 !");
 
         if (recyclerView == null) {
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
