@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="300dp"
@@ -14,4 +15,23 @@
         android:text="별점 분포 그래프"
         android:textSize="13sp"
         android:textColor="@color/colorGrayLine"/>
+
+    <org.eazegraph.lib.charts.ValueLineChart
+        android:id="@+id/linechart"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        app:egUseCubic="false"
+        app:egUseOverlapFill="true"
+        app:egCurveSmoothness="10"
+        app:egLegendHeight="30dp"
+        app:egActivateIndicatorShadow="false"
+        app:egUseDynamicScaling="true"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#F5C25A">
+
+    </LinearLayout>
 </LinearLayout>

@@ -26,6 +26,9 @@ import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import org.androidannotations.annotations.UiThread;
+import org.eazegraph.lib.charts.ValueLineChart;
+import org.eazegraph.lib.models.ValueLinePoint;
+import org.eazegraph.lib.models.ValueLineSeries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,9 +139,33 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             descBodyViewHolder.txt_category.setText(combine_tag(food)+"");
             descBodyViewHolder.txt_ingredient.setText(combine_ingredient_tag(food)+"");
             descBodyViewHolder.txt_people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
-
         } else if (holder instanceof GraphBodyViewHolder) {
             GraphBodyViewHolder graphBodyViewHolderHolder = (GraphBodyViewHolder) holder;
+
+            ValueLineSeries series = new ValueLineSeries();
+            series.setColor(0xFFF5C25A);
+
+            series.addPoint(new ValueLinePoint(3.5f));
+            series.addPoint(new ValueLinePoint(2.4f));
+            series.addPoint(new ValueLinePoint(0.4f));
+            series.addPoint(new ValueLinePoint(3.4f));
+            series.addPoint(new ValueLinePoint(2.5f));
+            series.addPoint(new ValueLinePoint(1.0f));
+            series.addPoint(new ValueLinePoint(4.4f));
+            series.addPoint(new ValueLinePoint(2.4f));
+            series.addPoint(new ValueLinePoint(3.2f));
+            series.addPoint(new ValueLinePoint(2.6f));
+            series.addPoint(new ValueLinePoint(5.0f));
+            series.addPoint(new ValueLinePoint(3.5f));
+            series.addPoint(new ValueLinePoint(2.4f));
+            series.addPoint(new ValueLinePoint(0.4f));
+            series.addPoint(new ValueLinePoint(3.4f));
+            series.addPoint(new ValueLinePoint(2.5f));
+            series.addPoint(new ValueLinePoint(1.0f));
+            series.addPoint(new ValueLinePoint(4.2f));
+
+            graphBodyViewHolderHolder.lineChart.addSeries(series);
+
         } else if (holder instanceof PersonBodyViewHolder) {
             PersonBodyViewHolder personBodyViewHolderHolder = (PersonBodyViewHolder) holder;
         } else if (holder instanceof SimiralTailViewHolder) {
@@ -208,9 +235,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     }
 
     public class GraphBodyViewHolder extends ViewHolder {
-        public TextView foodName, foodDesc;
+        public ValueLineChart lineChart;
         public GraphBodyViewHolder(View v) {
             super(v);
+            lineChart = (ValueLineChart) v.findViewById(R.id.linechart);
         }
     }
 
@@ -267,21 +295,12 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     }
 
     private String combine_ingredient_tag(Food food) {
-        List<List<String>> category = new ArrayList<>();
-        category.add(food.ingredient);
-
         String result ="";
-        int cnt = 1;
-        for(int i=0;i<3;i++){
-            for (String str:category.get(i)) {
-                if(cnt>7){
-                    result+="…";
-                    return result;
-                }
-                result+=("#"+str+" ");
-                cnt++;
-            }
+        for (String str:food.ingredient) {
+            result+=(""+str+", ");
         }
+        if (result.length()>2)
+            result = result.substring(0, result.length()-2);
         return result;
     }
 

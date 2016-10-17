@@ -63,12 +63,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/*
-TODO: 현재는 음식 명 입력하는대로 food데이터에 무조건 넣는데 나중에는 음식 명 통일해야 할 듯
-예를 들어 현재: 김치 찌개 != 김치찌개 => 나중엔 음식명 치는데다가 김치만 치는 순간 자동완성으로 선택할 수 있게 현재 있는 음식 데이터에
-해당 음식이 없을 경우에만 새로운 음식명으로 추가 할 수 있게끔..?
- */
-
 @EActivity(R.layout.activity_register)
 public class RegisterActivity extends AppCompatActivity {
     RegisterActivity activity;
@@ -245,6 +239,7 @@ public class RegisterActivity extends AppCompatActivity {
                         n_food = food;
                         n_food.rate_person.add(0,n_food.newrate(SharedManager.getInstance().getMe()._id,rate_num));
                         food_rate(food);
+                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
                         finish();
                     }
                     @Override
@@ -394,7 +389,6 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-                        RegisterFood();
                     }
                     @Override
                     public final void onError(Throwable e) {
