@@ -25,9 +25,6 @@ import org.json.JSONObject;
 import java.io.File;
 
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.Response;
 
 import java.util.concurrent.Future;
 
@@ -55,7 +52,7 @@ public class ThumbPopupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thumb_popup);
-        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+//        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         prefs = getSharedPreferences("TodayFood",0);
 
         BT_take_a_picture = (Button) findViewById(R.id.BT_take_a_picture);
@@ -100,166 +97,166 @@ public class ThumbPopupActivity extends Activity {
             }
         });
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
-            if(requestCode == TAKE_CAMERA){
-                Uri selectedImageUri = data.getData();
-                imagepath = getPath(selectedImageUri);
-
-                Log.e("imagepath : ", imagepath);
-                Log.e("upload message : ", "Uploading file path:" + imagepath);
-
-                // 현재시간을 얻는다.
-                Long now = System.currentTimeMillis();
-
-                // 원래 파일의 확장자를 얻기 위한 파싱 "." 뒤에 있는 확장자를 가져온다.
-
-                String str = imagepath.substring(imagepath.indexOf("."));
-
-                uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
-
-                Bitmap bm = (Bitmap) data.getExtras().get("data");
-                String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
-                Log.i("url", image_url);
-                Glide.with(getApplicationContext()).load(bm).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
-
-                /*
-                try {
-
-
-                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
-                    Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(image_bitmap));
-
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                */
-            }else if(requestCode == TAKE_GALLERY){
-                Uri selectedImageUri = data.getData();
-                imagepath = getPath(selectedImageUri);
-
-                Log.e("imagepath : ", imagepath);
-                Log.e("upload message : ", "Uploading file path:" + imagepath);
-
-                // 현재시간을 얻는다.
-                Long now = System.currentTimeMillis();
-
-                // 원래 파일의 확장자를 얻기 위한 파싱 "." 뒤에 있는 확장자를 가져온다.
-
-                String str = imagepath.substring(imagepath.indexOf("."));
-
-                uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
-
-
-                path = getPathFromURI(data.getData());
-                Tab5MyPageFragment.IV_profile.setImageURI(data.getData());
-
-                File f = new File(path);
-
-                Log.i("Asd", path + " "+f);
-
-                Future uploading = Ion.with(getApplicationContext())
-                        .load(Constants.API_BASE_URL+ "/upload")
-                        .setMultipartFile("image", f)
-                        .asString()
-                        .withResponse()
-                        .setCallback(new FutureCallback<Response<String>>() {
-                            @Override
-                            public void onCompleted(Exception e, Response<String> result) {
-                                try {
-                                    JSONObject jobj = new JSONObject(result.getResult());
-                                    Toast.makeText(getApplicationContext(), jobj.optString("response"), Toast.LENGTH_SHORT).show();
-
-                                } catch (JSONException e1) {
-                                    e1.printStackTrace();
-                                }
-
-                            }
-                        });
-
-                /*
-                try {
-                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    //Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
-                    Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(image_bitmap));
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                */
-
-            }
-
-        }
-
-        /*
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-
-            Uri selectedImageUri = data.getData();
-            imagepath = getPath(selectedImageUri);
-
-            Log.e("imagepath : ", imagepath);
-            Log.e("upload message : ", "Uploading file path:" + imagepath);
-
-            // 현재시간을 얻는다.
-            Long now = System.currentTimeMillis();
-
-            // 원래 파일의 확장자를 얻기 위한 파싱 "." 뒤에 있는 확장자를 가져온다.
-
-            String str = imagepath.substring(imagepath.indexOf("."));
-
-            uploadFileName = prefs.getString("info_id","") + "_Profile.jpg";
-
-            try {
-                Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
-                Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(image_bitmap));
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
-
-        }
-        */
-    }
-    public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
-    private String getPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if(resultCode == RESULT_OK){
+//            if(requestCode == TAKE_CAMERA){
+//                Uri selectedImageUri = data.getData();
+//                imagepath = getPath(selectedImageUri);
+//
+//                Log.e("imagepath : ", imagepath);
+//                Log.e("upload message : ", "Uploading file path:" + imagepath);
+//
+//                // 현재시간을 얻는다.
+//                Long now = System.currentTimeMillis();
+//
+//                // 원래 파일의 확장자를 얻기 위한 파싱 "." 뒤에 있는 확장자를 가져온다.
+//
+//                String str = imagepath.substring(imagepath.indexOf("."));
+//
+//                uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
+//
+//                Bitmap bm = (Bitmap) data.getExtras().get("data");
+//                String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
+//                Log.i("url", image_url);
+//                Glide.with(getApplicationContext()).load(bm).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
+//
+//                /*
+//                try {
+//
+//
+//                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+//                    Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
+//                    Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(image_bitmap));
+//
+//                } catch (FileNotFoundException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                } catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                }
+//                */
+//            }else if(requestCode == TAKE_GALLERY){
+//                Uri selectedImageUri = data.getData();
+//                imagepath = getPath(selectedImageUri);
+//
+//                Log.e("imagepath : ", imagepath);
+//                Log.e("upload message : ", "Uploading file path:" + imagepath);
+//
+//                // 현재시간을 얻는다.
+//                Long now = System.currentTimeMillis();
+//
+//                // 원래 파일의 확장자를 얻기 위한 파싱 "." 뒤에 있는 확장자를 가져온다.
+//
+//                String str = imagepath.substring(imagepath.indexOf("."));
+//
+//                uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
+//
+//
+//                path = getPathFromURI(data.getData());
+//                Tab5MyPageFragment.IV_profile.setImageURI(data.getData());
+//
+//                File f = new File(path);
+//
+//                Log.i("Asd", path + " "+f);
+//
+//                Future uploading = Ion.with(getApplicationContext())
+//                        .load(Constants.API_BASE_URL+ "/upload")
+//                        .setMultipartFile("image", f)
+//                        .asString()
+//                        .withResponse()
+//                        .setCallback(new FutureCallback<Response<String>>() {
+//                            @Override
+//                            public void onCompleted(Exception e, Response<String> result) {
+//                                try {
+//                                    JSONObject jobj = new JSONObject(result.getResult());
+//                                    Toast.makeText(getApplicationContext(), jobj.optString("response"), Toast.LENGTH_SHORT).show();
+//
+//                                } catch (JSONException e1) {
+//                                    e1.printStackTrace();
+//                                }
+//
+//                            }
+//                        });
+//
+//                /*
+//                try {
+//                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+//                    //Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
+//                    Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(image_bitmap));
+//                } catch (FileNotFoundException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                } catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                }
+//                */
+//
+//            }
+//
+//        }
+//
+//        /*
+//        if (requestCode == 1 && resultCode == RESULT_OK) {
+//
+//            Uri selectedImageUri = data.getData();
+//            imagepath = getPath(selectedImageUri);
+//
+//            Log.e("imagepath : ", imagepath);
+//            Log.e("upload message : ", "Uploading file path:" + imagepath);
+//
+//            // 현재시간을 얻는다.
+//            Long now = System.currentTimeMillis();
+//
+//            // 원래 파일의 확장자를 얻기 위한 파싱 "." 뒤에 있는 확장자를 가져온다.
+//
+//            String str = imagepath.substring(imagepath.indexOf("."));
+//
+//            uploadFileName = prefs.getString("info_id","") + "_Profile.jpg";
+//
+//            try {
+//                Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+//                Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
+//                Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(image_bitmap));
+//            } catch (FileNotFoundException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            } catch (Exception e)
+//            {
+//                e.printStackTrace();
+//            }
+//
+//
+//        }
+//        */
+//    }
+//    public String getPath(Uri uri) {
+//        String[] projection = { MediaStore.Images.Media.DATA };
+//        Cursor cursor = managedQuery(uri, projection, null, null, null);
+//        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//        cursor.moveToFirst();
+//        return cursor.getString(column_index);
+//    }
+//
+//    private String getPathFromURI(Uri contentUri) {
+//        String[] proj = { MediaStore.Images.Media.DATA };
+//        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
+//        Cursor cursor = loader.loadInBackground();
+//        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//        cursor.moveToFirst();
+//        return cursor.getString(column_index);
+//    }
 
 }

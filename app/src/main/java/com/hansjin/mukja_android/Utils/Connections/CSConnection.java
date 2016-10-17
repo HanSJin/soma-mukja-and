@@ -102,19 +102,13 @@ public interface CSConnection {
     @GET("/foods/{keyword}")
     Observable<List<Food>> getSearchResult(@Path("keyword") String keyword);
 
-<<<<<<< HEAD
-
     @Multipart
     @POST("post/{food_id}/image/upload")
     Observable<Food> fileUploadWrite(@Path("food_id") String food_id,
                                      @Part("post_image\"; filename=\"android_post_image_file") RequestBody file);
-=======
+
     @GET("/{uid}/foods")
     Observable<List<Food>> getFoodsForUser(@Path("uid") String uid);
-
-
->>>>>>> 48b47ef88b236c1327365724d203c6004f8f405a
-
 
 }
 
