@@ -61,8 +61,6 @@ public class Tab4ExploreFragment  extends TabParentFragment {
     private LinearLayout LL_rank;
     private LinearLayout LL_search;
 
-    ArrayList<String> keyword = new ArrayList<String>();
-
     /**
      * Create a new instance of the fragment
      */
@@ -169,18 +167,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                 }
             }
         });
-
-        keyword.add("한식");
-        keyword.add("닭");
-        keyword.add("튀김");
-        keyword.add("중식");
-        keyword.add("매콤");
-
         setRankingMainList();
-
-
-
-        //connectTestCall();
     }
 
     @Override
@@ -189,12 +176,10 @@ public class Tab4ExploreFragment  extends TabParentFragment {
         endOfPage = false;
         adapter.clear();
         adapter.notifyDataSetChanged();
-        //connectTestCall();
-
         adapterSearch.clear();
         adapterSearch.notifyDataSetChanged();
 
-
+        setRankingMainList();
     }
 
     @Override
