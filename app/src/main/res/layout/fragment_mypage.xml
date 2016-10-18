@@ -50,7 +50,6 @@
                                 <RelativeLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent">
-
                                     <Button
                                         android:id="@+id/BT_pref_anal"
                                         android:background="@drawable/category_btn_mypage"

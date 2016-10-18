@@ -17,7 +17,6 @@ import com.zhy.view.flowlayout.TagFlowLayout;
  */
 public class ViewHolderFoodCategory extends ViewHolderParent {
     public TagFlowLayout taste, country, cooking;
-    public ImageView expand_btn;
     public LinearLayout layout_category;
 
     public ViewHolderFoodCategory(View v) {
@@ -26,6 +25,5 @@ public class ViewHolderFoodCategory extends ViewHolderParent {
         country = (TagFlowLayout) v.findViewById(R.id.country_flowlayout);
         cooking = (TagFlowLayout) v.findViewById(R.id.cooking_flowlayout);
         layout_category = (LinearLayout) v.findViewById(R.id.layout_category);
-        expand_btn = (ImageView) v.findViewById(R.id.expand_btn);
     }
 }
