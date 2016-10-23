@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.hansjin.mukja_android.Model.Food;
@@ -71,8 +70,6 @@ public class FoodRate extends AppCompatActivity {
     @ViewById
     Button BT_X;
 
-    @ViewById
-    RatingBar ratingBar;
 
     //currrent location start
     private LocationManager locationManager = null; // 위치 정보 프로바이더
@@ -89,8 +86,6 @@ public class FoodRate extends AppCompatActivity {
 
         setSupportActionBar(cs_toolbar);
         getSupportActionBar().setTitle("음식 평가 - " + ratedFoodNumber + "개 완료");
-
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
 
         if (recyclerView == null) {
