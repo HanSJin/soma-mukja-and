@@ -145,8 +145,8 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
             itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
-            setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
-            setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
+            setImamge(food.like_person, itemViewHolder.heart, R.drawable.heart_red);
+            setImamge(food.rate_person_id(), itemViewHolder.star, R.drawable.star_yellow);
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

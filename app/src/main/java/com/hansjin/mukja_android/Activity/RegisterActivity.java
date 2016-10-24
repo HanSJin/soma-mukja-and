@@ -190,21 +190,6 @@ public class RegisterActivity extends AppCompatActivity {
                         food_image.setImageBitmap(resource);
                     }
                 });
-                /*
-                try {
-                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    food_image.setImageBitmap(image_bitmap);
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                */
             }
         }
     }
@@ -297,9 +282,9 @@ public class RegisterActivity extends AppCompatActivity {
         else if(imagepath==null)
             Snackbar.make(ratingBar, "사진을 등록해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else if(n_food.taste.size()==0||n_food.country.size()==0||n_food.cooking.size()==0)
-            Snackbar.make(ratingBar, "맛/국가/조리방식 각 하나이상 선택해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            Snackbar.make(ratingBar, "맛/국가/조리방식 각 하나 이상 선택해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else if(n_food.ingredient.size()==0)
-            Snackbar.make(ratingBar, "식재료 하나이상 입력해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            Snackbar.make(ratingBar, "식재료 하나 이상 입력해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else if(rate_num==10.0f)
             Snackbar.make(ratingBar, "음식 평가 해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else

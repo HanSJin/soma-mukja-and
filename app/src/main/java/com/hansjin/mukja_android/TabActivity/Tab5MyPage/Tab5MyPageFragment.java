@@ -171,6 +171,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
 //                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
 //            }
 //        });
+        Log.i("makejin", "Constants.IMAGE_BASE_URL + SharedManager.getInstance().getMe().thumbnail_url " + Constants.IMAGE_BASE_URL + SharedManager.getInstance().getMe().thumbnail_url);
         Glide.with(getActivity()).
                 load(Constants.IMAGE_BASE_URL + SharedManager.getInstance().getMe().thumbnail_url + ".png").
                 thumbnail(0.1f).
@@ -223,4 +224,5 @@ public class Tab5MyPageFragment extends TabParentFragment {
                     }
                 });
     }
+
 }

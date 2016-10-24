@@ -2,6 +2,8 @@ package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -89,6 +91,8 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             RatingViewHolder itemViewHolder = (RatingViewHolder) holder;
             final Food food = mDataset.get(position);
 
+
+
             String tasteStr = "";
             for (String taste : food.taste) {
                 tasteStr += ("#" + taste + ", ");
@@ -107,9 +111,6 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
 
             List<String> rate_person_id = food.rate_person_id();
 
-            Log.i("makejin", "food.rate_person.name() "+food.name);
-            Log.i("makejin", "food.rate_person.size() "+food.rate_person.size());
-
             if(rate_person_id.contains(SharedManager.getInstance().getMe()._id)) { //이미 rating 했었다면
                 for(int i=0;i<food.rate_person.size();i++){
                     if(food.rate_person.get(i).getUser_id().equals(SharedManager.getInstance().getMe()._id)){
@@ -117,6 +118,8 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
                         break;
                     }
                 }
+            }else{
+                itemViewHolder.ratingBar1.setRating(0);
             }
 
             itemViewHolder.ratingBar1.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -188,10 +191,14 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
-                            mDataset.get(index).rate_cnt = response.rate_cnt;
+                            if(mDataset.get(index).rate_cnt != response.rate_cnt) {
+                                mDataset.get(index).rate_cnt = response.rate_cnt;
+                                FoodRate.actionBar.setTitle("음식 평가 - " + ++SharedManager.getInstance().getMe().rated_food_num + "개 완료");
+                            }
                             mDataset.get(index).rate_person = response.rate_person;
                             mDataset.get(index).rate_distribution = response.rate_distribution;
                             notifyDataSetChanged();
+
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

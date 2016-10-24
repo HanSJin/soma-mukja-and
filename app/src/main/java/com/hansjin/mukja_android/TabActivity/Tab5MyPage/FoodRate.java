@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,10 +49,6 @@ import rx.schedulers.Schedulers;
 public class FoodRate extends AppCompatActivity {
     com.hansjin.mukja_android.TabActivity.Tab5MyPage.FoodRate activity;
 
-
-
-    int ratedFoodNumber = 0; // default 0
-
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     FoodRateAdapter adapter;
@@ -79,14 +77,15 @@ public class FoodRate extends AppCompatActivity {
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
     //currrent location end
+    public static ActionBar actionBar;
 
     @AfterViews
     void afterBindingView() {
         this.activity = this;
 
         setSupportActionBar(cs_toolbar);
-        getSupportActionBar().setTitle("음식 평가 - " + ratedFoodNumber + "개 완료");
-
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("음식 평가 - " + SharedManager.getInstance().getMe().rated_food_num + "개 완료");
 
         if (recyclerView == null) {
             recyclerView = (RecyclerView) findViewById(R.id.recycler_view);

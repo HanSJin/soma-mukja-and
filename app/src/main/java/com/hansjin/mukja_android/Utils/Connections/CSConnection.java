@@ -114,6 +114,11 @@ public interface CSConnection {
     @GET("/like/{food_id}")
     Observable<List<User>> getLikedPerson(@Path("food_id") String food_id);
 
+    @Multipart
+    @POST("post/{user_id}/image/upload/profile")
+    Observable<User> fileUploadWrite_User(@Path("user_id") String user_id,
+                                     @Part("post_image\"; filename=\"android_post_image_file") RequestBody file);
+
 
 
 }
