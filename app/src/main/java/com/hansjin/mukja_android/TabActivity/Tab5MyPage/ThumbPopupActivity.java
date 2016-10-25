@@ -53,6 +53,7 @@ public class ThumbPopupActivity extends Activity {
 
     Button BT_take_a_picture;
     Button BT_choose_a_picture;
+    Button BT_take_from_facebook;
     Button BT_close_up_a_picture;
     Button BT_remove_a_picture;
     Button BT_close;
@@ -77,6 +78,7 @@ public class ThumbPopupActivity extends Activity {
 
         BT_take_a_picture = (Button) findViewById(R.id.BT_take_a_picture);
         BT_choose_a_picture = (Button) findViewById(R.id.BT_choose_a_picture);
+        BT_take_from_facebook = (Button) findViewById(R.id.BT_take_from_facebook);
         BT_close_up_a_picture = (Button) findViewById(R.id.BT_close_up_a_picture);
         BT_remove_a_picture = (Button) findViewById(R.id.BT_remove_a_picture);
         BT_close = (Button) findViewById(R.id.BT_close);
@@ -96,6 +98,18 @@ public class ThumbPopupActivity extends Activity {
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 startActivityForResult(intent, TAKE_GALLERY);
+            }
+        });
+        BT_take_from_facebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map field = new HashMap();
+                field.put("thumbnail_url",
+                        "http://graph.facebook.com/"+SharedManager.getInstance().getMe().social_id + "/picture?type=normal");
+                field.put("thumbnail_url_small",
+                        "http://graph.facebook.com/"+SharedManager.getInstance().getMe().social_id + "/picture?type=small");
+
+                connectUpdateUserImage_Facebook(SharedManager.getInstance().getMe()._id, field);
             }
         });
         BT_close_up_a_picture.setOnClickListener(new View.OnClickListener() {
@@ -141,26 +155,6 @@ public class ThumbPopupActivity extends Activity {
                 String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
                 Log.i("url", image_url);
                 Glide.with(getApplicationContext()).load(bm).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
-                //Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
-                /*
-                try {
-
-
-                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
-                    Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(image_bitmap));
-
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                */
             }else if(requestCode == TAKE_GALLERY){
 
                 Uri selectedImageUri = data.getData();
@@ -173,126 +167,12 @@ public class ThumbPopupActivity extends Activity {
                 //image_url = Constants.IMAGE_BASE_URL+SharedManager.getInstance().getMe()._id+current_time+".png";
                 image_url = "lmjing_"+current_time;;
                 uploadFile1(SharedManager.getInstance().getMe());
-
-                //Glide.with(getApplicationContext()).load(image_url).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
-/*
-                Glide.with(getApplicationContext()).load(imagepath).asBitmap().into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Tab5MyPageFragment.IV_profile.setImageBitmap(resource);
-                    }
-                });
-*/
-
-
-/*
-                Uri selectedImageUri = data.getData();
-                imagepath = getPath(selectedImageUri);
-                Log.e("imagepath : ", imagepath);
-                Log.e("upload message : ", "Uploading file path:" + imagepath);
-                //TODO:임시데이터 넣음 user+현재시간으로 바꿀 것
-                SimpleDateFormat sdfNow = new SimpleDateFormat("yyMMddHHmmssSSS");
-                String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
-                image_url = Constants.IMAGE_BASE_URL+SharedManager.getInstance().getMe()._id+current_time+".png";
-
-                //path = getPathFromURI(data.getData());
-                //Tab5MyPageFragment.IV_profile.setImageURI(data.getData());
-                Glide.with(getApplicationContext()).load(imagepath).asBitmap().into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Tab5MyPageFragment.IV_profile.setImageBitmap(resource);
-                    }
-                });
-                File f = new File(imagepath);
-
-                Log.i("Asd", path + " "+f);
-
-                image_url = SharedManager.getInstance().getMe()._id+current_time;
-                Future uploading = Ion.with(getApplicationContext())
-                        .load(image_url)
-                        .setMultipartFile("image", f)
-                        .asString()
-                        .withResponse()
-                        .setCallback(new FutureCallback<Response<String>>() {
-                            @Override
-                            public void onCompleted(Exception e, Response<String> result) {
-                                try {
-                                    JSONObject jobj = new JSONObject(result.getResult());
-                                    Toast.makeText(getApplicationContext(), jobj.optString("response"), Toast.LENGTH_SHORT).show();
-
-                                } catch (JSONException e1) {
-                                    e1.printStackTrace();
-                                }
-
-                            }
-                        });
-
-*/
-                /*
-                try {
-                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    //Tab5MyPageFragment.profile_image.setBackgroundColor(Color.TRANSPARENT);
-                    Tab5MyPageFragment.profile_image.setImageDrawable(new RoundedAvatarDrawable(image_bitmap));
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                */
-
             }
 
         }
 
     }
-/*
-    void UpdateUser() {
-        n_user._id = SharedManager.getInstance().getMe()._id;
-        n_user.author.author_nickname = SharedManager.getInstance().getMe().nickname;
-        n_user.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
-        n_user.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
 
-        Map field = new HashMap();
-        field.put("name", n_food.name);
-        field.put("taste", n_food.taste);
-        field.put("cooking", n_food.cooking);
-        field.put("country", n_food.country);
-        field.put("ingredient", n_food.ingredient);
-        field.put("author", n_food.author);
-        field.put("image_url", n_food.image_url);
-        Log.d("hansjin", "Filed" + field.toString());
-
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.foodPost(n_food)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Food>() {
-                    @Override
-                    public final void onCompleted() {
-
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(Food response) {
-                        if (response != null) {
-                            Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
-                            uploadFile1(response);
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-    */
 
     private void uploadFile1(final User user) {
         File file = new File(imagepath);
@@ -307,13 +187,17 @@ public class ThumbPopupActivity extends Activity {
                         //n_food.rate_person.add(0,n_food.newrate(SharedManager.getInstance().getMe()._id,rate_num));
                         //food_rate(food);
                         //setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
-                        Glide.with(getApplicationContext()).load(image_url).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
-                       /* Glide.with(getApplicationContext()).load(imagepath).asBitmap().into(new SimpleTarget<Bitmap>() {
+                        //Glide.with(getApplicationContext()).load(image_url).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
+
+                        /*
+                        Glide.with(getApplicationContext()).load(imagepath).asBitmap().into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                 Tab5MyPageFragment.IV_profile.setImageBitmap(resource);
                             }
-                        });*/
+                        });
+                        */
+
                         finish();
                     }
                     @Override
@@ -338,13 +222,34 @@ public class ThumbPopupActivity extends Activity {
         return cursor.getString(column_index);
     }
 
-    private String getPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
+    void connectUpdateUserImage_Facebook(final String user_id, final Map field) {
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.updateUserImage_Facebook(user_id, field)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public final void onCompleted() {
+//                        Glide.with(Tab5MyPageFragment.activity).
+//                                load(image_url).
+//                                thumbnail(0.1f).
+//                                bitmapTransform(new CropCircleTransformation(Tab5MyPageFragment.activity)).into(Tab5MyPageFragment.IV_profile);
+                        Tab5MyPageFragment.IV_profile.invalidate();
+                        finish();
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(com.hansjin.mukja_android.Model.User response) {
+                        if (response != null) {
+                            Log.i("makejin", "response "+response);
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
-
 }

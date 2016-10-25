@@ -45,15 +45,12 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class SignActivity extends AppCompatActivity{
 
     public static Context context;
-    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FacebookSdk.sdkInitialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
-
-        sp = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
 
         context = this;
 

@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.hansjin.mukja_android.Model.User;
@@ -59,6 +60,7 @@ public class SplashActivity extends AppCompatActivity {
     public static double lon = 0.0;
     //currrent location end
 
+    public static String cityName;
 
 
 
@@ -68,10 +70,17 @@ public class SplashActivity extends AppCompatActivity {
         this.activity = this;
 
         SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-        Map field = new HashMap();
-        field.put("social_id", prefs.getString("social_id","1137851322951211"));
-        connectSigninUser(field);
 
+        if(prefs.getString("social_id","").equals("")){
+            Intent intent = new Intent(activity, SignActivity.class);
+            startActivity(intent);
+            finish();
+        }else {
+            Map field = new HashMap();
+            field.put("social_id", prefs.getString("social_id", ""));
+            Log.i("makejin", "prefs.getString(\"social_id\", \"\")" + prefs.getString("social_id", ""));
+            connectSigninUser(field);
+        }
 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         //GPS_PROVIDER: GPS를 통해 위치를 알려줌
@@ -142,7 +151,7 @@ public class SplashActivity extends AppCompatActivity {
                     "Lng: " + lon, Toast.LENGTH_SHORT).show();
 */
             // 도시명 구하기
-            String cityName = null;
+            cityName = null;
             Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
             List<Address> addresses;
             try{

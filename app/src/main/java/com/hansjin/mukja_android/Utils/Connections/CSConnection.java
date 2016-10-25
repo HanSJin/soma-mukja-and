@@ -119,6 +119,12 @@ public interface CSConnection {
     Observable<User> fileUploadWrite_User(@Path("user_id") String user_id,
                                      @Part("post_image\"; filename=\"android_post_image_file") RequestBody file);
 
+    @POST("/users/{user_id}/edit/profile/facebook")
+    Observable<User> updateUserImage_Facebook(@Path("user_id") String user_id,
+                                   @Body Map<String, Object> fields);
+
+    @GET("/users/{uid}/myinfo")
+    Observable<User> getUserInfo(@Path("uid") String uid);
 
 
 }
