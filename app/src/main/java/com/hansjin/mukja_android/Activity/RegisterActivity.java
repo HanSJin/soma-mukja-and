@@ -76,7 +76,10 @@ public class RegisterActivity extends AppCompatActivity {
     List<String> country_list = new ArrayList<>();
     List<String> cooking_list = new ArrayList<>();
 
-    List<String> category_list = new ArrayList<String>();
+    List<String> category_list_taste = new ArrayList<String>();
+    List<String> category_list_country = new ArrayList<String>();
+    List<String> category_list_cooking = new ArrayList<String>();
+
 
     Food n_food = new Food();
     Float rate_num = 10.0f;
@@ -101,7 +104,11 @@ public class RegisterActivity extends AppCompatActivity {
     @ViewById
     RatingBar ratingBar;
     @ViewById
-    TagFlowLayout category_result;
+    TagFlowLayout category_result_taste;
+    @ViewById
+    TagFlowLayout category_result_country;
+    @ViewById
+    TagFlowLayout category_result_cooking;
     @ViewById
     TagFlowLayout ingredient_result;
 
@@ -305,16 +312,20 @@ public class RegisterActivity extends AppCompatActivity {
                     switch (type) {
                         case 1:
                             n_food.taste.add(s.getSelectedItem().toString());
+                            category_list_taste.add(s.getSelectedItem().toString());
+                            addFlowChart(category_result_taste, category_list_taste.toArray(new String[category_list_taste.size()]));
                             break;
                         case 2:
                             n_food.country.add(s.getSelectedItem().toString());
+                            category_list_country.add(s.getSelectedItem().toString());
+                            addFlowChart(category_result_country, category_list_country.toArray(new String[category_list_country.size()]));
                             break;
                         case 3:
                             n_food.cooking.add(s.getSelectedItem().toString());
+                            category_list_cooking.add(s.getSelectedItem().toString());
+                            addFlowChart(category_result_cooking, category_list_cooking.toArray(new String[category_list_cooking.size()]));
                             break;
                     }
-                    category_list.add(s.getSelectedItem().toString());
-                    addFlowChart(category_result, category_list.toArray(new String[category_list.size()]));
                 }
             }
 
@@ -322,6 +333,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+
     }
 
     private void set_rating() {
@@ -342,11 +355,59 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void addFlowChart(final TagFlowLayout mFlowLayout, String[] array) {
         final LayoutInflater mInflater = LayoutInflater.from(getApplication());
-        mFlowLayout.setAdapter(new TagAdapter<String>(array) {
+
+        mFlowLayout.setAdapter(new TagAdapter<String>(array){
             @Override
-            public View getView(FlowLayout parent, int position, String s) {
-                TextView tv = (TextView) mInflater.inflate(R.layout.tag_result, mFlowLayout, false);
+            public View getView(final FlowLayout parent, final int position, String s) {
+                final TextView tv = (TextView) mInflater.inflate(R.layout.tag_result, mFlowLayout, false);
                 tv.setText(s);
+
+                int type = parent.getId();
+                switch(type){
+                    case R.id.category_result_taste:
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                category_list_taste.remove(position);
+                                mFlowLayout.removeViewAt(position);
+                                n_food.taste.remove(position);
+                                addFlowChart(category_result_taste, category_list_taste.toArray(new String[category_list_taste.size()]));
+                            }
+                        });
+                        break;
+                    case R.id.category_result_country:
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                category_list_country.remove(position);
+                                mFlowLayout.removeViewAt(position);
+                                n_food.country.remove(position);
+                                addFlowChart(category_result_country, category_list_country.toArray(new String[category_list_country.size()]));
+                            }
+                        });
+                        break;
+                    case R.id.category_result_cooking:
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                category_list_cooking.remove(position);
+                                mFlowLayout.removeViewAt(position);
+                                n_food.cooking.remove(position);
+                                addFlowChart(category_result_cooking, category_list_cooking.toArray(new String[category_list_cooking.size()]));
+                            }
+                        });
+                        break;
+                    case R.id.ingredient_result:
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mFlowLayout.removeViewAt(position);
+                                n_food.ingredient.remove(position);
+                                addFlowChart(ingredient_result,n_food.ingredient.toArray(new String[n_food.ingredient.size()]));
+                            }
+                        });
+                }
+
                 return tv;
             }
 
@@ -355,6 +416,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return s.equals("Android");
             }
         });
+
     }
 
     public void food_rate(Food food) {
