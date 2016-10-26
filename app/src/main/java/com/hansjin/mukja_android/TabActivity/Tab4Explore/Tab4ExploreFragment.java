@@ -3,12 +3,16 @@ package com.hansjin.mukja_android.TabActivity.Tab4Explore;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,9 +193,31 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                     LL_rank.setVisibility(LinearLayout.VISIBLE);
                     LL_search.setVisibility(LinearLayout.GONE);
                 }
+                //ET_search.requestFocus();
             }
         });
         setRankingMainList();
+
+        ET_search.setOnKeyListener(new View.OnKeyListener()
+        {
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if(keyCode ==  KeyEvent.KEYCODE_ENTER && KeyEvent.ACTION_DOWN == event.getAction())
+                {
+                    if(BT_search.getText().equals("취소")){
+                        BT_search.callOnClick();
+                    }
+                    BT_search.callOnClick();
+
+                    recyclerView.invalidate();
+
+                    //ET_search.callOnClick();
+                    return true;
+                }
+                // TODO Auto-generated method stub
+                return false;
+            }
+        });
     }
 
     @Override

@@ -34,4 +34,5 @@ public class User {
     public Boolean gender;//*
     public String job;//보류?
     public String location;//회원가입 후, 팝업으로 동의구하기
+    public int rated_food_num;//회원가입 후, 팝업으로 동의구하기
 }
