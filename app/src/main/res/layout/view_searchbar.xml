@@ -24,9 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:ems="10"
-                android:singleLine="true"
                 android:background="@drawable/tumyeong"
-                android:hint="맛, 나라, 조리방법 등 검색"
+                android:hint="음식 이름, 맛, 나라, 조리형태 등 검색"
                 android:textSize="14sp"
                 />
         </RelativeLayout>

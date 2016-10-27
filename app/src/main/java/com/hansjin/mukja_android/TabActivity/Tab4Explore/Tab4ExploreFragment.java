@@ -90,7 +90,6 @@ public class Tab4ExploreFragment  extends TabParentFragment {
 
         refresh();
 
-
         //키워드별 랭킹 뷰 나오면서 기존에 있던 검색 결과 화면 invisible
         LL_rank.setVisibility(LinearLayout.VISIBLE);
         LL_search.setVisibility(LinearLayout.GONE);
@@ -114,7 +113,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
         LL_search.setVisibility(LinearLayout.GONE);
 
         ET_search = (EditText) view.findViewById(R.id.view_searchbar).findViewById(R.id.ET_searchbar);
-        ET_search.setHint("음식 혹은 음식점을 검색해보세요 !");
+        ET_search.setHint("음식 이름, 맛, 나라, 조리형태 등 검색");
 
         if (recyclerView == null) {
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -167,7 +166,6 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
                 refresh();
-                setRankingMainList();
             }
         });
 
@@ -193,10 +191,8 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                     LL_rank.setVisibility(LinearLayout.VISIBLE);
                     LL_search.setVisibility(LinearLayout.GONE);
                 }
-                //ET_search.requestFocus();
             }
         });
-        setRankingMainList();
 
         ET_search.setOnKeyListener(new View.OnKeyListener()
         {
@@ -233,7 +229,7 @@ public class Tab4ExploreFragment  extends TabParentFragment {
 
     @Override
     public void reload() {
-
+        refresh();
     }
 
     //@UiThread
@@ -300,7 +296,6 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                     @Override
                     public final void onNext(List<Food> response) {
                         if (response != null) {
-                            refresh();
                             uiThread_Search(response);
                         } else {
                             Toast.makeText(getActivity(), "검색 결과가 없습니다", Toast.LENGTH_SHORT).show();
