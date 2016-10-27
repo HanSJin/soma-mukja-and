@@ -84,7 +84,6 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
         <activity
             android:name=".Detail.DetailActivity_"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -97,6 +96,9 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity android:name=".Profile.YourProfileActivity" />
+        <activity android:name=".TabActivity.Tab5MyPage.PopupWithdrawal"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"></activity>
     </application>
 
 </manifest>

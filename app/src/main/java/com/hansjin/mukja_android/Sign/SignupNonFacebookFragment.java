@@ -139,7 +139,6 @@ public class SignupNonFacebookFragment extends Fragment {
                     public final void onNext(User response) {
                         if (response != null) {
                             SharedManager.getInstance().setMe(response);
-
                             Intent intent = new Intent(getActivity(), TabActivity_.class);
                             startActivity(intent);
                             getActivity().finish();

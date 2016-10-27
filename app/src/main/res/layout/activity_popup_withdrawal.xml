@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
-    android:layout_height="350dp"
+    android:layout_height="250dp"
     android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -10,16 +10,12 @@
             android:id="@+id/TV_edit"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:text="수정하고 싶은 자기소개 글을 입력해주세요"
+            android:text="정말로 탈퇴하시겠습니까?"
             android:layout_centerHorizontal="true"
-            android:gravity="center"/>
-        <EditText
+            android:gravity="center"
+            android:layout_marginBottom="25dp"
             android:layout_marginTop="25dp"
-            android:id="@+id/ET_about_me"
-            android:layout_width="300dp"
-            android:layout_height="175dp"
-            android:layout_below="@id/TV_edit"
-            android:background="@drawable/xml_border_bottom_line"/>
+            android:textStyle="bold"/>
         <Button
             android:id="@+id/BT_no"
             android:layout_marginTop="25dp"
@@ -27,7 +23,7 @@
             android:layout_height="50dp"
             android:text="취소"
             android:background="@drawable/category_btn"
-            android:layout_below="@id/ET_about_me"
+            android:layout_below="@id/TV_edit"
             android:layout_marginLeft="40dp"/>
         <Button
             android:id="@+id/BT_yes"
@@ -36,9 +32,8 @@
             android:layout_height="50dp"
             android:text="확인"
             android:background="@drawable/category_btn"
-            android:layout_below="@id/ET_about_me"
+            android:layout_below="@id/TV_edit"
             android:layout_alignParentRight="true"
             android:layout_marginRight="40dp"/>
     </RelativeLayout>
-
 </LinearLayout>

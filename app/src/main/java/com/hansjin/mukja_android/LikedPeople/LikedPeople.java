@@ -172,7 +172,6 @@ public class LikedPeople extends AppCompatActivity {
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
-                        Log.i("makejin12","");
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
@@ -180,7 +179,7 @@ public class LikedPeople extends AppCompatActivity {
                         if (response != null) {
                             uiThread(response);
                         } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "좋아요한 사람이 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

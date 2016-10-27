@@ -2,6 +2,7 @@ package com.hansjin.mukja_android.LikedPeople;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
@@ -13,12 +14,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.User;
+import com.hansjin.mukja_android.Profile.YourProfileActivity;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
@@ -133,6 +136,15 @@ public class LikedPeopleAdapter extends RecyclerView.Adapter<LikedPeopleAdapter.
                         thumbnail(0.1f).
                         bitmapTransform(new CropCircleTransformation(context)).into(itemViewHolder.IV_profile);
             }
+
+            itemViewHolder.cell_liked_person.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, YourProfileActivity.class);
+                    intent.putExtra("user_id", user._id);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 
@@ -161,13 +173,15 @@ public class LikedPeopleAdapter extends RecyclerView.Adapter<LikedPeopleAdapter.
         public TextView TV_user_name, TV_date;
         public ImageView IV_profile;
         private RatingBar ratingBar1;
+        public RelativeLayout cell_liked_person;
+
         public LikedPeopleViewHolder(View v) {
             super(v);
             TV_user_name = (TextView) v.findViewById(R.id.TV_user_name);
             TV_date = (TextView) v.findViewById(R.id.TV_date);
             IV_profile = (ImageView) v.findViewById(R.id.IV_profile);
             ratingBar1 = (RatingBar) v.findViewById(R.id.ratingBar);
-
+            cell_liked_person = (RelativeLayout) v.findViewById(R.id.cell_liked_person);
         }
     }
 }

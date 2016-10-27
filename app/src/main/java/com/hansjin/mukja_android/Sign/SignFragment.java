@@ -80,11 +80,11 @@ public class SignFragment extends Fragment {
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
-                            info.setText("email : " + object.optString("email"));
-                            info.append("\nname : " + object.optString("name"));
-                            info.append("\ngender : " + object.optString("gender"));
-
-                            info.append("\n\n위와 같이, 페이스북 정보를 받을 수 있으나 사용하지않습니다. \n본 서비스를 이용하시려면 \"Not a member\"를 클릭해주세요.");
+//                            info.setText("email : " + object.optString("email"));
+//                            info.append("\nname : " + object.optString("name"));
+//                            info.append("\ngender : " + object.optString("gender"));
+//
+//                            info.append("\n\n위와 같이, 페이스북 정보를 받을 수 있으나 사용하지않습니다. \n본 서비스를 이용하시려면 \"Not a member\"를 클릭해주세요.");
 
                             User n_user = new User();
                             n_user.social_id = object.optString("id");
@@ -177,9 +177,14 @@ public class SignFragment extends Fragment {
         info = (TextView) view.findViewById(R.id.info);
 
         Log.i("makejin6", prefs.getString("social_id",""));
-        if(isLoggedIn() || !prefs.getString("social_id","").equals("")){
+
+        if(!prefs.getString("social_id","").equals("")){
             Map field = new HashMap();
             field.put("social_id", prefs.getString("social_id",""));
+            connectSigninUser(field);
+        }else if(isLoggedIn()){
+            Map field = new HashMap();
+            field.put("social_id", AccessToken.getCurrentAccessToken().getUserId());
             connectSigninUser(field);
         }
 
