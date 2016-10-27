@@ -1,4 +1,4 @@
-package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
+package com.hansjin.mukja_android.LikedPeople;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,12 +19,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.hansjin.mukja_android.LikedPeople.LikedPeopleAdapter;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
@@ -45,13 +48,13 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@EActivity(R.layout.activity_food_rate)
-public class FoodRate extends AppCompatActivity {
-    com.hansjin.mukja_android.TabActivity.Tab5MyPage.FoodRate activity;
+@EActivity(R.layout.activity_liked_people)
+public class LikedPeople extends AppCompatActivity {
+    LikedPeople activity;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    FoodRateAdapter adapter;
+    LikedPeopleAdapter adapter;
 
     public static double lat = 0.0;
     public static double lon = 0.0;
@@ -68,6 +71,7 @@ public class FoodRate extends AppCompatActivity {
     @ViewById
     Button BT_X;
 
+    private Food food;
 
     //currrent location start
     private LocationManager locationManager = null; // 위치 정보 프로바이더
@@ -83,9 +87,14 @@ public class FoodRate extends AppCompatActivity {
     void afterBindingView() {
         this.activity = this;
 
+        food = (Food) getIntent().getSerializableExtra("food");
+
         setSupportActionBar(cs_toolbar);
         actionBar = getSupportActionBar();
-        actionBar.setTitle("음식 평가 - " + SharedManager.getInstance().getMe().rated_food_num + "개 완료");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setTitle("<" + food.name + "> 좋아한 사람들");
+
 
         if (recyclerView == null) {
             recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -95,12 +104,12 @@ public class FoodRate extends AppCompatActivity {
         }
 
         if (adapter == null) {
-            adapter = new FoodRateAdapter(new FoodRateAdapter.OnItemClickListener() {
+            adapter = new LikedPeopleAdapter(new LikedPeopleAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
 
                 }
-            }, this, this);
+            }, this, this, food);
         }
         recyclerView.setAdapter(adapter);
 
@@ -108,18 +117,11 @@ public class FoodRate extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 refresh();
-                connectTestCall(SharedManager.getInstance().getMe()._id);
+                connectTestCall(food._id);
             }
         });
 
-        connectTestCall(SharedManager.getInstance().getMe()._id);
-
-        BT_X.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        connectTestCall(food._id);
 
     }
 
@@ -130,20 +132,39 @@ public class FoodRate extends AppCompatActivity {
     }
 
     @UiThread
-    void uiThread(List<Food> response) {
-        for (Food food : response) {
-            adapter.addData(food);
+    void uiThread(List<User> response) {
+        for (User user : response) {
+            adapter.addData(user);
         }
         adapter.notifyDataSetChanged();
     }
 
-    void connectTestCall(String uid) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            finish();
+            overridePendingTransition(R.anim.anim_exit_in, R.anim.anim_exit_out);
+        }
+        return super.onOptionsItemSelected(menuItem);
+    }
+
+    public void onBackPressed() {
+        super.finish();
+        overridePendingTransition(R.anim.anim_exit_in, R.anim.anim_exit_out);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+    }
+
+    void connectTestCall(String food_id) {
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getFoodsForUser(uid)
+        conn.getLikedPerson(food_id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Food>>() {
+                .subscribe(new Subscriber<List<User>>() {
                     @Override
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
@@ -151,13 +172,13 @@ public class FoodRate extends AppCompatActivity {
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
+                        Log.i("makejin12","");
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(List<Food> response) {
+                    public final void onNext(List<User> response) {
                         if (response != null) {
                             uiThread(response);
-                            Log.i("makejin10","");
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

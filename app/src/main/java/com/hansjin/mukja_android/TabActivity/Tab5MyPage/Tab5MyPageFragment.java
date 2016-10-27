@@ -192,7 +192,6 @@ public class Tab5MyPageFragment extends TabParentFragment {
     @Override
     public void reload() {
         refresh();
-        Log.i("makejin", SharedManager.getInstance().getMe().thumbnail_url);
     }
 
     void connectTestCall() {
@@ -268,6 +267,5 @@ public class Tab5MyPageFragment extends TabParentFragment {
     public void onResume() {
         super.onResume();
         refresh();
-        Log.i("makejin", SharedManager.getInstance().getMe().thumbnail_url);
     }
 }

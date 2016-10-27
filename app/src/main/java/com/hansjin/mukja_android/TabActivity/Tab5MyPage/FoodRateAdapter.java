@@ -73,7 +73,7 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     @Override
     public FoodRateAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_rate_food, parent, false);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_rate_food, parent, false);
             return new RatingViewHolder(v);
         }
         return null;
@@ -89,6 +89,7 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
                 }
             });
             RatingViewHolder itemViewHolder = (RatingViewHolder) holder;
+            Log.i("makejin11","");
             final Food food = mDataset.get(position);
 
 

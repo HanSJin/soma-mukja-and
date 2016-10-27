@@ -127,5 +127,9 @@ public interface CSConnection {
     Observable<User> getUserInfo(@Path("uid") String uid);
 
 
+    @POST("/sign/in/NonFacebook")
+    Observable<User> signinUser_NonFacebook(@Body Map<String, Object> fields);
+
 }
+
 

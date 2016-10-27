@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.RatingBar;
 
+import com.hansjin.mukja_android.Utils.TimeFormatter.TimeFormmater;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +41,11 @@ public class Food implements Serializable {
         public String author_thumbnail_url_small;
     }
 
+
     public class RatePerson implements Serializable {
         public String user_id;
         public float rate_num;
+        public String rate_date;
 
         public String getUser_id() {
             return user_id;
@@ -49,6 +53,9 @@ public class Food implements Serializable {
 
         public float getRate_num() {
             return rate_num;
+        }
+        public String getRateDate() {
+            return rate_date;
         }
     }
 

@@ -37,11 +37,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".UserActiviy_"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".Template.BaseActivity_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -69,16 +64,12 @@
         <activity
             android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
-        <activity
-            android:name=".Activity.RegisterActivity_" />
+        <activity android:name=".Activity.RegisterActivity_" />
         <activity
             android:name=".TabActivity.Tab5MyPage.FoodRate_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
         <activity
             android:name=".Sign.SignActivity"
             android:launchMode="singleTask"
@@ -98,6 +89,11 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".NearbyRestaurant.NearByRestaurant"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".LikedPeople.LikedPeople_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
