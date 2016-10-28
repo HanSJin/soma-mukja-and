@@ -17,6 +17,7 @@ import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.PopupNotCompleted;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.HashMap;
@@ -90,13 +91,14 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //승진이형이 취향분석 다하면 여기에 넣기
+                startActivity(new Intent(getApplicationContext(), PopupNotCompleted.class));
             }
         });
 
         BT_push_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), PopupNotCompleted.class));
             }
         });
 

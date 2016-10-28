@@ -34,6 +34,7 @@ import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.PopupNotCompleted;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import org.androidannotations.annotations.UiThread;
@@ -155,6 +156,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
         BT_pref_anal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(getActivity(), PopupNotCompleted.class));
             }
         });
         BT_food_rate.setOnClickListener(new View.OnClickListener() {
