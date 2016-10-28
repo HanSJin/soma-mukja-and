@@ -350,7 +350,6 @@ public class RegisterActivity extends AppCompatActivity {
                 //5점 만점
                 float st = 5f / ratingBar.getNumStars();
                 rate_num = st * v;
-                Toast.makeText(getApplicationContext(),String.valueOf(rate_num),Toast.LENGTH_SHORT).show();
             }
         });
     }
