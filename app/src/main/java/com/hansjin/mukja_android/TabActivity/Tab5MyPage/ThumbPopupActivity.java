@@ -1,6 +1,7 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +31,7 @@ import com.hansjin.mukja_android.Utils.Constants.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
@@ -68,20 +72,24 @@ public class ThumbPopupActivity extends Activity {
     String image_url;
     User n_user;
 
+    LinearLayout LL_popup_thumb;
+    RelativeLayout RR_take_from_facebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thumb_popup);
-        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         prefs = getSharedPreferences("TodayFood",0);
 
         BT_take_a_picture = (Button) findViewById(R.id.BT_take_a_picture);
         BT_choose_a_picture = (Button) findViewById(R.id.BT_choose_a_picture);
-        BT_take_from_facebook = (Button) findViewById(R.id.BT_take_from_facebook);
+
         BT_close_up_a_picture = (Button) findViewById(R.id.BT_close_up_a_picture);
         BT_remove_a_picture = (Button) findViewById(R.id.BT_remove_a_picture);
         BT_close = (Button) findViewById(R.id.BT_close);
+
+        LL_popup_thumb = (LinearLayout) findViewById(R.id.LL_popup_thumb);
+        RR_take_from_facebook = (RelativeLayout) findViewById(R.id.RR_take_from_facebook);
 
         BT_take_a_picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,18 +108,7 @@ public class ThumbPopupActivity extends Activity {
                 startActivityForResult(intent, TAKE_GALLERY);
             }
         });
-        BT_take_from_facebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Map field = new HashMap();
-                field.put("thumbnail_url",
-                        "http://graph.facebook.com/"+SharedManager.getInstance().getMe().social_id + "/picture?type=normal");
-                field.put("thumbnail_url_small",
-                        "http://graph.facebook.com/"+SharedManager.getInstance().getMe().social_id + "/picture?type=small");
 
-                connectUpdateUserImage_Facebook(SharedManager.getInstance().getMe()._id, field);
-            }
-        });
         BT_close_up_a_picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,47 +127,53 @@ public class ThumbPopupActivity extends Activity {
                 finish();
             }
         });
+
+        if(SharedManager.getInstance().getMe().social_type.equals("facebook")){
+            //BT_take_from_facebook.setVisibility(View.GONE);
+            BT_take_from_facebook = (Button) findViewById(R.id.BT_take_from_facebook);
+            BT_take_from_facebook.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Map field = new HashMap();
+                    field.put("thumbnail_url",
+                            "http://graph.facebook.com/"+SharedManager.getInstance().getMe().social_id + "/picture?type=normal");
+                    field.put("thumbnail_url_small",
+                            "http://graph.facebook.com/"+SharedManager.getInstance().getMe().social_id + "/picture?type=small");
+
+                    connectUpdateUserImage_Facebook(SharedManager.getInstance().getMe()._id, field);
+                }
+            });
+        }else{
+            LL_popup_thumb.removeView(RR_take_from_facebook);
+        }
+
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK){
             if(requestCode == TAKE_CAMERA){
-                Uri selectedImageUri = data.getData();
-                imagepath = getPath(selectedImageUri);
-
-                Log.e("imagepath : ", imagepath);
-                Log.e("upload message : ", "Uploading file path:" + imagepath);
-
-                // 현재시간을 얻는다.
-                Long now = System.currentTimeMillis();
-
-                // 원래 파일의 확장자를 얻기 위한 파싱 "." 뒤에 있는 확장자를 가져온다.
-
-                String str = imagepath.substring(imagepath.indexOf("."));
-
-                uploadFileName = prefs.getString("user_id","") + "_Profile.jpg";
-
                 Bitmap bm = (Bitmap) data.getExtras().get("data");
-                String image_url = "http://graph.facebook.com/" + SharedManager.getInstance().getMe().social_id + "/picture?width=78&height=78";
-                Log.i("url", image_url);
-                Glide.with(getApplicationContext()).load(bm).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
-            }else if(requestCode == TAKE_GALLERY){
+                imagepath = getPath(getImageUri(getApplicationContext(), bm));
 
+                uploadFile1(SharedManager.getInstance().getMe());
+            }else if(requestCode == TAKE_GALLERY){
                 Uri selectedImageUri = data.getData();
                 imagepath = getPath(selectedImageUri);
-                Log.e("imagepath : ", imagepath);
-                Log.e("upload message : ", "Uploading file path:" + imagepath);
-                //TODO:임시데이터 넣음 user+현재시간으로 바꿀 것
-                SimpleDateFormat sdfNow = new SimpleDateFormat("yyMMddHHmmssSSS");
-                String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
-                //image_url = Constants.IMAGE_BASE_URL+SharedManager.getInstance().getMe()._id+current_time+".png";
-                image_url = "lmjing_"+current_time;;
+
                 uploadFile1(SharedManager.getInstance().getMe());
             }
 
         }
 
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
 
@@ -184,20 +187,7 @@ public class ThumbPopupActivity extends Activity {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public final void onCompleted() {
-                        //n_food.rate_person.add(0,n_food.newrate(SharedManager.getInstance().getMe()._id,rate_num));
-                        //food_rate(food);
-                        //setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
-                        //Glide.with(getApplicationContext()).load(image_url).bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(Tab5MyPageFragment.IV_profile);
-
-                        /*
-                        Glide.with(getApplicationContext()).load(imagepath).asBitmap().into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                Tab5MyPageFragment.IV_profile.setImageBitmap(resource);
-                            }
-                        });
-                        */
-
+                        Tab5MyPageFragment.IV_profile.invalidate();
                         finish();
                     }
                     @Override
@@ -208,6 +198,7 @@ public class ThumbPopupActivity extends Activity {
                     @Override
                     public final void onNext(User response) {
                         if (response != null) {
+                            SharedManager.getInstance().getMe().thumbnail_url = response.thumbnail_url;
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
@@ -230,10 +221,6 @@ public class ThumbPopupActivity extends Activity {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public final void onCompleted() {
-//                        Glide.with(Tab5MyPageFragment.activity).
-//                                load(image_url).
-//                                thumbnail(0.1f).
-//                                bitmapTransform(new CropCircleTransformation(Tab5MyPageFragment.activity)).into(Tab5MyPageFragment.IV_profile);
                         Tab5MyPageFragment.IV_profile.invalidate();
                         finish();
                     }

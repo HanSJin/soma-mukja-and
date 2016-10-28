@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.LikedPeople.LikedPeople;
+import com.hansjin.mukja_android.LikedPeople.LikedPeople_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.NearbyRestaurant.NearByRestaurant;
@@ -147,8 +149,9 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             DescBodyViewHolder descBodyViewHolder = (DescBodyViewHolder) holder;
             descBodyViewHolder.txt_category.setText(combine_tag(food)+"");
             descBodyViewHolder.txt_ingredient.setText(combine_ingredient_tag(food)+"");
-            if (food.like_cnt==0)
+            if (food.like_cnt==0) {
                 descBodyViewHolder.txt_people_like.setText("가장 먼저 좋아요를 눌러주세요!");
+            }
             else
                 descBodyViewHolder.txt_people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
             String friend = Constants.mockMyFriendText(position);
@@ -156,6 +159,19 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 descBodyViewHolder.txt_friend_like.setText("아직 이 음식을 좋아한 친구가 없어요.");
             else
                 descBodyViewHolder.txt_friend_like.setText("회원님의 친구 "+friend+" 님이 좋아해요.");
+
+
+            if(food.like_cnt>0) {
+                descBodyViewHolder.txt_people_like.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, LikedPeople_.class);
+                        intent.putExtra("food", food);
+                        context.startActivity(intent);
+                        activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                    }
+                });
+            }
         } else if (holder instanceof GraphBodyViewHolder) {
             GraphBodyViewHolder graphBodyViewHolder = (GraphBodyViewHolder) holder;
 
@@ -221,6 +237,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         } else if (holder instanceof SimiralTailViewHolder) {
             SimiralTailViewHolder simiralTailViewHolder = (SimiralTailViewHolder) holder;
         }
+
+
     }
 
     @Override

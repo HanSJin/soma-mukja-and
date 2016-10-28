@@ -126,6 +126,12 @@ public interface CSConnection {
     @GET("/users/{uid}/myinfo")
     Observable<User> getUserInfo(@Path("uid") String uid);
 
+    @POST("/sign/in/NonFacebook")
+    Observable<User> signinUser_NonFacebook(@Body Map<String, Object> fields);
 
+
+    @POST("/user/withdrawal")
+    Observable<User> withdrawalUser(@Body Map<String, Object> fields);
 }
+
 

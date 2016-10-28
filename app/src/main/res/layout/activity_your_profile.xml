@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <android.support.design.widget.AppBarLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/AppTheme.AppBarOverlay" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay" >
 
-    <include layout="@layout/toolbar_mypage" android:id="@+id/cs_toolbar" />
+        <include layout="@layout/toolbar_your_profile" android:id="@+id/cs_toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="?attr/actionBarSize">
-
-        <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/pull_to_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
+        <android.support.design.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/pull_to_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@null">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -124,14 +126,6 @@
                                 android:layout_gravity="center"
                                 android:layout_below="@id/TV_user_name"
                                 android:textSize="13sp"/>
-                            <Button
-                                android:id="@+id/BT_edit_about_me"
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:layout_toRightOf="@+id/TV_about_me"
-                                android:layout_marginTop="60dp"
-                                android:background="@drawable/edit"
-                                android:layout_marginLeft="5dp"/>
                         </RelativeLayout>
                     </LinearLayout>
                     <ImageView
@@ -158,13 +152,13 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/recycler_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="#F3F3F3"
-                            android:paddingBottom="56dp"
-                            android:scrollbars="vertical" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#F3F3F3"
+                        android:paddingBottom="56dp"
+                        android:scrollbars="vertical" />
 
                 </RelativeLayout>
 
@@ -173,7 +167,9 @@
             <include layout="@layout/view_loading_indicator" android:id="@+id/indicator" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
+
+        </android.support.design.widget.CoordinatorLayout>
     </RelativeLayout>
 
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
