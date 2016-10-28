@@ -44,6 +44,7 @@ public class SignupNonFacebookFragment extends Fragment {
     Button BT_signup;
     private RadioButton RB_gender_male;
     private RadioButton RB_gender_female;
+    String email;
 
 
 
@@ -51,7 +52,7 @@ public class SignupNonFacebookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_signup_non_facebook, container, false);
 
-        prefs = getActivity().getSharedPreferences("Chat", 0);
+        prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
 
         ET_email = (EditText)view.findViewById(R.id.ET_email);
         ET_name = (EditText)view.findViewById(R.id.ET_name);
@@ -72,53 +73,64 @@ public class SignupNonFacebookFragment extends Fragment {
                 String tempPw2 = ET_pw2.getText().toString();
                 boolean tempGender = false;
 
-                if(tempEmail.equals("") || tempName.equals("") || tempPw.equals("") || tempPw2.equals("") || (!RB_gender_male.isChecked() && !RB_gender_female.isChecked()) ){
-                    Toast toast = Toast.makeText(getActivity(), "Write your information all", Toast.LENGTH_SHORT);
-                    int offsetX = 0;
-                    int offsetY = 0;
-                    toast.setGravity(Gravity.CENTER, offsetX, 300);
-                    toast.show();
-                    return;
-                }
+                if(!isEmpty(ET_email) && ET_email.getText().toString().contains("@")){
+                    SharedPreferences.Editor edit = prefs.edit();
 
-                SharedPreferences.Editor edit = prefs.edit();
+                    if(tempPw.equals(tempPw2)) {
+                        edit.putString("social_id", tempEmail);
+                        edit.putString("nickname", tempName);
+                        edit.putString("password", tempPw);
+                        edit.commit();
 
-                if(tempPw.equals(tempPw2)) {
-                    edit.putString("social_id", tempEmail);
-                    edit.putString("nickname", tempName);
-                    edit.putString("password", tempPw);
-                    edit.commit();
+                        User n_user = new User();
+                        n_user.social_id = tempEmail;
+                        n_user.social_type = "normal";
+                        n_user.push_token = "random";
+                        n_user.device_type = "android";
+                        n_user.app_version = getAppVersion(getActivity());
+                        n_user.nickname = tempName;
+                        n_user.about_me = "자기소개 글을 입력해주세요";
+                        n_user.age = 0;
+                        if(RB_gender_female.isChecked()){
+                            tempGender = true;
+                        }
+                        n_user.gender = tempGender;
+                        n_user.job = "";
+                        n_user.location = SplashActivity.cityName;
+                        n_user.password = tempPw;
 
-                    User n_user = new User();
-                    n_user.social_id = tempEmail;
-                    n_user.social_type = "normal";
-                    n_user.push_token = "random";
-                    n_user.device_type = "android";
-                    n_user.app_version = getAppVersion(getActivity());
-                    n_user.nickname = tempName;
-                    n_user.about_me = "자기소개 글을 입력해주세요";
-                    n_user.age = 0;
-                    if(RB_gender_female.isChecked()){
-                        tempGender = true;
+                        connectCreateUser(n_user);
+                    }else{
+                        Toast toast = Toast.makeText(getActivity(), "incorrect 1st PW and 2nd PW", Toast.LENGTH_SHORT);
+                        int offsetX = 0;
+                        int offsetY = 0;
+                        toast.setGravity(Gravity.CENTER, offsetX, 300);
+                        toast.show();
+                        return;
                     }
-                    n_user.gender = tempGender;
-                    n_user.job = "";
-                    n_user.location = SplashActivity.cityName;
-                    n_user.password = tempPw;
-
-                    connectCreateUser(n_user);
                 }else{
-                    Toast toast = Toast.makeText(getActivity(), "incorrect 1st PW and 2nd PW", Toast.LENGTH_SHORT);
-                    int offsetX = 0;
-                    int offsetY = 0;
-                    toast.setGravity(Gravity.CENTER, offsetX, 300);
-                    toast.show();
-                    return;
+                    if(tempName.equals("") || tempPw.equals("") || tempPw2.equals("") || (!RB_gender_male.isChecked() && !RB_gender_female.isChecked()) ){
+                        Toast toast = Toast.makeText(getActivity(), "Write your information all", Toast.LENGTH_SHORT);
+                        int offsetX = 0;
+                        int offsetY = 0;
+                        toast.setGravity(Gravity.CENTER, offsetX, 300);
+                        toast.show();
+                        return;
+                    }
+                    Toast.makeText(getApplicationContext(), "올바른 메일 주소를 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         return view;
+    }
+
+    // 아이디 비어있는지 검사
+    boolean isEmpty(EditText ET)
+    {
+        // 공백문자 제거
+        String str =ET.getText().toString().replaceAll("\\p{Z}", "");
+        return str.equals("");
     }
 
     void connectCreateUser(User user) {

@@ -257,6 +257,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
                                         thumbnail(0.1f).
                                         bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
                             }else{
+                                Log.i("makejin", image_url);
                                 Glide.with(getActivity()).
                                         load(Constants.IMAGE_BASE_URL + image_url).
                                         thumbnail(0.1f).

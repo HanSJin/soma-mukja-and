@@ -85,9 +85,6 @@ public class YourProfileActivity extends AppCompatActivity {
         BT_food_rate = (Button) findViewById(R.id.BT_food_rate);
         IV_profile = (ImageView) findViewById(R.id.IV_profile);
 
-        connectTestCall(user_id);
-        connectTestCall_UserInfo(user_id);
-
         Toolbar cs_toolbar = (Toolbar) findViewById(R.id.cs_toolbar);
 
         setSupportActionBar(cs_toolbar);
@@ -139,19 +136,6 @@ public class YourProfileActivity extends AppCompatActivity {
         });
 
 
-        IV_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                url = "http://facebook.com/" +SharedManager.getInstance().getYou().social_id;
-
-                /*
-                if (!url.startsWith("http://") && !url.startsWith("https://"))
-                    url = "http://" + url;
-                    */
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(browserIntent);
-            }
-        });
     }
 
 
@@ -213,6 +197,21 @@ public class YourProfileActivity extends AppCompatActivity {
                         getSupportActionBar().setTitle("<" + SharedManager.getInstance().getYou().nickname + "> 프로필");
                         TV_user_name.setText(SharedManager.getInstance().getYou().nickname);
                         TV_about_me.setText(SharedManager.getInstance().getYou().about_me);
+                        if(SharedManager.getInstance().getYou().social_type.equals("facebook")) {
+                            IV_profile.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    url = "http://facebook.com/" + SharedManager.getInstance().getYou().social_id;
+
+                                    /*
+                                    if (!url.startsWith("http://") && !url.startsWith("https://"))
+                                        url = "http://" + url;
+                                    */
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                    startActivity(browserIntent);
+                                }
+                            });
+                        }
                     }
                     @Override
                     public final void onError(Throwable e) {

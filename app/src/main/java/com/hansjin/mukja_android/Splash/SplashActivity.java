@@ -90,7 +90,6 @@ public class SplashActivity extends AppCompatActivity {
         }else {
             Map field = new HashMap();
             field.put("social_id", prefs.getString("social_id", ""));
-            Log.i("makejin", "prefs.getString(\"social_id\", \"\")" + prefs.getString("social_id", ""));
             connectSigninUser(field);
         }
 
