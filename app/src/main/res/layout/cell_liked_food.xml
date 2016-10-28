@@ -15,7 +15,15 @@
             android:id="@+id/IV_food"
             android:background="@null"
             android:scaleType="centerCrop"/>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_timeline_shadow"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/imageView" />
         <TextView
                 android:id="@+id/TV_food_name"
                 android:layout_width="wrap_content"
@@ -28,15 +36,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:scaleType="fitXY"
-            android:src="@drawable/img_timeline_shadow"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/imageView" />
+
     </RelativeLayout>
 
 

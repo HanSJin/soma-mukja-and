@@ -19,6 +19,7 @@ import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.PopupNotCompleted;
+import com.hansjin.mukja_android.Utils.PopupRequest;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.HashMap;
@@ -131,7 +132,9 @@ public class Setting extends AppCompatActivity {
         BT_withdrawal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), PopupWithdrawal.class));
+                startActivity(new Intent(getApplicationContext(), PopupRequest.class));
+                //탈퇴 기능 완성했지만 쓰지않는걸로(탈퇴를 완벽하게 구현하려면 서버단에서 data 조인해서 지워야할 것이 무진장 많음)
+                //startActivity(new Intent(getApplicationContext(), PopupWithdrawal.class));
             }
         });
 
@@ -140,42 +143,7 @@ public class Setting extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(isWithdrawal)
-            withdrawal();
     }
 
-    void withdrawal(){
-        Map field = new HashMap();
-        field.put("user_id", SharedManager.getInstance().getMe()._id);
-        connectWithdrawalUser(field);
-    }
 
-    void connectWithdrawalUser(final Map field) {
-        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.withdrawalUser(field)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
-                    @Override
-                    public final void onCompleted() {
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(User response) {
-                        if (response != null) {
-                            editor.clear();
-                            editor.commit();
-                            LoginManager.getInstance().logOut();
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), SignActivity.class));
-                        } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
 }

@@ -98,6 +98,7 @@ public class SignupNonFacebookFragment extends Fragment {
                         n_user.job = "";
                         n_user.location = SplashActivity.cityName;
                         n_user.password = tempPw;
+                        n_user.friends = null;
 
                         connectCreateUser(n_user);
                     }else{

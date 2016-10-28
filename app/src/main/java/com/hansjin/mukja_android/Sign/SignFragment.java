@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import org.json.JSONArray;
@@ -76,6 +78,7 @@ public class SignFragment extends Fragment {
     User n_user;
     Map field = new HashMap();
 
+
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(final LoginResult loginResult) {
@@ -86,25 +89,26 @@ public class SignFragment extends Fragment {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
 
-                            Log.i("makejin","object " + object);
-
                             field.put("social_id", object.optString("id"));
                             try{
                                 JSONArray jsonArray = response.getJSONObject().getJSONObject("friends").getJSONArray("data");
                                 int len = jsonArray.length();
-                                List<String> list = new ArrayList<>();
+                                List<User.Friends> list = new ArrayList<>();
                                 for(int idx=0;idx<len;idx++) {
-                                    list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
+                                    list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
                                 }
-                                Log.i("makejin33", "list " + list);
+                                Log.i("makejin", "list " + list);
                                 field.put("friends", list);
-                                Log.i("makejin33", "field " + field);
                                 connectSigninUser(field);//이미 최초 로그인을 한 기록이 있어서 회원가입이 되있는 경우
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
 
-                            //최초 로그인 => 회원가입
+                            //오류 해결해야함!
+                            //connectSigninUser하고 connecSignup또 함
+                            //SharedManager.getInstance().getMe()가 SharedManager.getInstance().setMe()보다 일찍불려서 그럼.
+
+                            //최초 로그인 => 회원가입(DB에 없을때)
                             if(SharedManager.getInstance().getMe() == null) {
                                 n_user = new User();
                                 n_user.social_id = object.optString("id");
@@ -126,13 +130,13 @@ public class SignFragment extends Fragment {
                                 try{
                                     JSONArray jsonArray = response.getJSONObject().getJSONArray("data");
                                     int len = jsonArray.length();
-                                    List<String> list = new ArrayList<>();
+                                    //List<String> list = new ArrayList<>();
+                                    List<User.Friends> list = new ArrayList<>();
                                     for(int idx=0;idx<len;idx++) {
-                                        list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
+                                        //list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
+                                        list.add(0, User.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
                                     }
-                                    Log.i("makejin33", "list " + list);
                                     n_user.friends = list;
-                                    Log.i("makejin33", "field " + field);
                                 }catch (Exception e){
 
                                 }
@@ -201,6 +205,9 @@ public class SignFragment extends Fragment {
         info = (TextView) view.findViewById(R.id.info);
 
 
+        Log.i("makejin656", "isLoggedIn() " + isLoggedIn());
+        Log.i("makejin656", "as " + prefs.getString("social_id","").equals(""));
+
         if(isLoggedIn()){
             field.put("social_id", AccessToken.getCurrentAccessToken().getUserId());
             new GraphRequest(
@@ -214,21 +221,24 @@ public class SignFragment extends Fragment {
 
                                 JSONArray jsonArray = response.getJSONObject().getJSONArray("data");
                                 int len = jsonArray.length();
-                                List<String> list = new ArrayList<>();
+                                //List<String> list = new ArrayList<>();
+                                List<User.Friends> list = new ArrayList<>();
                                 for(int idx=0;idx<len;idx++) {
-                                    list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
+                                    //list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
+                                    list.add(0, User.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
                                 }
+                                Log.i("makejin656", "list " + list);
                                 field.put("friends", list);
                                 connectSigninUser(field);
                             }catch (Exception e){
-
+                                e.printStackTrace();
                             }
                         }
                     }
             ).executeAsync();
-        }
-        else if(!prefs.getString("social_id","").equals("")){
+        } else if(!prefs.getString("social_id","").equals("") || !prefs.getString("password","").equals("")){
             field.put("social_id", prefs.getString("social_id",""));
+            field.put("password", prefs.getString("password",""));
             connectSigninUser_NonFacebook(field);
         }
 
@@ -335,6 +345,7 @@ public class SignFragment extends Fragment {
     }
 
     void connectCreateUser(User user) {
+        LoadingUtil.startLoading(SignActivity.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.signupUser(user)
                 .subscribeOn(Schedulers.newThread())
@@ -342,6 +353,7 @@ public class SignFragment extends Fragment {
                 .subscribe(new Subscriber<com.hansjin.mukja_android.Model.User>() {
                     @Override
                     public final void onCompleted() {
+                        LoadingUtil.startLoading(SignActivity.indicator);
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -367,14 +379,15 @@ public class SignFragment extends Fragment {
     }
 
     void connectSigninUser(final Map field) {
+        LoadingUtil.startLoading(SignActivity.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        Log.i("makejin22", ""+field);
         conn.signinUser(field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public final void onCompleted() {
+                        LoadingUtil.stopLoading(SignActivity.indicator);
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -399,6 +412,7 @@ public class SignFragment extends Fragment {
 
 
     void connectSigninUser_NonFacebook(final Map field) {
+        LoadingUtil.startLoading(SignActivity.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.signinUser_NonFacebook(field)
                 .subscribeOn(Schedulers.newThread())
@@ -406,6 +420,7 @@ public class SignFragment extends Fragment {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public final void onCompleted() {
+                        LoadingUtil.stopLoading(SignActivity.indicator);
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -422,6 +437,8 @@ public class SignFragment extends Fragment {
                             SharedManager.getInstance().setMe(response);
 
                             editor.putString("social_id", response.social_id);
+                            editor.putString("password", response.password);
+
                             editor.commit();
                             Intent intent = new Intent(getActivity(), TabActivity_.class);
                             startActivity(intent);

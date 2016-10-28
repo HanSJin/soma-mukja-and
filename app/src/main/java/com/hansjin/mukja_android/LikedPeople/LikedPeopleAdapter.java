@@ -52,7 +52,8 @@ public class LikedPeopleAdapter extends RecyclerView.Adapter<LikedPeopleAdapter.
     public LikedPeople likedPeople;
 
     public Food food;
-    List<String> friends = SharedManager.getInstance().getMe().friends;
+    //List<String> friends = SharedManager.getInstance().getMe().friends;
+    List<String> friends = SharedManager.getInstance().getMe().friends_id();
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);

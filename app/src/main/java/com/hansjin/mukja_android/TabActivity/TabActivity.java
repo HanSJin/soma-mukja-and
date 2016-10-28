@@ -39,6 +39,8 @@ public class TabActivity extends AppCompatActivity {
     private long backKeyPressedTime = 0;
     private Toast toast;
     SharedPreferences sp;
+
+    @ViewById
     public LinearLayout indicator;
 
 
