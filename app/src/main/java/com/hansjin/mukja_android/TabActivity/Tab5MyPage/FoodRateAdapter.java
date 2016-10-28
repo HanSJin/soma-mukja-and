@@ -2,6 +2,8 @@ package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -72,22 +74,24 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     public FoodRateAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_rate_food, parent, false);
-            return new ItemViewHolder(v);
+            return new RatingViewHolder(v);
         }
         return null;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        if (holder instanceof ItemViewHolder) {
+        if (holder instanceof RatingViewHolder) {
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mOnItemClickListener.onItemClick(v, position);
                 }
             });
-            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+            RatingViewHolder itemViewHolder = (RatingViewHolder) holder;
             final Food food = mDataset.get(position);
+
+
 
             String tasteStr = "";
             for (String taste : food.taste) {
@@ -108,21 +112,22 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             List<String> rate_person_id = food.rate_person_id();
 
             if(rate_person_id.contains(SharedManager.getInstance().getMe()._id)) { //이미 rating 했었다면
-                //itemViewHolder.ratingBar.setRating(food.rate_person.indexOf("user_id"));
-                //Log.i("makejin", ""+food.rate_person.get(i).getUser_id());
                 for(int i=0;i<food.rate_person.size();i++){
                     if(food.rate_person.get(i).getUser_id().equals(SharedManager.getInstance().getMe()._id)){
-                        itemViewHolder.ratingBar.setRating(food.rate_person.get(i).getRate_num());
+                        itemViewHolder.ratingBar1.setRating(food.rate_person.get(i).getRate_num());
                         break;
                     }
                 }
+            }else{
+                itemViewHolder.ratingBar1.setRating(0);
             }
 
-
-            itemViewHolder.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            itemViewHolder.ratingBar1.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    food.rate_person.add(0,food.newrate(SharedManager.getInstance().getMe()._id,rating));
-                    food_rate(food, position);
+                    if(fromUser) {
+                        food.rate_person.add(0, food.newrate(SharedManager.getInstance().getMe()._id, rating));
+                        food_rate(food, position);
+                    }
                 }
             });
 
@@ -153,24 +158,21 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             container = itemView;
         }
     }
-    public class ItemViewHolder extends ViewHolder {
+    public class RatingViewHolder extends ViewHolder {
         public TextView TV_food_name, TV_category;
-
         ImageView IV_food;
-        RatingBar ratingBar;
+        private RatingBar ratingBar1;
 
-        public ItemViewHolder(View v) {
+        public RatingViewHolder(View v) {
             super(v);
             TV_food_name = (TextView) v.findViewById(R.id.TV_food_name);
             TV_category = (TextView) v.findViewById(R.id.TV_category);
-
             IV_food = (ImageView) v.findViewById(R.id.IV_food);
-            ratingBar = (RatingBar) v.findViewById(R.id.ratingBar);
+            ratingBar1 = (RatingBar) v.findViewById(R.id.ratingBar);
         }
     }
 
     public void food_rate(Food food, final int index) {
-        Log.d("hansjin", "rood_rate");
         LoadingUtil.startLoading(foodRate.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.rateFood(food, SharedManager.getInstance().getMe()._id, food._id)
@@ -189,10 +191,14 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
-                            mDataset.get(index).rate_cnt = response.rate_cnt;
+                            if(mDataset.get(index).rate_cnt != response.rate_cnt) {
+                                mDataset.get(index).rate_cnt = response.rate_cnt;
+                                FoodRate.actionBar.setTitle("음식 평가 - " + ++SharedManager.getInstance().getMe().rated_food_num + "개 완료");
+                            }
                             mDataset.get(index).rate_person = response.rate_person;
                             mDataset.get(index).rate_distribution = response.rate_distribution;
                             notifyDataSetChanged();
+
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

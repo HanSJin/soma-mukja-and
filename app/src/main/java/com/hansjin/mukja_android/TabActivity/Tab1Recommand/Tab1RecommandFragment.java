@@ -115,6 +115,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
         });
     }
 
+
     @Override
     public void refresh() {
         page = 1;

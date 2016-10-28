@@ -32,6 +32,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Splash.SplashActivity;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
 import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
@@ -56,43 +57,18 @@ import rx.schedulers.Schedulers;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 public class SignFragment extends Fragment {
-    private Typeface yunGothicFont;
-    // 새로운 컴포넌트들
     CallbackManager callbackManager;
     private LoginButton facebookLoginButton;
     TextView info;
     AccessTokenTracker accessTokenTracker;
     ProfileTracker profileTracker;
-    Intent fbLoginIntent;
-
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
-    public User tempUser = new User();
-
-    private LoginButton mButtonFacebookSignup;
-    private Button mButtonNormalSignup;
-    private Button tempFBButton;
-
-    String tempId;
-    String tempEmail;
-    String tempName;
-    Boolean tempGender; //male - false / female - true
-    String device_type;
-    String app_version;
-    String about_me;
-    Integer age;
-    String job;
-    String location;
-    String thumbnail_url;
-    String thumbnail_url_small;
-    String access_ip;
 
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            Log.i("asd", "zxc1-13");
-            Log.i("asd", "zxc2");
             // 정보 받아오는 graph api
             GraphRequest request = GraphRequest.newMeRequest(
                     loginResult.getAccessToken(),
@@ -102,58 +78,32 @@ public class SignFragment extends Fragment {
                             info.setText("email : " + object.optString("email"));
                             info.append("\nname : " + object.optString("name"));
                             info.append("\ngender : " + object.optString("gender"));
-                            Log.e("aaa1", "" + object.optString("email") + " " +object.optString("id"));
 
-                            Log.e("aaa", "" + response.getJSONObject());
-
-                            /*
-                            try {
-                                info.append("\nage range : " + object.getString("age range"));
-                            }catch (Exception ex){
-                                ex.printStackTrace();
-                            }
-                            info.append("\nage range : " + object.optString("age range"));
-                            */
                             info.append("\n\n위와 같이, 페이스북 정보를 받을 수 있으나 사용하지않습니다. \n본 서비스를 이용하시려면 \"Not a member\"를 클릭해주세요.");
 
-                            tempId = object.optString("id");
-                            tempEmail = object.optString("email");
-                            tempName = object.optString("name");
-                            if(object.optString("gender").equals("male")){
-                                tempGender = false;
-                            }else{
-                                tempGender = true;
-                            }
+                            User n_user = new User();
+                            n_user.social_id = object.optString("id");
+                            n_user.social_type = "facebook";
+                            n_user.push_token = "random";
+                            n_user.device_type = "android";
+                            n_user.app_version = getAppVersion(getActivity());
+                            n_user.nickname = object.optString("name");
+                            n_user.about_me = "자기소개 글을 입력해주세요";
+                            n_user.age = 0;
+                            if(object.optString("gender").equals("male"))
+                                n_user.gender = false;
+                            else
+                                n_user.gender = true;
 
-//                            prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-//                            SharedPreferences.Editor editor = prefs.edit();
+                            n_user.job = "";
+                            n_user.location = SplashActivity.cityName;
+                            //social_id,social_type,push_token, device_type, app_version, nickname,about_me,age, gender,job,location
+                            connectCreateUser(n_user);
 
-
-                            device_type = "android";
-                            app_version = getAppVersion(getActivity());;
-                            Log.i("asd", app_version);
-                            about_me = "자기소개 글을 입력해주세요";
-                            age = 24;
-                            job = "";
-                            location = ""; //위치정보 가져오기
-                            thumbnail_url = "http://graph.facebook.com/" + tempId + "/picture?type=large";
-                            thumbnail_url_small = "http://graph.facebookcom/" + tempId + "/picture?width=78&height=78";
-                            //access_ip = GetDeviceInfo.getIPAddress(true);
-                            access_ip = "";//server에서 구현
-                            Log.i("asd", ""+GetDeviceInfo.getIPAddress(true));
-                            Log.i("asd", ""+GetDeviceInfo.getIPAddress(false));
-
-//                            User n_user = new User(tempId, tempName, tempGender, device_type, app_version, about_me, age, job, location,
-//                                    thumbnail_url, thumbnail_url_small, access_ip);
-                            //User(String social_id, String name, Boolean gender, String device_type, String app_version, String about_me, Integer age, String job, String location, String thumbnail_url, String thumbnail_url_small, String access_ip)
-//                            connectCreateUser(n_user);
-
-
-                            editor.putString("user_id", tempId);
-                            editor.putString("user_name", tempName);
-                            editor.putString("user_about_me", "자기소개를 입력해주세요");
+                            editor.putString("social_id", n_user.social_id);
 
                             editor.commit();
+
                             //tempAge = object.optString("age_range");
                         }
                     });
@@ -167,12 +117,10 @@ public class SignFragment extends Fragment {
         @Override
         public void onCancel() {
             info.setText("Login attempt canceled.");
-            Log.i("asd", "zxc1-15");
         }
 
         @Override
         public void onError(FacebookException e) {
-            Log.i("asd", "zxc1-16");
             info.setText("Login attempt failed.");
 
         }
@@ -202,7 +150,6 @@ public class SignFragment extends Fragment {
                 Log.i("eNuri", "Current Token : " + currentAccessToken);
                 if(currentAccessToken == (null)){ //로그아웃된 상태
                     info.setText("");
-                    //info.setTextColor(Color.red(1));
                 }
             }
 
@@ -218,25 +165,14 @@ public class SignFragment extends Fragment {
 
         info = (TextView) view.findViewById(R.id.info);
 
-
-        long now = System.currentTimeMillis();
-        // 현재 시간을 저장 한다.
-        Date date = new Date(now);
-        // 시간 포맷으로 만든다.
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String strNow = sdfNow.format(date);
-
-//        if(isLoggedIn()){
+        if(isLoggedIn()){
 
         // TEST LOGIN - By HanSJin (Facebook API Open 안되서 내가 접근 못함 ..ㅠ)
             Map field = new HashMap();
-            field.put("social_id", prefs.getString("social_id","793160210817466"));
+            field.put("social_id", prefs.getString("social_id",""));
+            Log.i("makejin", prefs.getString("social_id",""));
             connectSigninUser(field);
-            Intent intent = new Intent(getActivity(), TabActivity_.class);
-            startActivity(intent);
-            getActivity().finish();
-
-//        }
+        }
 
 
         accessTokenTracker = new AccessTokenTracker() {
@@ -313,19 +249,6 @@ public class SignFragment extends Fragment {
                 .subscribe(new Subscriber<com.hansjin.mukja_android.Model.User>() {
                     @Override
                     public final void onCompleted() {
-                        /*
-                        Fragment fragment = new SignAddFragment();
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.activity_sign, fragment);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                        ft.addToBackStack(null);
-                        ft.commit();
-                        */
-
-                        Intent intent = new Intent(getActivity(), TabActivity_.class);
-                        startActivity(intent);
-                        getActivity().finish();
-
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -333,17 +256,16 @@ public class SignFragment extends Fragment {
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(com.hansjin.mukja_android.Model.User response) {
+                    public final void onNext(User response) {
                         if (response != null) {
-                            /*
-                            tempUser.setUser(response);
-                            Log.i("azxc",""+response.getUser_social_id());
-                            Log.i("azxc",""+response.getUser_nickname());
-                            Log.i("azxc",""+response.getUser_about_me());
+                            SharedManager.getInstance().setMe(response);
+                            Log.i("makejin", "response " + response.social_id);
+                            Log.i("makejin", "response " + response.nickname);
+                            Log.i("makejin", "response " + response.thumbnail_url);
 
-                            Log.i("asd", tempUser.getUser_nickname() + " " + tempUser.getUser_about_me());
-                            editor.commit();
-                            */
+                            Intent intent = new Intent(getActivity(), TabActivity_.class);
+                            startActivity(intent);
+                            getActivity().finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
@@ -369,6 +291,9 @@ public class SignFragment extends Fragment {
                     public final void onNext(User response) {
                         if (response != null) {
                             SharedManager.getInstance().setMe(response);
+                            Intent intent = new Intent(getActivity(), TabActivity_.class);
+                            startActivity(intent);
+                            getActivity().finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

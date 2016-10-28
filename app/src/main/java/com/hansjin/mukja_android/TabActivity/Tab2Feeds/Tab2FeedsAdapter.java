@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -47,6 +48,8 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
     public Tab2FeedsFragment fragment;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
+
+    String image_url;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -94,7 +97,16 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             final Food food = mDataset.get(position);
 
             itemViewHolder.authorName.setText(food.author.author_nickname);
-            Glide.with(context).load(Constants.IMAGE_BASE_URL+food.author.author_thumbnail_url+".png").into(itemViewHolder.author_image);
+            image_url = food.author.author_thumbnail_url;
+            if(image_url.contains("facebook")){
+                Glide.with(context).
+                        load(image_url).
+                        into(itemViewHolder.author_image);
+            }else{
+                Glide.with(context).
+                        load(Constants.IMAGE_BASE_URL + image_url).
+                        into(itemViewHolder.author_image);
+            }
             itemViewHolder.foodName.setText(food.name);
 
             Glide.with(context).

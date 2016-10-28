@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.Tab2Feeds.Tab2FeedsAdapter;
@@ -50,7 +51,7 @@ import rx.schedulers.Schedulers;
  * Created by kksd0900 on 16. 10. 11..
  */
 public class Tab5MyPageFragment extends TabParentFragment {
-    TabActivity activity;
+    public static TabActivity activity;
 
     public Tab5MyPageAdapter adapter;
     private RecyclerView recyclerView;
@@ -67,11 +68,11 @@ public class Tab5MyPageFragment extends TabParentFragment {
     TextView TV_user_name;
     public static TextView TV_about_me;
 
-    SharedPreferences prefs;
-
     Bitmap bitmap;
 
     Button BT_edit_about_me;
+
+    String image_url;
 
     /**
      * Create a new instance of the fragment
@@ -96,12 +97,12 @@ public class Tab5MyPageFragment extends TabParentFragment {
         final TabActivity tabActivity = (TabActivity) getActivity();
         this.activity = tabActivity;
 
-        prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-
+        BT_edit_about_me = (Button) view.findViewById(R.id.BT_edit_about_me);
         BT_setting = (Button)view.findViewById(R.id.BT_setting);
         BT_pref_anal = (Button) view.findViewById(R.id.BT_pref_anal);
         BT_food_rate = (Button) view.findViewById(R.id.BT_food_rate);
         IV_profile = (ImageView) view.findViewById(R.id.IV_profile);
+
 
         Toolbar cs_toolbar = (Toolbar)view.findViewById(R.id.cs_toolbar);
 
@@ -165,18 +166,16 @@ public class Tab5MyPageFragment extends TabParentFragment {
                 startActivity(new Intent(getActivity(), ThumbPopupActivity.class));
             }
         });
-//        BT_edit_about_me.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
-//            }
-//        });
-        Glide.with(getActivity()).
-                load(Constants.IMAGE_BASE_URL + SharedManager.getInstance().getMe().thumbnail_url + ".png").
-                thumbnail(0.1f).
-                bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
+        BT_edit_about_me.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
+            }
+        });
+
 
         connectTestCall();
+        connectTestCall_UserInfo();
     }
 
     @Override
@@ -186,11 +185,14 @@ public class Tab5MyPageFragment extends TabParentFragment {
         adapter.clear();
         adapter.notifyDataSetChanged();
         connectTestCall();
+        connectTestCall_UserInfo();
+
     }
 
     @Override
     public void reload() {
-
+        refresh();
+        Log.i("makejin", SharedManager.getInstance().getMe().thumbnail_url);
     }
 
     void connectTestCall() {
@@ -216,10 +218,56 @@ public class Tab5MyPageFragment extends TabParentFragment {
                                 adapter.addData(food);
                             }
                             adapter.notifyDataSetChanged();
+
                         } else {
                             Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+    }
+    void connectTestCall_UserInfo() {
+        LoadingUtil.startLoading(indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.getUserInfo(SharedManager.getInstance().getMe()._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(User response) {
+                        if (response != null) {
+                            SharedManager.getInstance().setMe(response);
+                            image_url = SharedManager.getInstance().getMe().thumbnail_url;
+                            if(image_url.contains("facebook")){
+                                Glide.with(getActivity()).
+                                        load(image_url).
+                                        thumbnail(0.1f).
+                                        bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
+                            }else{
+                                Glide.with(getActivity()).
+                                        load(Constants.IMAGE_BASE_URL + image_url).
+                                        thumbnail(0.1f).
+                                        bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refresh();
+        Log.i("makejin", SharedManager.getInstance().getMe().thumbnail_url);
     }
 }
