@@ -4,16 +4,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import com.hansjin.mukja_android.R;
 
 public class PrivacyRule extends AppCompatActivity {
+    WebView webView;
     Button BT_X;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_privacy_rule);
+        setContentView(R.layout.setting_webview);
+
+        webView = (WebView)findViewById(R.id.webView);
+        webView.setWebViewClient(new WebViewClient());//클릭시 새창 안뜸
+        webView.loadUrl("http://52.192.137.69:8888/privacy_rule");
 
         Toolbar cs_toolbar = (Toolbar)findViewById(R.id.cs_toolbar);
         setSupportActionBar(cs_toolbar);
