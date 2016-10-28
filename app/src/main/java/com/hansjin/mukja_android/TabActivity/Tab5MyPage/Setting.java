@@ -169,8 +169,9 @@ public class Setting extends AppCompatActivity {
                         if (response != null) {
                             editor.clear();
                             editor.commit();
-                            startActivity(new Intent(getApplicationContext(), SignActivity.class));
+                            LoginManager.getInstance().logOut();
                             finish();
+                            startActivity(new Intent(getApplicationContext(), SignActivity.class));
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

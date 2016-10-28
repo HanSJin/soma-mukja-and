@@ -155,7 +155,6 @@ public class SignupNonFacebookFragment extends Fragment {
                             startActivity(intent);
                             getActivity().finish();
                         } else {
-                            Log.i("zxc","makejin");
                             Toast.makeText(getApplicationContext(), "이미 등록된 ID(Email)입니다.", Toast.LENGTH_SHORT).show();
                         }
                     }

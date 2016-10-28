@@ -52,6 +52,7 @@ public class LikedPeopleAdapter extends RecyclerView.Adapter<LikedPeopleAdapter.
     public LikedPeople likedPeople;
 
     public Food food;
+    List<String> friends = SharedManager.getInstance().getMe().friends;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -122,7 +123,8 @@ public class LikedPeopleAdapter extends RecyclerView.Adapter<LikedPeopleAdapter.
                     }
                 }
             }else{
-                itemViewHolder.ratingBar1.setRating(0);
+                //itemViewHolder.ratingBar1.setRating(0);
+                itemViewHolder.ratingBar1.setVisibility(View.INVISIBLE);
             }
 
             if(user.thumbnail_url.contains("facebook")){
@@ -157,7 +159,6 @@ public class LikedPeopleAdapter extends RecyclerView.Adapter<LikedPeopleAdapter.
     public int getItemCount() {
         return mDataset.size();
     }
-
 
     /*
         ViewHolder

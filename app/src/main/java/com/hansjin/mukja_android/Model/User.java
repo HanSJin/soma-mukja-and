@@ -1,7 +1,10 @@
 package com.hansjin.mukja_android.Model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by mijeong on 2016. 10. 4..
@@ -36,4 +39,5 @@ public class User {
     public String location;//회원가입 후, 팝업으로 동의구하기
     public int rated_food_num;//회원가입 후, 팝업으로 동의구하기
     public String password;
+    public List<String> friends;
 }

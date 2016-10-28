@@ -41,6 +41,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,14 +74,6 @@ public class LikedPeople extends AppCompatActivity {
 
     private Food food;
 
-    //currrent location start
-    private LocationManager locationManager = null; // 위치 정보 프로바이더
-    private LocationListener locationListener = null; //위치 정보가 업데이트시 동작
-
-    private static final String TAG = "debug";
-    private boolean isGPSEnabled = false;
-    private boolean isNetworkEnabled = false;
-    //currrent location end
     public static ActionBar actionBar;
 
     @AfterViews
@@ -133,9 +126,25 @@ public class LikedPeople extends AppCompatActivity {
 
     @UiThread
     void uiThread(List<User> response) {
-        for (User user : response) {
+        List<User> response_friends = new ArrayList<>();
+        List<User> response_noFriends = new ArrayList<>();
+
+        for(User user : response){
+            if(SharedManager.getInstance().getMe().friends.contains(user.social_id)){
+                response_friends.add(0, user);
+            }else{
+                response_noFriends.add(0, user);
+            }
+        }
+
+        for (User user : response_friends) {
             adapter.addData(user);
         }
+
+        for (User user : response_noFriends) {
+            adapter.addData(user);
+        }
+
         adapter.notifyDataSetChanged();
     }
 
