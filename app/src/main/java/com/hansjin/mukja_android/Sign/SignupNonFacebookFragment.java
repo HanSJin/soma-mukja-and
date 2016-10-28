@@ -133,7 +133,7 @@ public class SignupNonFacebookFragment extends Fragment {
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "이미 등록된 ID(Email)입니다.", Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public final void onNext(User response) {
@@ -143,7 +143,8 @@ public class SignupNonFacebookFragment extends Fragment {
                             startActivity(intent);
                             getActivity().finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                            Log.i("zxc","makejin");
+                            Toast.makeText(getApplicationContext(), "이미 등록된 ID(Email)입니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

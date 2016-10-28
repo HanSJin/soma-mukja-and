@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Sign.SignActivity;
@@ -121,6 +122,7 @@ public class Setting extends AppCompatActivity {
             public void onClick(View v) {
                 editor.clear();
                 editor.commit();
+                LoginManager.getInstance().logOut();
                 startActivity(new Intent(getApplicationContext(), SignActivity.class));
                 finish();
             }

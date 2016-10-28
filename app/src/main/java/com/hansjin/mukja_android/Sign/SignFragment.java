@@ -70,6 +70,7 @@ public class SignFragment extends Fragment {
     Button BT_signup;
 
     Map field;
+    User n_user;
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
@@ -80,35 +81,39 @@ public class SignFragment extends Fragment {
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
-//                            info.setText("email : " + object.optString("email"));
-//                            info.append("\nname : " + object.optString("name"));
-//                            info.append("\ngender : " + object.optString("gender"));
-//
-//                            info.append("\n\n위와 같이, 페이스북 정보를 받을 수 있으나 사용하지않습니다. \n본 서비스를 이용하시려면 \"Not a member\"를 클릭해주세요.");
 
-                            User n_user = new User();
-                            n_user.social_id = object.optString("id");
-                            n_user.social_type = "facebook";
-                            n_user.push_token = "random";
-                            n_user.device_type = "android";
-                            n_user.app_version = getAppVersion(getActivity());
-                            n_user.nickname = object.optString("name");
-                            n_user.about_me = "자기소개 글을 입력해주세요";
-                            n_user.age = 0;
-                            if(object.optString("gender").equals("male"))
-                                n_user.gender = false;
-                            else
-                                n_user.gender = true;
+                            Map field = new HashMap();
+                            field.put("social_id", object.optString("id"));
 
-                            n_user.job = "";
-                            n_user.location = SplashActivity.cityName;
-                            n_user.password = null;
-                            //social_id,social_type,push_token, device_type, app_version, nickname,about_me,age, gender,job,location, password
-                            connectCreateUser(n_user);
+                            //이미 최초 로그인을 한 기록이 있어서 회원가입이 되있는 경우
+                            connectSigninUser(field);
 
-                            editor.putString("social_id", n_user.social_id);
+                            //최초 로그인 => 회원가입
+                            if(SharedManager.getInstance().getMe().equals(null)) {
+                                n_user = new User();
+                                n_user.social_id = object.optString("id");
+                                n_user.social_type = "facebook";
+                                n_user.push_token = "random";
+                                n_user.device_type = "android";
+                                n_user.app_version = getAppVersion(getActivity());
+                                n_user.nickname = object.optString("name");
+                                n_user.about_me = "자기소개 글을 입력해주세요";
+                                n_user.age = 0;
+                                if(object.optString("gender").equals("male"))
+                                    n_user.gender = false;
+                                else
+                                    n_user.gender = true;
 
-                            editor.commit();
+                                n_user.job = "";
+                                n_user.location = SplashActivity.cityName;
+                                n_user.password = null;
+                                //social_id,social_type,push_token, device_type, app_version, nickname,about_me,age, gender,job,location, password
+                                connectCreateUser(n_user);
+
+
+                            }
+
+
 
                             //tempAge = object.optString("age_range");
                         }
@@ -309,6 +314,9 @@ public class SignFragment extends Fragment {
                         if (response != null) {
                             SharedManager.getInstance().setMe(response);
 
+                            editor.putString("social_id", response.social_id);
+                            editor.commit();
+
                             Intent intent = new Intent(getActivity(), TabActivity_.class);
                             startActivity(intent);
                             getActivity().finish();
@@ -337,6 +345,8 @@ public class SignFragment extends Fragment {
                     public final void onNext(User response) {
                         if (response != null) {
                             SharedManager.getInstance().setMe(response);
+                            editor.putString("social_id", response.social_id);
+                            editor.commit();
                             Intent intent = new Intent(getActivity(), TabActivity_.class);
                             startActivity(intent);
                             getActivity().finish();

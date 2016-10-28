@@ -3,6 +3,7 @@ package com.hansjin.mukja_android.Profile;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -66,6 +67,7 @@ public class YourProfileActivity extends AppCompatActivity {
 
     String image_url;
     String user_id;
+    String url;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,6 +138,20 @@ public class YourProfileActivity extends AppCompatActivity {
             }
         });
 
+
+        IV_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url = "http://facebook.com/" +SharedManager.getInstance().getYou().social_id;
+
+                /*
+                if (!url.startsWith("http://") && !url.startsWith("https://"))
+                    url = "http://" + url;
+                    */
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
+            }
+        });
     }
 
 
