@@ -69,7 +69,7 @@ public class SplashActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
         Map field = new HashMap();
-        field.put("social_id", prefs.getString("social_id","7931602108174661"));
+        field.put("social_id", prefs.getString("social_id","793160210817466"));
         connectSigninUser(field);
 
 

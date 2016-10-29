@@ -19,7 +19,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
         <activity
             android:name=".Splash.SplashActivity_"
             android:launchMode="singleTask"
@@ -27,17 +26,11 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ResultActivity_"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".UserActiviy_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -70,7 +63,10 @@
             android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
         <activity
-            android:name=".Activity.RegisterActivity_" />
+            android:name=".Activity.RegisterActivity_"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".TabActivity.Tab5MyPage.FoodRate_"
             android:launchMode="singleTask"
