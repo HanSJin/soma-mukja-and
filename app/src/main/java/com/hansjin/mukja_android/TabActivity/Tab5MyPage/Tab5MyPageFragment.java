@@ -23,7 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.hansjin.mukja_android.Detail.DetailActivity_;
+import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
@@ -38,6 +43,7 @@ import com.hansjin.mukja_android.Utils.PopupNotCompleted;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import org.androidannotations.annotations.UiThread;
+import org.json.JSONArray;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -180,6 +186,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
 
 
 
+
     }
 
     @Override
@@ -257,7 +264,6 @@ public class Tab5MyPageFragment extends TabParentFragment {
                                         thumbnail(0.1f).
                                         bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
                             }else{
-                                Log.i("makejin", image_url);
                                 Glide.with(getActivity()).
                                         load(Constants.IMAGE_BASE_URL + image_url).
                                         thumbnail(0.1f).

@@ -1,7 +1,10 @@
 package com.hansjin.mukja_android.Model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by mijeong on 2016. 10. 4..
@@ -36,4 +39,32 @@ public class User {
     public String location;//회원가입 후, 팝업으로 동의구하기
     public int rated_food_num;//회원가입 후, 팝업으로 동의구하기
     public String password;
+    public List<Friends> friends = new ArrayList<>();
+
+    public static class Friends implements Serializable {
+        public String user_id;
+        public String user_name;
+
+        public String getUser_id() {
+            return user_id;
+        }
+        public String getUser_name() {
+            return user_name;
+        }
+    }
+    public List<String> friends_id(){
+        List<String> result = new ArrayList<>();
+        for (Friends user:friends) {
+            result.add(user.user_id);
+        }
+        return result;
+    }
+
+    public static Friends newFriend(String user_id, String user_name){
+        Friends f = new Friends();
+        f.user_id = user_id;
+        f.user_name = user_name;
+        return f;
+    }
+
 }

@@ -98,6 +98,7 @@ public class SignupNonFacebookFragment extends Fragment {
                         n_user.job = "";
                         n_user.location = SplashActivity.cityName;
                         n_user.password = tempPw;
+                        n_user.friends = null;
 
                         connectCreateUser(n_user);
                     }else{
@@ -155,7 +156,6 @@ public class SignupNonFacebookFragment extends Fragment {
                             startActivity(intent);
                             getActivity().finish();
                         } else {
-                            Log.i("zxc","makejin");
                             Toast.makeText(getApplicationContext(), "이미 등록된 ID(Email)입니다.", Toast.LENGTH_SHORT).show();
                         }
                     }

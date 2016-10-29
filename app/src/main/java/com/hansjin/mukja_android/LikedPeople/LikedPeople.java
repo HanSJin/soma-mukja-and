@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -41,6 +42,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,14 +75,6 @@ public class LikedPeople extends AppCompatActivity {
 
     private Food food;
 
-    //currrent location start
-    private LocationManager locationManager = null; // 위치 정보 프로바이더
-    private LocationListener locationListener = null; //위치 정보가 업데이트시 동작
-
-    private static final String TAG = "debug";
-    private boolean isGPSEnabled = false;
-    private boolean isNetworkEnabled = false;
-    //currrent location end
     public static ActionBar actionBar;
 
     @AfterViews
@@ -133,9 +127,48 @@ public class LikedPeople extends AppCompatActivity {
 
     @UiThread
     void uiThread(List<User> response) {
-        for (User user : response) {
+        List<User> response_friends = new ArrayList<>();
+        List<User> response_noFriends = new ArrayList<>();
+        List<String> friend_list;
+
+        try {
+            friend_list = SharedManager.getInstance().getMe().friends_id();
+            //friend_list -> null 아님
+
+            for(User user : response){
+                if(friend_list.contains(user._id)){
+                    response_friends.add(0, user);
+                }else{
+                    //본인이 좋아요 눌렀으면 최상단에
+                    if(SharedManager.getInstance().getMe()._id.equals(user._id)){
+                        adapter.addData(user);
+                        continue;
+                    }
+                    response_noFriends.add(0, user);
+                }
+            }
+        }catch (NullPointerException NE){
+            //friend_list -> null
+
+            for (User user : response) {
+                //본인이 좋아요 눌렀으면 최상단에
+                if(SharedManager.getInstance().getMe()._id.equals(user._id)){
+                    adapter.addData(user);
+                    continue;
+                }
+                response_noFriends.add(0, user);
+            }
+        }
+
+
+        for (User user : response_friends) {
             adapter.addData(user);
         }
+
+        for (User user : response_noFriends) {
+            adapter.addData(user);
+        }
+
         adapter.notifyDataSetChanged();
     }
 

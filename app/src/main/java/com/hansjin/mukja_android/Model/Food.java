@@ -30,9 +30,38 @@ public class Food implements Serializable {
     public List<String> cooking = new ArrayList<>();
     public List<String> ingredient = new ArrayList<>();
 
-    public List<String> like_person = new ArrayList<>();
+    //public List<String> like_person = new ArrayList<>();
+    public List<LikePerson> like_person = new ArrayList<>();
     public List<RatePerson> rate_person = new ArrayList<>();
     public List<Integer> rate_distribution = new ArrayList<>();
+
+    public class LikePerson implements Serializable {
+        public String user_id;
+        public String like_date;
+
+        public String getUser_id() {
+            return user_id;
+        }
+
+        public String getLike_date() {
+            return like_date;
+        }
+    }
+
+    public List<String> like_person_id(){
+        List<String> result = new ArrayList<>();
+        for (LikePerson user_id:like_person) {
+            result.add(user_id.user_id);
+        }
+        return result;
+    }
+
+    public LikePerson newLike(String user_id,String like_date){
+        LikePerson lp = new LikePerson();
+        lp.user_id = user_id;
+        lp.like_date = like_date;
+        return lp;
+    }
 
     public class Author implements Serializable {
         public String author_id;

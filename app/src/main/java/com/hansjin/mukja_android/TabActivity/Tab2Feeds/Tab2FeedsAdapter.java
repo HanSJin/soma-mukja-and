@@ -2,6 +2,7 @@ package com.hansjin.mukja_android.TabActivity.Tab2Feeds;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +15,10 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
+import com.hansjin.mukja_android.LikedPeople.LikedPeople_;
 import com.hansjin.mukja_android.Model.GlobalResponse;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
@@ -36,6 +40,8 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment.activity;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -115,27 +121,74 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     into(itemViewHolder.food_img);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
-            if (food.like_cnt==0)
+            if (food.like_person.size()==0)
                 itemViewHolder.people_like.setText("가장 먼저 좋아요를 눌러주세요!");
-            else
-                itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
-            String friend = Constants.mockMyFriendText(position);
-            if (friend.equals(""))
-                itemViewHolder.friend_like.setText("아직 이 음식을 좋아한 친구가 없어요.");
-            else
-                itemViewHolder.friend_like.setText("회원님의 친구 "+friend+" 님이 좋아해요.");
+            else {
+                User me = SharedManager.getInstance().getMe();
+                List<String> food_like_list = food.like_person_id();
+                List<String> friend_list = me.friends_id();
+                String tempFriend = "";
+                String tempMe = "";
+                boolean isYou = false;
+                boolean isMe = false;
+
+                int like_person_size = food.like_person.size();
+
+                for(int i=0;i<food_like_list.size();i++){
+                    if(food_like_list.get(i).equals(me._id)){
+                        isMe = true;
+                    }
+                    for(int j=0;j<friend_list.size();j++){
+                        if(food_like_list.get(i).equals(friend_list.get(j))){
+                            tempFriend = me.friends.get(j).getUser_name();
+                            isYou = true;
+                            break;
+                        }
+                    }
+                }
+
+                String txt = "";
+                if(!isYou){
+                    if(isMe) //me
+                        if(like_person_size==1)
+                            txt = "회원님이 좋아해요";
+                        else
+                            txt = "회원님 외 " + (like_person_size-1) + "명의 사람들이 좋아해요";
+                    else{ // x
+                        if(like_person_size==1)
+                            txt = "1명의 사람이 좋아해요";
+                        else
+                            txt = like_person_size + "명의 사람들이 좋아해요";
+                    }
+                }else{//좋아요한 내 친구가 1명 이상일 때
+                    if(isMe) { //you me
+                        if(like_person_size==1)
+                            txt = "회원님, " + tempFriend + "님이 좋아해요";
+                        else
+                            txt = "회원님, " + tempFriend + "님 외 " + (like_person_size - 2) + "명의 사람들이 좋아해요";
+                    }
+                    else //you
+                        if(like_person_size==1)
+                            txt = tempFriend+"님이 좋아해요";
+                        else
+                            txt = tempFriend+ "님 외 " + (like_person_size-1) + "명의 사람들이 좋아해요";
+                }
+
+                itemViewHolder.people_like.setText(txt);
+
+            }
 
             itemViewHolder.write_time.setText(cal_time(food));
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
             itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
-            setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
+            setImamge(food.like_person_id(),itemViewHolder.heart,R.drawable.heart_red);
             setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     food_like(food, position);
-                    setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
+                    setImamge(food.like_person_id(),itemViewHolder.heart,R.drawable.heart_red);
                 }
             });
 
@@ -178,6 +231,26 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
 
             if (position == mDataset.size()-1 && !fragment.endOfPage)
                 fragment.connectFeed(++fragment.page);
+
+            itemViewHolder.food_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailActivity_.class);
+                    intent.putExtra("food", food);
+                    context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                }
+            });
+
+            itemViewHolder.people_like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, LikedPeople_.class);
+                    intent.putExtra("food", food);
+                    context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                }
+            });
         }
     }
 
