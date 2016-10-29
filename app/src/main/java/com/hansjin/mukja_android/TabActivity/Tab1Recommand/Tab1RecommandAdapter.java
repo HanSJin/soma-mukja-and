@@ -101,6 +101,9 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     }
 
     public void clear() {
+        category_food.taste.clear();
+        category_food.country.clear();
+        category_food.cooking.clear();
         mDataset.clear();
         push_tag.clear();
     }

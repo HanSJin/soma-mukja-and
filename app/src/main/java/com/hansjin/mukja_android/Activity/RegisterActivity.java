@@ -85,7 +85,8 @@ public class RegisterActivity extends AppCompatActivity {
     Float rate_num = 10.0f;
 
     private String imagepath=null;
-    SharedPreferences prefs;
+    Boolean btn_push = false;
+
 
     @ViewById
     Toolbar cs_toolbar;
@@ -131,8 +132,6 @@ public class RegisterActivity extends AppCompatActivity {
     void afterBindingView() {
         this.activity = this;
 
-        prefs = getSharedPreferences("TodayFood",0);
-
         setSupportActionBar(cs_toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -172,7 +171,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.finish) {
             //현재 순서 : 빈칸 체크 -> 이미지 업로드 -> 음식 등록 -> 별점 평가
-            check_blank();
+            if(!btn_push) {
+                btn_push = true;
+                check_blank();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -348,7 +350,6 @@ public class RegisterActivity extends AppCompatActivity {
                 //5점 만점
                 float st = 5f / ratingBar.getNumStars();
                 rate_num = st * v;
-                Toast.makeText(getApplicationContext(),String.valueOf(rate_num),Toast.LENGTH_SHORT).show();
             }
         });
     }

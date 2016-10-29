@@ -82,12 +82,10 @@ public class SplashActivity extends AppCompatActivity {
         //mBackgroundThread.start();
 
         SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-<<<<<<< HEAD
+
         Map field = new HashMap();
         field.put("social_id", prefs.getString("social_id","793160210817466"));
         connectSigninUser(field);
-=======
->>>>>>> 7705a3fe9fdc637dbe233792fe30bb8cb1f65e22
 
        // if(prefs.getString("social_id","").equals("")){
             Intent intent = new Intent(activity, SignActivity.class);
