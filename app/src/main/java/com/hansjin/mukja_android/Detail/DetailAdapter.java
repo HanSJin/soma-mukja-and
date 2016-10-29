@@ -103,7 +103,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             imageHolder.viewCnt.setText("View "+food.view_cnt);
             imageHolder.foodRateNum.setText(cal_rate(food)+"");
             imageHolder.heartImg.setImageDrawable(context.getResources().getDrawable(R.drawable.heart_gray));
-            for (String uid : food.like_person) {
+            for (String uid : food.like_person_id()) {
                 if (uid.equals(SharedManager.getInstance().getMe()._id)) {
                     imageHolder.heartImg.setImageDrawable(context.getResources().getDrawable(R.drawable.heart_red));
                 }
@@ -154,7 +154,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             }
             else {
                 User me = SharedManager.getInstance().getMe();
-                List<String> food_like_list = food.like_person;
+                List<String> food_like_list = food.like_person_id();
                 List<String> friend_list = me.friends_id();
                 String tempFriend = "";
                 String tempMe = "";

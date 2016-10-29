@@ -132,11 +132,8 @@ public class LikedPeople extends AppCompatActivity {
         List<String> friend_list;
 
         try {
-            //friend_list = SharedManager.getInstance().getMe().friends;
             friend_list = SharedManager.getInstance().getMe().friends_id();
             //friend_list -> null 아님
-
-            Log.i("makejin3202", "friend_list " + friend_list);
 
             for(User user : response){
                 if(friend_list.contains(user._id)){
@@ -162,10 +159,6 @@ public class LikedPeople extends AppCompatActivity {
                 response_noFriends.add(0, user);
             }
         }
-
-
-        Log.i("makejin3202", "response_friends " + response_friends);
-        Log.i("makejin3202", "response_noFriends " + response_noFriends);
 
 
         for (User user : response_friends) {

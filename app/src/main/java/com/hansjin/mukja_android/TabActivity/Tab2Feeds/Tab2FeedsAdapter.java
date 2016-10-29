@@ -125,7 +125,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                 itemViewHolder.people_like.setText("가장 먼저 좋아요를 눌러주세요!");
             else {
                 User me = SharedManager.getInstance().getMe();
-                List<String> food_like_list = food.like_person;
+                List<String> food_like_list = food.like_person_id();
                 List<String> friend_list = me.friends_id();
                 String tempFriend = "";
                 String tempMe = "";
@@ -182,13 +182,13 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
             itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
-            setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
+            setImamge(food.like_person_id(),itemViewHolder.heart,R.drawable.heart_red);
             setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     food_like(food, position);
-                    setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
+                    setImamge(food.like_person_id(),itemViewHolder.heart,R.drawable.heart_red);
                 }
             });
 

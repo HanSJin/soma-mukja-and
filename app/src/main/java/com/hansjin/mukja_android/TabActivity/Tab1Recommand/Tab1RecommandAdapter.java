@@ -143,7 +143,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                 itemViewHolder.people_like.setText("가장 먼저 좋아요를 눌러주세요!");
             else {
                 User me = SharedManager.getInstance().getMe();
-                List<String> food_like_list = food.like_person;
+                List<String> food_like_list = food.like_person_id();
                 List<String> friend_list = me.friends_id();
                 String tempFriend = "";
                 String tempMe = "";
@@ -198,13 +198,13 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
             itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
-            setImamge(food.like_person, itemViewHolder.heart, R.drawable.heart_red);
+            setImamge(food.like_person_id(), itemViewHolder.heart, R.drawable.heart_red);
             setImamge(food.rate_person_id(), itemViewHolder.star, R.drawable.star_yellow);
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     food_like(food, position-1);
-                    setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
+                    setImamge(food.like_person_id(),itemViewHolder.heart,R.drawable.heart_red);
                 }
             });
 
@@ -393,8 +393,11 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
+                            Log.i("makejin", "response " + response);
                             mDataset.get(index).like_cnt = response.like_cnt;
+                            Log.i("makejin", "response.like_cnt " + response.like_cnt);
                             mDataset.get(index).like_person = response.like_person;
+                            Log.i("makejin", "response.like_person " + response.like_person);
                             notifyDataSetChanged();
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();

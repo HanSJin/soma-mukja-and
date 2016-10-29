@@ -97,7 +97,6 @@ public class SignFragment extends Fragment {
                                 for(int idx=0;idx<len;idx++) {
                                     list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
                                 }
-                                Log.i("makejin", "list " + list);
                                 field.put("friends", list);
                                 connectSigninUser(field);//이미 최초 로그인을 한 기록이 있어서 회원가입이 되있는 경우
                             }catch (Exception e){
@@ -105,7 +104,7 @@ public class SignFragment extends Fragment {
                             }
 
                             //오류 해결해야함!
-                            //connectSigninUser하고 connecSignup또 함
+                            //connectSigninUser하고 connecSignup 또 함
                             //SharedManager.getInstance().getMe()가 SharedManager.getInstance().setMe()보다 일찍불려서 그럼.
 
                             //최초 로그인 => 회원가입(DB에 없을때)
@@ -205,9 +204,6 @@ public class SignFragment extends Fragment {
         info = (TextView) view.findViewById(R.id.info);
 
 
-        Log.i("makejin656", "isLoggedIn() " + isLoggedIn());
-        Log.i("makejin656", "as " + prefs.getString("social_id","").equals(""));
-
         if(isLoggedIn()){
             field.put("social_id", AccessToken.getCurrentAccessToken().getUserId());
             new GraphRequest(
@@ -227,7 +223,6 @@ public class SignFragment extends Fragment {
                                     //list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
                                     list.add(0, User.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
                                 }
-                                Log.i("makejin656", "list " + list);
                                 field.put("friends", list);
                                 connectSigninUser(field);
                             }catch (Exception e){
@@ -358,7 +353,6 @@ public class SignFragment extends Fragment {
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public final void onNext(User response) {
