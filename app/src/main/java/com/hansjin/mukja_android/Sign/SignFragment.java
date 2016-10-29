@@ -11,10 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,28 +29,30 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
-import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
-import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment;
-import com.hansjin.mukja_android.TabActivity.TabActivity;
+import com.hansjin.mukja_android.Splash.SplashActivity;
 import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
-import com.hansjin.mukja_android.Utils.GetDeviceInfo;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import rx.Subscriber;
@@ -56,109 +61,93 @@ import rx.schedulers.Schedulers;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 public class SignFragment extends Fragment {
-    private Typeface yunGothicFont;
-    // 새로운 컴포넌트들
     CallbackManager callbackManager;
     private LoginButton facebookLoginButton;
     TextView info;
     AccessTokenTracker accessTokenTracker;
     ProfileTracker profileTracker;
-    Intent fbLoginIntent;
-
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
-    public User tempUser = new User();
 
-    private LoginButton mButtonFacebookSignup;
-    private Button mButtonNormalSignup;
-    private Button tempFBButton;
+    EditText ET_email;
+    EditText ET_pw;
 
-    String tempId;
-    String tempEmail;
-    String tempName;
-    Boolean tempGender; //male - false / female - true
-    String device_type;
-    String app_version;
-    String about_me;
-    Integer age;
-    String job;
-    String location;
-    String thumbnail_url;
-    String thumbnail_url_small;
-    String access_ip;
+    Button BT_signin;
+    Button BT_signup;
+
+    User n_user;
+    Map field = new HashMap();
 
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
-        public void onSuccess(LoginResult loginResult) {
-            Log.i("asd", "zxc1-13");
-            Log.i("asd", "zxc2");
+        public void onSuccess(final LoginResult loginResult) {
             // 정보 받아오는 graph api
             GraphRequest request = GraphRequest.newMeRequest(
                     loginResult.getAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
-                            info.setText("email : " + object.optString("email"));
-                            info.append("\nname : " + object.optString("name"));
-                            info.append("\ngender : " + object.optString("gender"));
-                            Log.e("aaa1", "" + object.optString("email") + " " +object.optString("id"));
 
-                            Log.e("aaa", "" + response.getJSONObject());
-
-                            /*
-                            try {
-                                info.append("\nage range : " + object.getString("age range"));
-                            }catch (Exception ex){
-                                ex.printStackTrace();
-                            }
-                            info.append("\nage range : " + object.optString("age range"));
-                            */
-                            info.append("\n\n위와 같이, 페이스북 정보를 받을 수 있으나 사용하지않습니다. \n본 서비스를 이용하시려면 \"Not a member\"를 클릭해주세요.");
-
-                            tempId = object.optString("id");
-                            tempEmail = object.optString("email");
-                            tempName = object.optString("name");
-                            if(object.optString("gender").equals("male")){
-                                tempGender = false;
-                            }else{
-                                tempGender = true;
+                            field.put("social_id", object.optString("id"));
+                            try{
+                                JSONArray jsonArray = response.getJSONObject().getJSONObject("friends").getJSONArray("data");
+                                int len = jsonArray.length();
+                                List<User.Friends> list = new ArrayList<>();
+                                for(int idx=0;idx<len;idx++) {
+                                    list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
+                                }
+                                field.put("friends", list);
+                                connectSigninUser(field);//이미 최초 로그인을 한 기록이 있어서 회원가입이 되있는 경우
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
 
-//                            prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-//                            SharedPreferences.Editor editor = prefs.edit();
+                            //오류 해결해야함!
+                            //connectSigninUser하고 connecSignup 또 함
+                            //SharedManager.getInstance().getMe()가 SharedManager.getInstance().setMe()보다 일찍불려서 그럼.
+
+                            //최초 로그인 => 회원가입(DB에 없을때)
+                            if(SharedManager.getInstance().getMe() == null) {
+                                n_user = new User();
+                                n_user.social_id = object.optString("id");
+                                n_user.social_type = "facebook";
+                                n_user.push_token = "random";
+                                n_user.device_type = "android";
+                                n_user.app_version = getAppVersion(getActivity());
+                                n_user.nickname = object.optString("name");
+                                n_user.about_me = "자기소개 글을 입력해주세요";
+                                n_user.age = 0;
+                                if(object.optString("gender").equals("male"))
+                                    n_user.gender = false;
+                                else
+                                    n_user.gender = true;
+
+                                n_user.job = "";
+                                n_user.location = SplashActivity.cityName;
+                                n_user.password = null;
+                                try{
+                                    JSONArray jsonArray = response.getJSONObject().getJSONArray("data");
+                                    int len = jsonArray.length();
+                                    //List<String> list = new ArrayList<>();
+                                    List<User.Friends> list = new ArrayList<>();
+                                    for(int idx=0;idx<len;idx++) {
+                                        //list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
+                                        list.add(0, User.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
+                                    }
+                                    n_user.friends = list;
+                                }catch (Exception e){
+
+                                }
+                                connectCreateUser(n_user);
+                            }
 
 
-                            device_type = "android";
-                            app_version = getAppVersion(getActivity());;
-                            Log.i("asd", app_version);
-                            about_me = "자기소개 글을 입력해주세요";
-                            age = 24;
-                            job = "";
-                            location = ""; //위치정보 가져오기
-                            thumbnail_url = "http://graph.facebook.com/" + tempId + "/picture?type=large";
-                            thumbnail_url_small = "http://graph.facebookcom/" + tempId + "/picture?width=78&height=78";
-                            //access_ip = GetDeviceInfo.getIPAddress(true);
-                            access_ip = "";//server에서 구현
-                            Log.i("asd", ""+GetDeviceInfo.getIPAddress(true));
-                            Log.i("asd", ""+GetDeviceInfo.getIPAddress(false));
-
-//                            User n_user = new User(tempId, tempName, tempGender, device_type, app_version, about_me, age, job, location,
-//                                    thumbnail_url, thumbnail_url_small, access_ip);
-                            //User(String social_id, String name, Boolean gender, String device_type, String app_version, String about_me, Integer age, String job, String location, String thumbnail_url, String thumbnail_url_small, String access_ip)
-//                            connectCreateUser(n_user);
-
-
-                            editor.putString("user_id", tempId);
-                            editor.putString("user_name", tempName);
-                            editor.putString("user_about_me", "자기소개를 입력해주세요");
-
-                            editor.commit();
                             //tempAge = object.optString("age_range");
                         }
                     });
             Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,email,gender");
+            parameters.putString("fields", "id,name,email,gender,friends");
             request.setParameters(parameters);
             request.executeAsync();
         }
@@ -167,12 +156,10 @@ public class SignFragment extends Fragment {
         @Override
         public void onCancel() {
             info.setText("Login attempt canceled.");
-            Log.i("asd", "zxc1-15");
         }
 
         @Override
         public void onError(FacebookException e) {
-            Log.i("asd", "zxc1-16");
             info.setText("Login attempt failed.");
 
         }
@@ -194,49 +181,61 @@ public class SignFragment extends Fragment {
         prefs = getActivity().getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
         editor = prefs.edit();
 
+        BT_signin = (Button)view.findViewById(R.id.BT_signin);
+        BT_signup = (Button)view.findViewById(R.id.BT_signup);
+
+        ET_email = (EditText)view.findViewById(R.id.ET_email);
+        ET_pw = (EditText)view.findViewById(R.id.ET_pw);
+
         callbackManager = CallbackManager.Factory.create();
         accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 // App code
-                Log.i("eNuri", "Current Token : " + currentAccessToken);
                 if(currentAccessToken == (null)){ //로그아웃된 상태
                     info.setText("");
-                    //info.setTextColor(Color.red(1));
                 }
             }
 
         };
 
-
-
         accessTokenTracker.startTracking();
-
-        facebookLoginButton = (LoginButton) view.findViewById(R.id.facebook_login_button);
-        facebookLoginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday"));
-        facebookLoginButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
         info = (TextView) view.findViewById(R.id.info);
 
 
-        long now = System.currentTimeMillis();
-        // 현재 시간을 저장 한다.
-        Date date = new Date(now);
-        // 시간 포맷으로 만든다.
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String strNow = sdfNow.format(date);
+        if(isLoggedIn()){
+            field.put("social_id", AccessToken.getCurrentAccessToken().getUserId());
+            new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/me/friends",
+                    null,
+                    HttpMethod.GET,
+                    new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse response) {
+                            try{
 
-//        if(isLoggedIn()){
-
-        // TEST LOGIN - By HanSJin (Facebook API Open 안되서 내가 접근 못함 ..ㅠ)
-            Map field = new HashMap();
-            field.put("social_id", prefs.getString("social_id","793160210817466"));
-            connectSigninUser(field);
-            Intent intent = new Intent(getActivity(), TabActivity_.class);
-            startActivity(intent);
-            getActivity().finish();
-
-//        }
+                                JSONArray jsonArray = response.getJSONObject().getJSONArray("data");
+                                int len = jsonArray.length();
+                                //List<String> list = new ArrayList<>();
+                                List<User.Friends> list = new ArrayList<>();
+                                for(int idx=0;idx<len;idx++) {
+                                    //list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
+                                    list.add(0, User.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
+                                }
+                                field.put("friends", list);
+                                connectSigninUser(field);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            ).executeAsync();
+        } else if(!prefs.getString("social_id","").equals("") || !prefs.getString("password","").equals("")){
+            field.put("social_id", prefs.getString("social_id",""));
+            field.put("password", prefs.getString("password",""));
+            connectSigninUser_NonFacebook(field);
+        }
 
 
         accessTokenTracker = new AccessTokenTracker() {
@@ -261,6 +260,41 @@ public class SignFragment extends Fragment {
 
         };
 
+
+        BT_signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tempEmail = ET_email.getText().toString();
+                String tempPassword = ET_pw.getText().toString();
+
+                if(tempEmail.equals("") || tempPassword.equals("")){
+                    Toast toast = Toast.makeText(getActivity(), "Write your E-mail and password", Toast.LENGTH_SHORT);
+                    int offsetX = 0;
+                    int offsetY = 0;
+                    toast.setGravity(Gravity.CENTER, offsetX, offsetY);
+                    toast.show();
+                    return;
+                }
+
+                field = new HashMap();
+                field.put("social_id", tempEmail);
+                field.put("password", tempPassword);
+
+                connectSigninUser_NonFacebook(field);
+            }
+        });
+
+        BT_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment reg = new SignupNonFacebookFragment();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.activity_sign, reg);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
     }
 
     public boolean isLoggedIn() {
@@ -271,8 +305,8 @@ public class SignFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LoginButton loginButton = (LoginButton)view.findViewById(R.id.facebook_login_button);
-        loginButton.setReadPermissions("public_profile", "user_friends","email");
+        LoginButton loginButton = (LoginButton)view.findViewById(R.id.BT_facebook);
+        loginButton.setReadPermissions("public_profile", "user_friends","email", "user_birthday");
         loginButton.setFragment(this);
         loginButton.registerCallback(callbackManager, callback);
     }
@@ -291,7 +325,7 @@ public class SignFragment extends Fragment {
         profileTracker.stopTracking();
     }
 
-    public static String getAppVersion(Context context) {
+    public String getAppVersion(Context context) {
 
         // application version
         String versionName = "";
@@ -306,6 +340,7 @@ public class SignFragment extends Fragment {
     }
 
     void connectCreateUser(User user) {
+        LoadingUtil.startLoading(SignActivity.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.signupUser(user)
                 .subscribeOn(Schedulers.newThread())
@@ -313,37 +348,23 @@ public class SignFragment extends Fragment {
                 .subscribe(new Subscriber<com.hansjin.mukja_android.Model.User>() {
                     @Override
                     public final void onCompleted() {
-                        /*
-                        Fragment fragment = new SignAddFragment();
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.activity_sign, fragment);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                        ft.addToBackStack(null);
-                        ft.commit();
-                        */
-
-                        Intent intent = new Intent(getActivity(), TabActivity_.class);
-                        startActivity(intent);
-                        getActivity().finish();
-
+                        LoadingUtil.startLoading(SignActivity.indicator);
                     }
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(com.hansjin.mukja_android.Model.User response) {
+                    public final void onNext(User response) {
                         if (response != null) {
-                            /*
-                            tempUser.setUser(response);
-                            Log.i("azxc",""+response.getUser_social_id());
-                            Log.i("azxc",""+response.getUser_nickname());
-                            Log.i("azxc",""+response.getUser_about_me());
+                            SharedManager.getInstance().setMe(response);
 
-                            Log.i("asd", tempUser.getUser_nickname() + " " + tempUser.getUser_about_me());
+                            editor.putString("social_id", response.social_id);
                             editor.commit();
-                            */
+
+                            Intent intent = new Intent(getActivity(), TabActivity_.class);
+                            startActivity(intent);
+                            getActivity().finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
@@ -352,6 +373,7 @@ public class SignFragment extends Fragment {
     }
 
     void connectSigninUser(final Map field) {
+        LoadingUtil.startLoading(SignActivity.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.signinUser(field)
                 .subscribeOn(Schedulers.newThread())
@@ -359,6 +381,7 @@ public class SignFragment extends Fragment {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public final void onCompleted() {
+                        LoadingUtil.stopLoading(SignActivity.indicator);
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -369,6 +392,51 @@ public class SignFragment extends Fragment {
                     public final void onNext(User response) {
                         if (response != null) {
                             SharedManager.getInstance().setMe(response);
+                            editor.putString("social_id", response.social_id);
+                            editor.commit();
+                            Intent intent = new Intent(getActivity(), TabActivity_.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+
+    void connectSigninUser_NonFacebook(final Map field) {
+        LoadingUtil.startLoading(SignActivity.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.signinUser_NonFacebook(field)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(SignActivity.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(User response) {
+                        if (response != null) {
+                            if(response.social_id == null){
+                                Toast.makeText(getActivity(), "ID 혹은 PW를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            SharedManager.getInstance().setMe(response);
+
+                            editor.putString("social_id", response.social_id);
+                            editor.putString("password", response.password);
+
+                            editor.commit();
+                            Intent intent = new Intent(getActivity(), TabActivity_.class);
+                            startActivity(intent);
+                            getActivity().finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hansjin.mukja_android">
+    package="com.hansjin.mukja_android"
+    android:versionCode="163"
+    android:versionName="0.0.0.163">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -73,9 +75,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".TabActivity.Tab5MyPage.ThumbPopupActivity"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
-        <activity
             android:name=".Sign.SignActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -89,7 +88,6 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
         <activity
             android:name=".Detail.DetailActivity_"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -97,6 +95,20 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".LikedPeople.LikedPeople_"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Profile.YourProfileActivity" />
+        <activity
+            android:name=".TabActivity.Tab5MyPage.PopupWithdrawal"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+        <activity
+            android:name=".Utils.PopupNotCompleted"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+        <activity android:name=".Utils.PopupRequest"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" ></activity>
     </application>
 
 </manifest>

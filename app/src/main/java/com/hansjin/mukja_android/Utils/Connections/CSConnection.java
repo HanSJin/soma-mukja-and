@@ -114,7 +114,24 @@ public interface CSConnection {
     @GET("/like/{food_id}")
     Observable<List<User>> getLikedPerson(@Path("food_id") String food_id);
 
+    @Multipart
+    @POST("post/{user_id}/image/upload/profile")
+    Observable<User> fileUploadWrite_User(@Path("user_id") String user_id,
+                                     @Part("post_image\"; filename=\"android_post_image_file") RequestBody file);
+
+    @POST("/users/{user_id}/edit/profile/facebook")
+    Observable<User> updateUserImage_Facebook(@Path("user_id") String user_id,
+                                   @Body Map<String, Object> fields);
+
+    @GET("/users/{uid}/myinfo")
+    Observable<User> getUserInfo(@Path("uid") String uid);
+
+    @POST("/sign/in/NonFacebook")
+    Observable<User> signinUser_NonFacebook(@Body Map<String, Object> fields);
 
 
+    @POST("/user/withdrawal")
+    Observable<User> withdrawalUser(@Body Map<String, Object> fields);
 }
+
 

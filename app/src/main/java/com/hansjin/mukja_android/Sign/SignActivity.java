@@ -17,6 +17,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -45,14 +46,15 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class SignActivity extends AppCompatActivity{
 
     public static Context context;
-    SharedPreferences sp;
+    public static LinearLayout indicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FacebookSdk.sdkInitialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
 
-        sp = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
+        LinearLayout indicator = (LinearLayout) findViewById(R.id.indicator);
 
         context = this;
 

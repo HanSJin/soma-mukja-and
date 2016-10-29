@@ -13,6 +13,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.facebook.FacebookSdk;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
@@ -38,6 +39,8 @@ public class TabActivity extends AppCompatActivity {
     private long backKeyPressedTime = 0;
     private Toast toast;
     SharedPreferences sp;
+
+    @ViewById
     public LinearLayout indicator;
 
 
@@ -52,6 +55,7 @@ public class TabActivity extends AppCompatActivity {
     //SharedPreferences sp = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
     @AfterViews
     void afterBindingView() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
         AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
 
         // Create items

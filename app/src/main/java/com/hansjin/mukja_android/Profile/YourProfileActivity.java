@@ -1,15 +1,14 @@
-package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
+package com.hansjin.mukja_android.Profile;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,30 +22,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.hansjin.mukja_android.Detail.DetailActivity_;
-import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
-import com.hansjin.mukja_android.TabActivity.Tab2Feeds.Tab2FeedsAdapter;
+import com.hansjin.mukja_android.TabActivity.Tab5MyPage.FoodRate_;
+import com.hansjin.mukja_android.TabActivity.Tab5MyPage.PopupEditAboutMe;
+import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Setting;
+import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageAdapter;
+import com.hansjin.mukja_android.TabActivity.Tab5MyPage.ThumbPopupActivity;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
-import com.hansjin.mukja_android.Utils.PopupNotCompleted;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
-import org.androidannotations.annotations.UiThread;
-import org.json.JSONArray;
-
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -57,17 +49,15 @@ import rx.schedulers.Schedulers;
 /**
  * Created by kksd0900 on 16. 10. 11..
  */
-public class Tab5MyPageFragment extends TabParentFragment {
-    public static TabActivity activity;
+public class YourProfileActivity extends AppCompatActivity {
+    public static YourProfileActivity activity;
 
-    public Tab5MyPageAdapter adapter;
+    public YourProfileAdapter adapter;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
     public LinearLayout indicator;
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
-    Button BT_setting;
     Button BT_pref_anal;
     Button BT_food_rate;
     public static ImageView IV_profile;
@@ -75,76 +65,56 @@ public class Tab5MyPageFragment extends TabParentFragment {
     TextView TV_user_name;
     public static TextView TV_about_me;
 
-    Bitmap bitmap;
-
-    Button BT_edit_about_me;
-
     String image_url;
+    String user_id;
+    String url;
 
-    /**
-     * Create a new instance of the fragment
-     */
-    public static Tab5MyPageFragment newInstance(int index) {
-        Tab5MyPageFragment fragment = new Tab5MyPageFragment();
-        Bundle b = new Bundle();
-        b.putInt("index", index);
-        fragment.setArguments(b);
-        return fragment;
-    }
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mypage, container, false);
-        initViewSetting(view);
-        return view;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_your_profile);
+        initViewSetting();
     }
 
-    private void initViewSetting(View view) {
-        final TabActivity tabActivity = (TabActivity) getActivity();
-        this.activity = tabActivity;
+
+    private void initViewSetting() {
+
+        user_id = getIntent().getStringExtra("user_id");
+
+        BT_pref_anal = (Button) findViewById(R.id.BT_pref_anal);
+        BT_food_rate = (Button) findViewById(R.id.BT_food_rate);
+        IV_profile = (ImageView) findViewById(R.id.IV_profile);
+
+        Toolbar cs_toolbar = (Toolbar) findViewById(R.id.cs_toolbar);
+
+        setSupportActionBar(cs_toolbar);
 
 
-
-        BT_edit_about_me = (Button) view.findViewById(R.id.BT_edit_about_me);
-        BT_setting = (Button)view.findViewById(R.id.BT_setting);
-        BT_pref_anal = (Button) view.findViewById(R.id.BT_pref_anal);
-        BT_food_rate = (Button) view.findViewById(R.id.BT_food_rate);
-        IV_profile = (ImageView) view.findViewById(R.id.IV_profile);
-
-        connectTestCall();
-        connectTestCall_UserInfo();
-
-        Toolbar cs_toolbar = (Toolbar)view.findViewById(R.id.cs_toolbar);
-
-        activity.setSupportActionBar(cs_toolbar);
-        activity.getSupportActionBar().setTitle("내 정보");
-
-        TV_user_name = (TextView) view.findViewById(R.id.TV_user_name);
-        TV_about_me = (TextView) view.findViewById(R.id.TV_about_me);
+        TV_user_name = (TextView) findViewById(R.id.TV_user_name);
+        TV_about_me = (TextView) findViewById(R.id.TV_about_me);
 
 
 
         if (recyclerView == null) {
-            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+            recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new GridLayoutManager(activity, 2));
         }
         if (adapter == null) {
-            adapter = new Tab5MyPageAdapter(new Tab5MyPageAdapter.OnItemClickListener() {
+            adapter = new YourProfileAdapter(new YourProfileAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    Intent intent = new Intent(activity, DetailActivity_.class);
+                    Intent intent = new Intent(getApplicationContext(), DetailActivity_.class);
                     intent.putExtra("food", adapter.mDataset.get(position));
                     startActivity(intent);
-                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                    overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
         recyclerView.setAdapter(adapter);
 
-        indicator = (LinearLayout)view.findViewById(R.id.indicator);
-        pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pull_to_refresh);
+        indicator = (LinearLayout) findViewById(R.id.indicator);
+        pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pull_to_refresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -153,62 +123,41 @@ public class Tab5MyPageFragment extends TabParentFragment {
             }
         });
 
-        BT_setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), Setting.class));
-            }
-        });
         BT_pref_anal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PopupNotCompleted.class));
             }
         });
         BT_food_rate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), FoodRate_.class));
+                startActivity(new Intent(getApplicationContext(), FoodRate_.class));
             }
         });
-        IV_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), ThumbPopupActivity.class));
-            }
-        });
-        BT_edit_about_me.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PopupEditAboutMe.class));
-            }
-        });
-
-
 
 
     }
 
-    @Override
+
     public void refresh() {
         page = 1;
         endOfPage = false;
         adapter.clear();
         adapter.notifyDataSetChanged();
-        connectTestCall();
-        connectTestCall_UserInfo();
+        connectTestCall(user_id);
+        connectTestCall_UserInfo(user_id);
 
     }
 
-    @Override
+
     public void reload() {
         refresh();
     }
 
-    void connectTestCall() {
+    void connectTestCall(String user_id) {
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getLikedFood(SharedManager.getInstance().getMe()._id)
+        conn.getLikedFood(user_id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Food>>() {
@@ -219,7 +168,7 @@ public class Tab5MyPageFragment extends TabParentFragment {
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
-                        Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public final void onNext(List<Food> response) {
@@ -230,47 +179,64 @@ public class Tab5MyPageFragment extends TabParentFragment {
                             adapter.notifyDataSetChanged();
 
                         } else {
-                            Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
-    void connectTestCall_UserInfo() {
+    void connectTestCall_UserInfo(String user_id) {
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.getUserInfo(SharedManager.getInstance().getMe()._id)
+        conn.getUserInfo(user_id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
-                        TV_user_name.setText(SharedManager.getInstance().getMe().nickname);
-                        TV_about_me.setText(SharedManager.getInstance().getMe().about_me);
+                        getSupportActionBar().setTitle("<" + SharedManager.getInstance().getYou().nickname + "> 프로필");
+                        TV_user_name.setText(SharedManager.getInstance().getYou().nickname);
+                        TV_about_me.setText(SharedManager.getInstance().getYou().about_me);
+                        if(SharedManager.getInstance().getYou().social_type.equals("facebook")) {
+                            IV_profile.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    url = "http://facebook.com/" + SharedManager.getInstance().getYou().social_id;
+
+                                    /*
+                                    if (!url.startsWith("http://") && !url.startsWith("https://"))
+                                        url = "http://" + url;
+                                    */
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                    startActivity(browserIntent);
+                                }
+                            });
+                        }
                     }
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
-                        Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public final void onNext(User response) {
                         if (response != null) {
-                            SharedManager.getInstance().setMe(response);
-                            image_url = SharedManager.getInstance().getMe().thumbnail_url;
+                            Log.i("makejin","response.social_id : " + response.social_id);
+                            SharedManager.getInstance().setYou(response);
+                            image_url = SharedManager.getInstance().getYou().thumbnail_url;
                             if(image_url.contains("facebook")){
-                                Glide.with(getActivity()).
+                                Glide.with(getApplicationContext()).
                                         load(image_url).
                                         thumbnail(0.1f).
-                                        bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
+                                        bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(IV_profile);
                             }else{
-                                Glide.with(getActivity()).
+                                Glide.with(getApplicationContext()).
                                         load(Constants.IMAGE_BASE_URL + image_url).
                                         thumbnail(0.1f).
-                                        bitmapTransform(new CropCircleTransformation(getActivity())).into(IV_profile);
+                                        bitmapTransform(new CropCircleTransformation(getApplicationContext())).into(IV_profile);
                             }
                         } else {
-                            Toast.makeText(getActivity(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

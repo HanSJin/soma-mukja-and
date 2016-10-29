@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.LikedPeople.LikedPeople;
+import com.hansjin.mukja_android.LikedPeople.LikedPeople_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.NearbyRestaurant.NearByRestaurant;
@@ -101,7 +103,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             imageHolder.viewCnt.setText("View "+food.view_cnt);
             imageHolder.foodRateNum.setText(cal_rate(food)+"");
             imageHolder.heartImg.setImageDrawable(context.getResources().getDrawable(R.drawable.heart_gray));
-            for (String uid : food.like_person) {
+            for (String uid : food.like_person_id()) {
                 if (uid.equals(SharedManager.getInstance().getMe()._id)) {
                     imageHolder.heartImg.setImageDrawable(context.getResources().getDrawable(R.drawable.heart_red));
                 }
@@ -147,15 +149,75 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             DescBodyViewHolder descBodyViewHolder = (DescBodyViewHolder) holder;
             descBodyViewHolder.txt_category.setText(combine_tag(food)+"");
             descBodyViewHolder.txt_ingredient.setText(combine_ingredient_tag(food)+"");
-            if (food.like_cnt==0)
+            if (food.like_person.size()==0) {
                 descBodyViewHolder.txt_people_like.setText("가장 먼저 좋아요를 눌러주세요!");
-            else
-                descBodyViewHolder.txt_people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
-            String friend = Constants.mockMyFriendText(position);
-            if (friend.equals(""))
-                descBodyViewHolder.txt_friend_like.setText("아직 이 음식을 좋아한 친구가 없어요.");
-            else
-                descBodyViewHolder.txt_friend_like.setText("회원님의 친구 "+friend+" 님이 좋아해요.");
+            }
+            else {
+                User me = SharedManager.getInstance().getMe();
+                List<String> food_like_list = food.like_person_id();
+                List<String> friend_list = me.friends_id();
+                String tempFriend = "";
+                String tempMe = "";
+                boolean isYou = false;
+                boolean isMe = false;
+
+                int like_person_size = food.like_person.size();
+
+                for(int i=0;i<food_like_list.size();i++){
+                    if(food_like_list.get(i).equals(me._id)){
+                        isMe = true;
+                    }
+                    for(int j=0;j<friend_list.size();j++){
+                        if(food_like_list.get(i).equals(friend_list.get(j))){
+                            tempFriend = me.friends.get(j).getUser_name();
+                            isYou = true;
+                            break;
+                        }
+                    }
+                }
+
+                String txt = "";
+                if(!isYou){
+                    if(isMe) //me
+                        if(like_person_size==1)
+                            txt = "회원님이 좋아해요";
+                        else
+                            txt = "회원님 외 " + (like_person_size-1) + "명의 사람들이 좋아해요";
+                    else{ // x
+                        if(like_person_size==1)
+                            txt = "1명의 사람이 좋아해요";
+                        else
+                            txt = like_person_size + "명의 사람들이 좋아해요";
+                    }
+                }else{//좋아요한 내 친구가 1명 이상일 때
+                    if(isMe) { //you me
+                        if(like_person_size==1)
+                            txt = "회원님, " + tempFriend + "님이 좋아해요";
+                        else
+                            txt = "회원님, " + tempFriend + "님 외 " + (like_person_size - 2) + "명의 사람들이 좋아해요";
+                    }
+                    else //you
+                        if(like_person_size==1)
+                            txt = tempFriend+"님이 좋아해요";
+                        else
+                            txt = tempFriend+ "님 외 " + (like_person_size-1) + "명의 사람들이 좋아해요";
+                }
+
+                descBodyViewHolder.txt_people_like.setText(txt);
+
+            }
+
+            if(food.like_cnt>0) {
+                descBodyViewHolder.txt_people_like.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, LikedPeople_.class);
+                        intent.putExtra("food", food);
+                        context.startActivity(intent);
+                        activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                    }
+                });
+            }
         } else if (holder instanceof GraphBodyViewHolder) {
             GraphBodyViewHolder graphBodyViewHolder = (GraphBodyViewHolder) holder;
 
@@ -221,6 +283,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         } else if (holder instanceof SimiralTailViewHolder) {
             SimiralTailViewHolder simiralTailViewHolder = (SimiralTailViewHolder) holder;
         }
+
+
     }
 
     @Override
