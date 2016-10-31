@@ -34,7 +34,6 @@ public class ViewHolderFood extends ViewHolderParent {
         rate_num = (TextView) v.findViewById(R.id.food_rate_num);
         category_tag = (TextView) v.findViewById(R.id.txt_category);
         people_like = (TextView) v.findViewById(R.id.txt_people_like);
-        friend_like = (TextView) v.findViewById(R.id.txt_friend_like);
         write_time = (TextView) v.findViewById(R.id.write_time);
 
         heart = (ImageView) v.findViewById(R.id.heart_img);

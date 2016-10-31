@@ -338,13 +338,12 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     }
 
     public class DescBodyViewHolder extends ViewHolder {
-        public TextView txt_category, txt_ingredient, txt_people_like, txt_friend_like;
+        public TextView txt_category, txt_ingredient, txt_people_like;
         public DescBodyViewHolder(View v) {
             super(v);
             txt_category = (TextView) v.findViewById(R.id.txt_category);
             txt_ingredient = (TextView) v.findViewById(R.id.txt_ingredient);
             txt_people_like = (TextView) v.findViewById(R.id.txt_people_like);
-            txt_friend_like = (TextView) v.findViewById(R.id.txt_friend_like);
         }
     }
 

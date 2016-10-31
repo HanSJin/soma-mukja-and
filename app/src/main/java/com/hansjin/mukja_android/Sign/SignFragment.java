@@ -160,6 +160,7 @@ public class SignFragment extends Fragment {
 
         @Override
         public void onError(FacebookException e) {
+            e.printStackTrace();
             info.setText("Login attempt failed.");
 
         }

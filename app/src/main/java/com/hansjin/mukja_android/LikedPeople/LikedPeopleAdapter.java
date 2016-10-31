@@ -29,7 +29,9 @@ import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -102,7 +104,8 @@ public class LikedPeopleAdapter extends RecyclerView.Adapter<LikedPeopleAdapter.
             final User user = mDataset.get(position);
 
             itemViewHolder.TV_user_name.setText(user.nickname);
-            itemViewHolder.TV_date.setText("~" + "전");
+            Log.i("makejin", "user._id "+user._id);
+            itemViewHolder.TV_date.setText(cal_time(user._id,food));
             itemViewHolder.ratingBar1.setOnTouchListener(new View.OnTouchListener()
             {
                 @Override
@@ -149,6 +152,43 @@ public class LikedPeopleAdapter extends RecyclerView.Adapter<LikedPeopleAdapter.
                 }
             });
         }
+    }
+
+    private String cal_time(String user_id,Food food) {
+        //food.update 형식 : 2011-10-05T14:48:00.000Z
+
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
+
+        int su_arr[] = {0,4,5,7,8,10,11,13,14,16};
+        String str_arr[] = {"년 전","개월 전","일 전","시간 전","분 전"};
+        String like_date = null;
+        int update, now;
+
+        for(int i=0;i<food.like_person.size();i++){
+            if(food.like_person.get(i).getUser_id().equals(user_id)){
+                Log.i("makejin", "1 " + food.like_person.get(i).getUser_id());
+                Log.i("makejin", "2 " + user_id);
+                Log.i("makejin", "3 " + food.like_person.get(i).getLike_date());
+
+                like_date = food.like_person.get(i).getLike_date();
+
+                for(int j=0;j<5;j++){
+                    if(j==5)
+                        return "방금 전";
+                    else {
+                        Log.i("makejin", "4 " + su_arr[j*2]);
+                        Log.i("makejin", "5 " + su_arr[j*2+1]);
+                        update = Integer.valueOf(like_date.substring(su_arr[j*2],su_arr[j*2+1]));
+                        now = Integer.valueOf(current_time.substring(su_arr[j*2],su_arr[j*2+1]));
+                        if (now-update > 0)
+                            return now-update + str_arr[j];
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
