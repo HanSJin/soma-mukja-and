@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.hansjin.mukja_android.Activity.RegisterActivity;
 import com.hansjin.mukja_android.Activity.RegisterActivity_;
-import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
@@ -102,16 +101,16 @@ public class Tab2FeedsFragment extends TabParentFragment {
             }
         });
 
-        fab = (FloatingActionButton)view.findViewById(R.id.add_button);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO: 음식 업로드 페이지로 이동
-                Intent intent = new Intent(activity, RegisterActivity_.class);
-                //intent.putExtra("UserInfo", user); //user 정보가 들어있는 객체 전달
-                startActivityForResult(intent, Constants.ACTIVITY_CODE_TAB2_REFRESH_REQUEST);
-            }
-        });
+//        fab = (FloatingActionButton)view.findViewById(R.id.add_button);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //TODO: 음식 업로드 페이지로 이동
+//                Intent intent = new Intent(activity, RegisterActivity_.class);
+//                //intent.putExtra("UserInfo", user); //user 정보가 들어있는 객체 전달
+//                startActivityForResult(intent, Constants.ACTIVITY_CODE_TAB2_REFRESH_REQUEST);
+//            }
+//        });
 
         connectFeed(1);
     }

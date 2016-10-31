@@ -54,8 +54,12 @@ public class User {
     }
     public List<String> friends_id(){
         List<String> result = new ArrayList<>();
-        for (Friends user:friends) {
-            result.add(user.user_id);
+        try {
+            for (Friends user : friends) {
+                result.add(user.user_id);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
         return result;
     }
