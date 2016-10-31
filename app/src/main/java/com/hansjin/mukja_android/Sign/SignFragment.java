@@ -137,7 +137,7 @@ public class SignFragment extends Fragment {
                                     }
                                     n_user.friends = list;
                                 }catch (Exception e){
-
+                                    e.printStackTrace();
                                 }
                                 connectCreateUser(n_user);
                             }
@@ -391,6 +391,9 @@ public class SignFragment extends Fragment {
                     @Override
                     public final void onNext(User response) {
                         if (response != null) {
+                            if(response.social_id.equals("")){
+                                return;
+                            }
                             SharedManager.getInstance().setMe(response);
                             editor.putString("social_id", response.social_id);
                             editor.commit();
