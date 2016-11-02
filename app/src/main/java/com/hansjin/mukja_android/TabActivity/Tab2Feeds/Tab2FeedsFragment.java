@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -46,7 +47,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     public LinearLayout indicator;
-    FloatingActionButton fab;
+    ImageButton fab;
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
@@ -101,16 +102,16 @@ public class Tab2FeedsFragment extends TabParentFragment {
             }
         });
 
-//        fab = (FloatingActionButton)view.findViewById(R.id.add_button);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //TODO: 음식 업로드 페이지로 이동
-//                Intent intent = new Intent(activity, RegisterActivity_.class);
-//                //intent.putExtra("UserInfo", user); //user 정보가 들어있는 객체 전달
-//                startActivityForResult(intent, Constants.ACTIVITY_CODE_TAB2_REFRESH_REQUEST);
-//            }
-//        });
+        fab = (ImageButton)view.findViewById(R.id.add_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: 음식 업로드 페이지로 이동
+                Intent intent = new Intent(activity, RegisterActivity_.class);
+                //intent.putExtra("UserInfo", user); //user 정보가 들어있는 객체 전달
+                startActivityForResult(intent, Constants.ACTIVITY_CODE_TAB2_REFRESH_REQUEST);
+            }
+        });
 
         connectFeed(1);
     }

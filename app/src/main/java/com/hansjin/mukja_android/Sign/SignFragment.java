@@ -392,15 +392,17 @@ public class SignFragment extends Fragment {
                     @Override
                     public final void onNext(User response) {
                         if (response != null) {
-                            if(response.social_id.equals("")){
+                            try{
+                                SharedManager.getInstance().setMe(response);
+                                editor.putString("social_id", response.social_id);
+                                editor.commit();
+                                Intent intent = new Intent(getActivity(), TabActivity_.class);
+                                startActivity(intent);
+                                getActivity().finish();
+                            }catch(Exception e){//response.social_id가 null이면 signinuser 종료
+                                e.printStackTrace();
                                 return;
                             }
-                            SharedManager.getInstance().setMe(response);
-                            editor.putString("social_id", response.social_id);
-                            editor.commit();
-                            Intent intent = new Intent(getActivity(), TabActivity_.class);
-                            startActivity(intent);
-                            getActivity().finish();
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

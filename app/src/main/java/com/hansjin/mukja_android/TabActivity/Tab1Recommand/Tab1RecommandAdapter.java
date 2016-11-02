@@ -183,7 +183,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     }
                 }else{//좋아요한 내 친구가 1명 이상일 때
                     if(isMe) { //you me
-                        if(like_person_size==1)
+                        if(like_person_size==2)
                             txt = "회원님, " + tempFriend + "님이 좋아해요";
                         else
                             txt = "회원님, " + tempFriend + "님 외 " + (like_person_size - 2) + "명의 사람들이 좋아해요";
