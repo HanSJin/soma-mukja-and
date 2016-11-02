@@ -3,19 +3,18 @@ package com.hansjin.mukja_android.TabActivity.Tab4Explore;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -26,16 +25,12 @@ import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
-import com.hansjin.mukja_android.TabActivity.Tab2Feeds.Tab2FeedsAdapter;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 
-import org.androidannotations.annotations.UiThread;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -61,9 +56,10 @@ public class Tab4ExploreFragment  extends TabParentFragment {
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
-    Button BT_search;
+    Button BT_search, Undo;
     Boolean BT_search_bool = false;
     EditText ET_search;
+    View ETview;
 
     private LinearLayout LL_rank;
     private LinearLayout LL_search;
@@ -133,13 +129,18 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             adapter = new Tab4ExploreAdapter(new Tab4ExploreAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    BT_search.setText("취소");
-                    BT_search_bool = true;
+                    Animation anim1 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_search_edit);
+                    Animation anim2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_search_view);
+                    ET_search.startAnimation(anim1);
+                    ETview.startAnimation(anim2);
 
-                    connectTestCall_Search(adapter.mDataset.get(position).title);
+                    String query = adapter.mDataset.get(position).title;
+                    ET_search.setText(query);
+                    connectTestCall_Search(query);
                     //검색 결과 화면 나오면서 기존에 있던 키워드별 랭킹 뷰 invisible
                     LL_search.setVisibility(LinearLayout.VISIBLE);
                     LL_rank.setVisibility(LinearLayout.GONE);
+                    Undo.setVisibility(View.VISIBLE);
                 }
             }, activity, this);
         }
@@ -169,30 +170,30 @@ public class Tab4ExploreFragment  extends TabParentFragment {
             }
         });
 
+        //new
+        ETview = (View)view.findViewById(R.id.view);
+        Undo = (Button)view.findViewById(R.id.undo);
         BT_search = (Button)view.findViewById(R.id.BT_search);
         BT_search.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if(!BT_search_bool) {
-                    BT_search.setText("취소");
-                    BT_search_bool = true;
+                Animation anim1 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_search_edit);
+                Animation anim2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_search_view);
+                ET_search.startAnimation(anim1);
+                ETview.startAnimation(anim2);
 
-                    connectTestCall_Search(ET_search.getText().toString());
+                String query = ET_search.getText().toString();
+                if(query!=null)
+                {
+                    connectTestCall_Search(query);
                     //검색 결과 화면 나오면서 기존에 있던 키워드별 랭킹 뷰 invisible
                     LL_search.setVisibility(LinearLayout.VISIBLE);
                     LL_rank.setVisibility(LinearLayout.GONE);
-                }else{
-                    BT_search.setText("검색");
-                    BT_search_bool = false;
-
-                    refresh();
-
-                    //키워드별 랭킹 뷰 나오면서 기존에 있던 검색 결과 화면 invisible
-                    LL_rank.setVisibility(LinearLayout.VISIBLE);
-                    LL_search.setVisibility(LinearLayout.GONE);
+                    Undo.setVisibility(View.VISIBLE);
                 }
             }
         });
+        //new
 
         ET_search.setOnKeyListener(new View.OnKeyListener()
         {
@@ -214,6 +215,25 @@ public class Tab4ExploreFragment  extends TabParentFragment {
                 return false;
             }
         });
+
+        Undo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation anim1 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_cancel_edit);
+                Animation anim2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_cancel_view);
+                ET_search.startAnimation(anim1);
+                ETview.startAnimation(anim2);
+
+                refresh();
+
+                //키워드별 랭킹 뷰 나오면서 기존에 있던 검색 결과 화면 invisible
+                ET_search.setText("");
+                LL_rank.setVisibility(LinearLayout.VISIBLE);
+                LL_search.setVisibility(LinearLayout.GONE);
+                Undo.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     @Override
@@ -268,6 +288,9 @@ public class Tab4ExploreFragment  extends TabParentFragment {
     }
 
     void uiThread_Search(List<Food> response) {
+        //new
+        adapterSearch.clear();
+        //new
         for (Food food : response) {
             adapterSearch.addData(food);
             Log.i("test",food.name);

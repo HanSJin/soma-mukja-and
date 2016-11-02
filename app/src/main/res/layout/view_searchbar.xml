@@ -13,21 +13,36 @@
         android:layout_marginLeft="20dp">
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="34dp"
             android:layout_weight="7"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/explorer_edit"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:layout_marginRight="10dp">
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/explorer_edit"/>
             <EditText
                 android:id="@+id/ET_searchbar"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
                 android:ems="10"
-                android:background="@drawable/tumyeong"
+                android:singleLine="true"
+                android:background="@null"
                 android:hint="음식 이름, 맛, 나라, 조리형태 등 검색"
                 android:textSize="14sp"
                 />
+            <Button
+                android:id="@+id/undo"
+                android:visibility="gone"
+                android:layout_width="30dp"
+                android:layout_height="34dp"
+                android:layout_marginRight="5dp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
+                android:background="@drawable/undo"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="0dp"
