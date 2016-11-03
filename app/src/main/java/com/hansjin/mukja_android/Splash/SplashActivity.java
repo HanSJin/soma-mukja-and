@@ -87,6 +87,7 @@ public class SplashActivity extends AppCompatActivity {
         field.put("social_id", prefs.getString("social_id","793160210817466"));
         connectSigninUser(field);
 */
+
        // if(prefs.getString("social_id","").equals("")){
             Intent intent = new Intent(activity, SignActivity.class);
             startActivity(intent);
