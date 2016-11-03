@@ -61,6 +61,7 @@ public class MarketVersionChecker {
 					if (line == null)
 						break;
 					mData += line;
+					//Log.i("zxc", "mData : " + mData);
 				}
 				bufferedReader.close();
 			}
@@ -77,6 +78,7 @@ public class MarketVersionChecker {
 		if (index == -1) {
 			mVer = null;
 		} else {
+
 			mVer = mData.substring(index + startToken.length(), index + startToken.length() + 100);
 			mVer = mVer.substring(0, mVer.indexOf(endToken)).trim();
 		}

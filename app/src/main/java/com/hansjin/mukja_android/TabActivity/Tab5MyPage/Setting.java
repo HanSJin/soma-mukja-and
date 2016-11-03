@@ -14,7 +14,6 @@ import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Sign.SignActivity;
 import com.hansjin.mukja_android.Sign.SignFragment;
-import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;

@@ -22,8 +22,8 @@ import android.widget.Toast;
 
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
-import com.hansjin.mukja_android.ResultActivity_;
 import com.hansjin.mukja_android.Sign.SignActivity;
+import com.hansjin.mukja_android.TabActivity.TabActivity;
 import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
@@ -35,7 +35,6 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
-import org.androidannotations.annotations.ViewById;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -47,8 +46,6 @@ import java.util.Map;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 @EActivity(R.layout.activity_activity)
 public class SplashActivity extends AppCompatActivity {
@@ -68,36 +65,31 @@ public class SplashActivity extends AppCompatActivity {
     public static String cityName;
 
     String deviceVersion;
-    String storeVersion;
 
     private BackgroundThread mBackgroundThread;
-
+    String storeVersion;
 
     @AfterViews
     void afterBindingView() {
         this.activity = this;
 
         //앱 출시 정상적으로 되면 테스트해보기
-        //mBackgroundThread = new BackgroundThread();
-        //mBackgroundThread.start();
+        mBackgroundThread = new BackgroundThread();
+        mBackgroundThread.start();
 
         SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-/*
-        Map field = new HashMap();
-        field.put("social_id", prefs.getString("social_id","793160210817466"));
-        connectSigninUser(field);
-*/
 
-       // if(prefs.getString("social_id","").equals("")){
+
+        if(prefs.getString("social_id","").equals("")){
             Intent intent = new Intent(activity, SignActivity.class);
             startActivity(intent);
             finish();
-        /*}else {
+        }else {
             Map field = new HashMap();
             field.put("social_id", prefs.getString("social_id", ""));
 
             connectSigninUser(field);
-        }*/
+        }
 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         //GPS_PROVIDER: GPS를 통해 위치를 알려줌
@@ -123,7 +115,7 @@ public class SplashActivity extends AppCompatActivity {
         public void run() {
 
             // 패키지 네임 전달
-            String storeVersion = MarketVersionChecker.getMarketVersionFast(getPackageName());
+            storeVersion = MarketVersionChecker.getMarketVersionFast(getPackageName());
 
             // 디바이스 버전 가져옴
             try {
