@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
 
 public class Agreement extends AppCompatActivity {
     WebView webView;
@@ -22,7 +23,7 @@ public class Agreement extends AppCompatActivity {
 
         webView = (WebView)findViewById(R.id.webView);
         webView.setWebViewClient(new WebViewClient());//클릭시 새창 안뜸
-        webView.loadUrl("http://52.192.137.69:8888/agreement");
+        webView.loadUrl(Constants.API_BASE_URL+"/agreement");
 
         title = (TextView)findViewById(R.id.title);
         title.setText("오늘뭐먹지 이용약관");

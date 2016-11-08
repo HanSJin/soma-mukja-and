@@ -77,19 +77,20 @@ public class SplashActivity extends AppCompatActivity {
         mBackgroundThread = new BackgroundThread();
         mBackgroundThread.start();
 
-        SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
+//        SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
 
+        startActivity(new Intent(getApplicationContext(), SplashTest2.class));
 
-        if(prefs.getString("social_id","").equals("")){
-            Intent intent = new Intent(activity, SignActivity.class);
-            startActivity(intent);
-            finish();
-        }else {
-            Map field = new HashMap();
-            field.put("social_id", prefs.getString("social_id", ""));
-
-            connectSigninUser(field);
-        }
+//        if(prefs.getString("social_id","").equals("")){
+//            Intent intent = new Intent(activity, SignActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }else {
+//            Map field = new HashMap();
+//            field.put("social_id", prefs.getString("social_id", ""));
+//
+//            connectSigninUser(field);
+//        }
 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         //GPS_PROVIDER: GPS를 통해 위치를 알려줌
@@ -98,7 +99,7 @@ public class SplashActivity extends AppCompatActivity {
         isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         if(isGPSEnabled && isNetworkEnabled){
-            Toast.makeText(getApplicationContext(), "내 위치정보를 가져오는 중입니다.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "내 위치정보를 가져오는 중입니다.", Toast.LENGTH_SHORT).show();
             locationListener = new MyLocationListener();
 
             //선택된 프로바이더를 사용해 위치정보를 업데이트
@@ -235,7 +236,7 @@ public class SplashActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             String s = "현재, <" + cityName + ">에 계시군요 !";
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
             locationManager.removeUpdates(locationListener);
         }
 
