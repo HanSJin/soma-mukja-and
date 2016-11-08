@@ -50,7 +50,7 @@ public class SplashTest2 extends AppCompatActivity {
         IV_logo=(ImageView) findViewById(R.id.IV_logo);
         IV_user=(ImageView) findViewById(R.id.IV_user);
 
-        IV_logo.setBackground(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.logo_splash_2)));
+        IV_logo.setBackground(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.logo_todayfood)));
 
 
 
