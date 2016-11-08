@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.opengl.GLES20;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -48,7 +50,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -193,10 +197,19 @@ public class RegisterActivity extends AppCompatActivity {
                 String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
                 n_food.image_url = "lmjing_"+current_time;
 
+                int[] maxTextureSize = new int[1];
+                GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
+
+                final int[] tempMaxTextureSize = maxTextureSize;
+
                 Glide.with(activity).load(imagepath).asBitmap().into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        food_image.setImageBitmap(resource);
+                        if (resource.getHeight() > tempMaxTextureSize[0]){
+                            int resizedWidth = food_image.getWidth();
+                            int resizedHeight = food_image.getHeight();
+                            food_image.setImageBitmap(resource.createScaledBitmap(resource, resizedWidth, resizedHeight, false));
+                        }
                     }
                 });
             }
@@ -212,7 +225,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void uploadFile1(final Food food) {
         File file = new File(imagepath);
-        RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), file);
+        RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), saveBitmapToFile(file));
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.fileUploadWrite(food._id, fbody)
                 .subscribeOn(Schedulers.newThread())
@@ -281,6 +294,49 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public File saveBitmapToFile(File file){
+        try {
+
+            // BitmapFactory options to downsize the image
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            o.inSampleSize = 6;
+            // factor of downsizing the image
+
+            FileInputStream inputStream = new FileInputStream(file);
+            //Bitmap selectedBitmap = null;
+            BitmapFactory.decodeStream(inputStream, null, o);
+            inputStream.close();
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=75;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            inputStream = new FileInputStream(file);
+
+            Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+            inputStream.close();
+
+            // here i override the original image file
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+
+            return file;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void check_blank(){
