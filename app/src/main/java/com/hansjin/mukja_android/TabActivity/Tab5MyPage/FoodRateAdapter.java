@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
@@ -45,6 +46,8 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
     public FoodRate foodRate;
+
+    User user = null;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -93,6 +96,12 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             final Food food = mDataset.get(position);
 
 
+            if(FoodRate.isMine)
+                user = SharedManager.getInstance().getMe();
+            else
+                user = SharedManager.getInstance().getYou();
+
+            final User tempUser = user;
 
             String tasteStr = "";
             for (String taste : food.taste) {
@@ -112,9 +121,9 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
 
             List<String> rate_person_id = food.rate_person_id();
 
-            if(rate_person_id.contains(SharedManager.getInstance().getMe()._id)) { //이미 rating 했었다면
+            if(rate_person_id.contains(tempUser._id)) { //이미 rating 했었다면
                 for(int i=0;i<food.rate_person.size();i++){
-                    if(food.rate_person.get(i).getUser_id().equals(SharedManager.getInstance().getMe()._id)){
+                    if(food.rate_person.get(i).getUser_id().equals(tempUser._id)){
                         itemViewHolder.ratingBar1.setRating(food.rate_person.get(i).getRate_num());
                         break;
                     }
@@ -123,10 +132,17 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
                 itemViewHolder.ratingBar1.setRating(0);
             }
 
+            Log.i("zxc", ""+FoodRate.isMine);
+            if(user._id.equals(SharedManager.getInstance().getMe()._id))
+                itemViewHolder.ratingBar1.setIsIndicator(false);
+            else
+                itemViewHolder.ratingBar1.setIsIndicator(true);
             itemViewHolder.ratingBar1.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+
                     if(fromUser) {
-                        food.rate_person.add(0, food.newrate(SharedManager.getInstance().getMe()._id, rating));
+                        food.rate_person.add(0, food.newrate(tempUser._id, rating));
                         food_rate(food, position);
                     }
                 }
@@ -176,7 +192,7 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     public void food_rate(Food food, final int index) {
         LoadingUtil.startLoading(foodRate.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.rateFood(food, SharedManager.getInstance().getMe()._id, food._id)
+        conn.rateFood(food, user._id, food._id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Food>() {
@@ -194,7 +210,7 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
                         if (response != null) {
                             if(mDataset.get(index).rate_cnt != response.rate_cnt) {
                                 mDataset.get(index).rate_cnt = response.rate_cnt;
-                                FoodRate.actionBar.setTitle("음식 평가 - " + ++SharedManager.getInstance().getMe().rated_food_num + "개 완료");
+                                FoodRate.actionBar.setTitle("음식 평가 - " + ++user.rated_food_num + "개 완료");
                             }
                             mDataset.get(index).rate_person = response.rate_person;
                             mDataset.get(index).rate_distribution = response.rate_distribution;

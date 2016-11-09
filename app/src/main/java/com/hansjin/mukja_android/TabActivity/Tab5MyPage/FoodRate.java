@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
@@ -79,13 +80,34 @@ public class FoodRate extends AppCompatActivity {
     //currrent location end
     public static ActionBar actionBar;
 
+    public static boolean isMine = false;
+
     @AfterViews
     void afterBindingView() {
         this.activity = this;
+        String user_id = getIntent().getStringExtra("user_id");
+
+        Log.i("zxczfasa", "user_id : " + user_id);
+        Log.i("zxczfasa2", "user_id : " + SharedManager.getInstance().getMe()._id);
+
+        if(user_id.equals(SharedManager.getInstance().getMe()._id)) //나인 경우
+            isMine = true;
+        else
+            isMine = false;
+
+        Log.i("zxczfasa3", "user_id : " + isMine);
+        User user = null;
+
+        if(isMine)
+            user = SharedManager.getInstance().getMe();
+        else
+            user = SharedManager.getInstance().getYou();
+
+        final User tempUser = user;
 
         setSupportActionBar(cs_toolbar);
         actionBar = getSupportActionBar();
-        actionBar.setTitle("음식 평가 - " + SharedManager.getInstance().getMe().rated_food_num + "개 완료");
+        actionBar.setTitle("음식 평가 - " + user.rated_food_num + "개 완료");
 
         if (recyclerView == null) {
             recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -108,11 +130,12 @@ public class FoodRate extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 refresh();
-                connectTestCall(SharedManager.getInstance().getMe()._id);
+                connectTestCall(tempUser._id);
             }
         });
 
-        connectTestCall(SharedManager.getInstance().getMe()._id);
+
+        connectTestCall(tempUser._id);
 
         BT_X.setOnClickListener(new View.OnClickListener() {
             @Override

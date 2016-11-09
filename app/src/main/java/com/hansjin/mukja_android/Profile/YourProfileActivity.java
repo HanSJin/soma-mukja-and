@@ -131,7 +131,9 @@ public class YourProfileActivity extends AppCompatActivity {
         BT_food_rate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), FoodRate_.class));
+                Intent intent = new Intent(getApplicationContext(), FoodRate_.class);
+                intent.putExtra("user_id", user_id);
+                startActivity(intent);
             }
         });
 

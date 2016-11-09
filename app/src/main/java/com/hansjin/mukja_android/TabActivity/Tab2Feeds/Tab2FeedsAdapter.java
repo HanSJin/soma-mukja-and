@@ -1,5 +1,7 @@
 package com.hansjin.mukja_android.TabActivity.Tab2Feeds;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +21,8 @@ import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.LikedPeople.LikedPeople_;
 import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Model.User;
+import com.hansjin.mukja_android.Profile.YourProfileActivity;
+import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
@@ -103,6 +107,14 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             final Food food = mDataset.get(position);
 
             itemViewHolder.authorName.setText(food.author.author_nickname);
+            itemViewHolder.authorName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, YourProfileActivity.class);
+                    intent.putExtra("user_id", food.author.author_id);
+                    context.startActivity(intent);
+                }
+            });
             image_url = food.author.author_thumbnail_url;
             if(image_url.contains("facebook")){
                 Glide.with(context).
@@ -113,6 +125,15 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                         load(Constants.IMAGE_BASE_URL + image_url).
                         into(itemViewHolder.author_image);
             }
+
+            itemViewHolder.author_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, YourProfileActivity.class);
+                    intent.putExtra("user_id", food.author.author_id);
+                    context.startActivity(intent);
+                }
+            });
             itemViewHolder.foodName.setText(food.name);
 
             Glide.with(context).

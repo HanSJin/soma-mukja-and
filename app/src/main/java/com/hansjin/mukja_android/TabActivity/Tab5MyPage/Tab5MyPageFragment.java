@@ -168,7 +168,9 @@ public class Tab5MyPageFragment extends TabParentFragment {
         BT_food_rate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), FoodRate_.class));
+                Intent intent = new Intent(getActivity(), FoodRate_.class);
+                intent.putExtra("user_id", SharedManager.getInstance().getMe()._id);
+                startActivity(intent);
             }
         });
         IV_profile.setOnClickListener(new View.OnClickListener() {

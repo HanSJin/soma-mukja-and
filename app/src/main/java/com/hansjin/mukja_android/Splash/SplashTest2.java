@@ -118,8 +118,8 @@ public class SplashTest2 extends AppCompatActivity {
     private final TimerTask spashScreenFinished = new TimerTask() {
         @Override
         public void run() {
-            startActivity(new Intent(getApplicationContext(), SplashActivity_.class));
-            finish();
+           // startActivity(new Intent(getApplicationContext(), SplashActivity_.class));
+           // finish();
         }
     };
 
