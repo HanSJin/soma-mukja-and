@@ -77,20 +77,20 @@ public class SplashActivity extends AppCompatActivity {
         mBackgroundThread = new BackgroundThread();
         mBackgroundThread.start();
 
-//        SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
 
-        startActivity(new Intent(getApplicationContext(), SplashTest2.class));
 
-//        if(prefs.getString("social_id","").equals("")){
-//            Intent intent = new Intent(activity, SignActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }else {
-//            Map field = new HashMap();
-//            field.put("social_id", prefs.getString("social_id", ""));
-//
-//            connectSigninUser(field);
-//        }
+
+        if(prefs.getString("social_id","").equals("")){
+            Intent intent = new Intent(activity, SignActivity.class);
+            startActivity(intent);
+            finish();
+        }else {
+            Map field = new HashMap();
+            field.put("social_id", prefs.getString("social_id", ""));
+
+            connectSigninUser(field);
+        }
 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         //GPS_PROVIDER: GPS를 통해 위치를 알려줌

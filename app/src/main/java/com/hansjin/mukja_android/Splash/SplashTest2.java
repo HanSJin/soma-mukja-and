@@ -111,25 +111,6 @@ public class SplashTest2 extends AppCompatActivity {
         }, 9000);
 
 
-        new Handler().postDelayed(new Runnable() {// 1 초 후에 실행
-            @Override
-            public void run() {
-                SharedPreferences prefs = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
-
-                if(prefs.getString("social_id","").equals("")){
-                    Intent intent = new Intent(activity, SignActivity.class);
-                    startActivity(intent);
-                    finish();
-                }else {
-                    Map field = new HashMap();
-                    field.put("social_id", prefs.getString("social_id", ""));
-
-                    connectSigninUser(field);
-                }
-
-            }
-        }, 10000);
-
         Timer timer = new Timer();
         timer.schedule(this.spashScreenFinished, 12000);
     }
@@ -137,11 +118,8 @@ public class SplashTest2 extends AppCompatActivity {
     private final TimerTask spashScreenFinished = new TimerTask() {
         @Override
         public void run() {
+            startActivity(new Intent(getApplicationContext(), SplashActivity_.class));
             finish();
-//            Intent splash = new Intent(SplashTest2.this, Setting.class);
-//            // We set these flags so the user cannot return to the SplashScreen
-//            splash.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(splash);
         }
     };
 
