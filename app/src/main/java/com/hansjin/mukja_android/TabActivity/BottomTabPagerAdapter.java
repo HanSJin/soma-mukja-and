@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
 import com.hansjin.mukja_android.TabActivity.Tab2Feeds.Tab2FeedsFragment;
+import com.hansjin.mukja_android.TabActivity.Tab3List.Tab3ListFragment;
 import com.hansjin.mukja_android.TabActivity.Tab4Explore.Tab4ExploreFragment;
 import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment;
 
@@ -27,7 +28,7 @@ public class BottomTabPagerAdapter extends FragmentPagerAdapter {
         fragments.clear();
         fragments.add(Tab1RecommandFragment.newInstance(0));
         fragments.add(Tab2FeedsFragment.newInstance(1));
-//        fragments.add(Tab3StatisFragment.newInstance(2));
+        fragments.add(Tab3ListFragment.newInstance(2));
         fragments.add(Tab4ExploreFragment.newInstance(3));
         fragments.add(Tab5MyPageFragment.newInstance(4));
     }

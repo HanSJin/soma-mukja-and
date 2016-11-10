@@ -95,7 +95,7 @@ public class SignFragment extends Fragment {
                                 int len = jsonArray.length();
                                 List<User.Friends> list = new ArrayList<>();
                                 for(int idx=0;idx<len;idx++) {
-                                    list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
+                                    list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString(), "http://graph.facebook.com/" + jsonArray.getJSONObject(idx).get("id").toString() +"/picture?type=small"));
                                 }
                                 field.put("friends", list);
                                 connectSigninUser(field);//이미 최초 로그인을 한 기록이 있어서 회원가입이 되있는 경우
@@ -133,7 +133,7 @@ public class SignFragment extends Fragment {
                                     List<User.Friends> list = new ArrayList<>();
                                     for(int idx=0;idx<len;idx++) {
                                         //list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
-                                        list.add(0, User.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
+                                        list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString(), "http://graph.facebook.com/" + jsonArray.getJSONObject(idx).get("id").toString() +"/picture?type=small"));
                                     }
                                     n_user.friends = list;
                                 }catch (Exception e){
@@ -222,7 +222,7 @@ public class SignFragment extends Fragment {
                                 List<User.Friends> list = new ArrayList<>();
                                 for(int idx=0;idx<len;idx++) {
                                     //list.add(0,jsonArray.getJSONObject(idx).get("id").toString());
-                                    list.add(0, User.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString()));
+                                    list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString(), "http://graph.facebook.com/" + jsonArray.getJSONObject(idx).get("id").toString() +"/picture?type=small"));
                                 }
                                 field.put("friends", list);
                                 connectSigninUser(field);

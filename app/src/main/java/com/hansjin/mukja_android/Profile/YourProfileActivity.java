@@ -1,20 +1,15 @@
 package com.hansjin.mukja_android.Profile;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,13 +21,7 @@ import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
-import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.Tab5MyPage.FoodRate_;
-import com.hansjin.mukja_android.TabActivity.Tab5MyPage.PopupEditAboutMe;
-import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Setting;
-import com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageAdapter;
-import com.hansjin.mukja_android.TabActivity.Tab5MyPage.ThumbPopupActivity;
-import com.hansjin.mukja_android.TabActivity.TabActivity;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
@@ -69,6 +58,17 @@ public class YourProfileActivity extends AppCompatActivity {
     String user_id;
     String url;
 
+    Button BT_acceptYou;
+
+    public static int FRIEND_NO = 0;
+    public static int FRIEND_YES = 1;
+    public static int FRIEND_REQUESTED = 2; //나 -> 친구 요청 한 상태
+    public static int FRIEND_WAITING = 3; //친구 -> 나 요청 건 상태
+
+
+
+    public int FRIEND_STATE = FRIEND_NO;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +80,8 @@ public class YourProfileActivity extends AppCompatActivity {
     private void initViewSetting() {
 
         user_id = getIntent().getStringExtra("user_id");
+
+
 
         BT_pref_anal = (Button) findViewById(R.id.BT_pref_anal);
         BT_food_rate = (Button) findViewById(R.id.BT_food_rate);
@@ -93,6 +95,42 @@ public class YourProfileActivity extends AppCompatActivity {
         TV_user_name = (TextView) findViewById(R.id.TV_user_name);
         TV_about_me = (TextView) findViewById(R.id.TV_about_me);
 
+        BT_acceptYou = (Button) findViewById(R.id.BT_acceptYou);
+
+
+
+        for(int i=0;i<SharedManager.getInstance().getMe().friends_NonFacebook_Waiting.size();i++) {
+            Log.i("zxc", SharedManager.getInstance().getMe().friends_NonFacebook_Waiting.get(i).user_id);
+            Log.i("zxc", user_id);
+
+            if (SharedManager.getInstance().getMe().friends_NonFacebook_Waiting.get(i).user_id.equals(user_id)) {
+                BT_acceptYou.setText("친구 요청 수락");
+                BT_acceptYou.setBackgroundResource(R.drawable.category_btn_selected_blue);
+                FRIEND_STATE = FRIEND_WAITING;
+            }
+        }
+
+        for(int i=0;i<SharedManager.getInstance().getMe().friends_NonFacebook_Requested.size();i++) {
+            Log.i("zxc", SharedManager.getInstance().getMe().friends_NonFacebook_Requested.get(i).user_id);
+            Log.i("zxc", user_id);
+            if (SharedManager.getInstance().getMe().friends_NonFacebook_Requested.get(i).user_id.equals(user_id)) {
+                BT_acceptYou.setText("친구 요청 중");
+                BT_acceptYou.setBackgroundResource(R.drawable.category_btn_selected_green);
+                FRIEND_STATE = FRIEND_REQUESTED;
+                BT_acceptYou.setEnabled(false);
+            }
+        }
+
+        for(int i=0;i<SharedManager.getInstance().getMe().friends_NonFacebook.size();i++) {
+            Log.i("zxc", SharedManager.getInstance().getMe().friends_NonFacebook.get(i).user_id);
+            Log.i("zxc", user_id);
+            if (SharedManager.getInstance().getMe().friends_NonFacebook.get(i).user_id.equals(user_id)) {
+                BT_acceptYou.setText("이미 친구");
+                BT_acceptYou.setBackgroundResource(R.drawable.category_btn_selected_red);
+                FRIEND_STATE = FRIEND_YES;
+                BT_acceptYou.setEnabled(false);
+            }
+        }
 
 
         if (recyclerView == null) {
@@ -134,6 +172,12 @@ public class YourProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), FoodRate_.class);
                 intent.putExtra("user_id", user_id);
                 startActivity(intent);
+            }
+        });
+        BT_acceptYou.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user_accept(SharedManager.getInstance().getYou());
             }
         });
 
@@ -248,5 +292,41 @@ public class YourProfileActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         refresh();
+    }
+
+
+    public void user_accept(User you) {
+        LoadingUtil.startLoading(indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.acceptYou(you, SharedManager.getInstance().getMe()._id, you._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(User response) {
+                        if (response != null) {
+                            if(FRIEND_STATE == FRIEND_WAITING) {
+                                BT_acceptYou.setText("이미 친구");
+                                BT_acceptYou.setBackgroundResource(R.drawable.category_btn_selected_red);
+                                BT_acceptYou.setEnabled(false);
+                            }else if(FRIEND_STATE == FRIEND_NO) {
+                                BT_acceptYou.setText("친구 요청 중");
+                                BT_acceptYou.setBackgroundResource(R.drawable.category_btn_selected_green);
+                                BT_acceptYou.setEnabled(false);
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

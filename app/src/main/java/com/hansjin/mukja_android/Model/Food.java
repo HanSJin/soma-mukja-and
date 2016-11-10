@@ -37,14 +37,14 @@ public class Food implements Serializable {
 
     public class LikePerson implements Serializable {
         public String user_id;
-        public String like_date;
+        public String like_date_;
 
         public String getUser_id() {
             return user_id;
         }
 
         public String getLike_date() {
-            return like_date;
+            return like_date_;
         }
     }
 
@@ -56,10 +56,10 @@ public class Food implements Serializable {
         return result;
     }
 
-    public LikePerson newLike(String user_id,String like_date){
+    public LikePerson newLike(String user_id,String like_date_){
         LikePerson lp = new LikePerson();
         lp.user_id = user_id;
-        lp.like_date = like_date;
+        lp.like_date_ = like_date_;
         return lp;
     }
 

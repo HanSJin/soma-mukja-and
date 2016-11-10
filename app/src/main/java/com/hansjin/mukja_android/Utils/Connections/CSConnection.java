@@ -132,6 +132,40 @@ public interface CSConnection {
 
     @POST("/user/withdrawal")
     Observable<User> withdrawalUser(@Body Map<String, Object> fields);
+
+
+    //친구 요청 가져오기 //너가 친구 요청 //friends_NonFacebook_Waiting
+    @GET("requests/waiting/{uid}/{page}")
+    Observable<List<User>> getRequests(@Path("uid") String uid,
+                                       @Path("page") int page);
+
+    //친구 요청 가져오기 2 //내가 친구 요청 //friends_NonFacebook_Requested
+    @GET("requests/requested/{uid}/{page}")
+    Observable<List<User>> getRequests2(@Path("uid") String uid,
+                                        @Path("page") int page);
+
+    //친구 요청 가져오기 3 //우린 이미 친구 //friends_NonFacebook
+    @GET("requests/friends/{uid}/{page}")
+    Observable<List<User>> getRequests3(@Path("uid") String uid,
+                                        @Path("page") int page);
+
+    //친구수락 OK 정보 전송
+    @POST("/friends/accept/{me_id}/{you_id}")
+    Observable<User> acceptYou(@Body User You,
+                               @Path("me_id") String me_id,
+                               @Path("you_id") String you_id);
+
+    //친구수락 NO 정보 전송
+    @POST("/friends/reject/{me_id}/{you_id}")
+    Observable<User> rejectYou(@Body User You,
+                               @Path("me_id") String me_id,
+                               @Path("you_id") String you_id);
+
+
+    @GET("user/{you_id}/{me_id}/view")
+    Observable<GlobalResponse> userView(@Path("me_id") String me_id,
+                                        @Path("you_id") String you_id);
+
 }
 
 

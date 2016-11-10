@@ -1,7 +1,5 @@
 package com.hansjin.mukja_android.TabActivity.Tab1Recommand;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -262,7 +259,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                         TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.category_btn, parent, false);
                         tv.setText(s);
                         if(push_tag.contains(s)){
-                            Drawable r = fragment.getResources().getDrawable(R.drawable.category_btn_selected);
+                            Drawable r = fragment.getResources().getDrawable(R.drawable.category_btn_selected_red);
                             tv.setBackground(r);
                             tv.setTextColor(0xFFFFFFFF);
                         }

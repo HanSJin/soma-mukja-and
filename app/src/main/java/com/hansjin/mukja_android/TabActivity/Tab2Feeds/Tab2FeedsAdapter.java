@@ -148,6 +148,8 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                 User me = SharedManager.getInstance().getMe();
                 List<String> food_like_list = food.like_person_id();
                 List<String> friend_list = me.friends_id();
+                List<String> friend_NonFacebook_list = me.friends_NonFacebook_id();
+
                 String tempFriend = "";
                 String tempMe = "";
                 boolean isYou = false;
@@ -156,16 +158,39 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                 int like_person_size = food.like_person.size();
 
                 for(int i=0;i<food_like_list.size();i++){
+                    if(isMe && isYou) break;
                     if(food_like_list.get(i).equals(me._id)){
                         isMe = true;
                     }
-                    for(int j=0;j<friend_list.size();j++){
-                        if(food_like_list.get(i).equals(friend_list.get(j))){
-                            tempFriend = me.friends.get(j).getUser_name();
-                            isYou = true;
-                            break;
+
+                    if(friend_list!=null) {
+                        if(!isYou) {
+                            for (int j = 0; j < friend_list.size(); j++) {
+                                if (food_like_list.get(i).equals(friend_list.get(j))) {
+                                    tempFriend = me.friends.get(j).getUser_name();
+                                    isYou = true;
+                                    break;
+                                }
+                            }
                         }
                     }
+
+                    if(friend_NonFacebook_list!=null) {
+                        if (!isYou) {
+                            for (int j = 0; j < friend_NonFacebook_list.size(); j++) {
+                                Log.i("zxcxccxcxc", food_like_list.get(i));
+                                Log.i("zxcxccxcxc", friend_NonFacebook_list.get(j));
+
+
+                                if (food_like_list.get(i).equals(friend_NonFacebook_list.get(j))) {
+                                    tempFriend = me.friends_NonFacebook.get(j).getUser_name();
+                                    isYou = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                 }
 
                 String txt = "";

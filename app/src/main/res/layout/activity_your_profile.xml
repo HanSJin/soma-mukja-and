@@ -84,6 +84,18 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent">
                                     <Button
+                                        android:id="@+id/BT_acceptYou"
+                                        android:background="@drawable/category_btn_mypage"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="26dp"
+                                        android:text="친구 추가"
+                                        android:textSize="13sp"
+                                        android:textColor="#FFFFFF"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginBottom="50dp"
+                                        android:layout_marginRight="16dp"
+                                        android:layout_alignParentRight="true"/>
+                                    <Button
                                         android:id="@+id/BT_food_rate"
                                         android:background="@drawable/category_btn_mypage"
                                         android:layout_width="wrap_content"
