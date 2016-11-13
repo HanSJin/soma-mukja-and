@@ -166,6 +166,22 @@ public interface CSConnection {
     Observable<GlobalResponse> userView(@Path("me_id") String me_id,
                                         @Path("you_id") String you_id);
 
+    @POST("/food/comment/{food_id}")
+    Observable<GlobalResponse> commentFood(@Path("food_id") String food_id, @Body Map<String, Object> fields);
+
+    @GET("/food/comment/get/{food_id}")
+    Observable<List<Food.CommentPerson>> getCommentFood(@Path("food_id") String food_id);
+
+    @GET("/food/comment/get/{food_id}/{comment_id}")
+    Observable<List<Food.CommentPerson>> getOneCommentFood(@Path("food_id") String food_id,
+                                                                 @Path("comment_id") String comment_id);
+
+
+    @POST("/food/comment/{food_id}/{comment_id}")
+    Observable<GlobalResponse> oneCommentFood(@Path("food_id") String food_id, @Path("comment_id") String comment_id, @Body Map<String, Object> fields);
+
+
+
 }
 
 

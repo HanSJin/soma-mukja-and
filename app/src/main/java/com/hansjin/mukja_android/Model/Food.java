@@ -35,6 +35,9 @@ public class Food implements Serializable {
     public List<RatePerson> rate_person = new ArrayList<>();
     public List<Integer> rate_distribution = new ArrayList<>();
 
+    public int comment_cnt;
+    public List<CommentPerson> comment_person = new ArrayList<>();
+
     public class LikePerson implements Serializable {
         public String user_id;
         public String like_date_;
@@ -102,4 +105,79 @@ public class Food implements Serializable {
         rp.user_id = user_id;
         return rp;
     }
+
+
+
+
+    public class CommentPerson implements Serializable {
+        public String user_id;
+        public String user_name;
+        public String comment;
+        public String comment_date;
+        public String thumbnail_url_small;
+        public List<ReCommentPerson> re_comment_person;
+        public String comment_id;
+
+        public String getUser_id() {
+            return user_id;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+        public String getCommentDate() {
+            return comment_date;
+        }
+    }
+
+    public List<String> comment_person_id(){
+        List<String> result = new ArrayList<>();
+        for (CommentPerson user_id:comment_person) {
+            result.add(user_id.user_id);
+        }
+        return result;
+    }
+
+    public CommentPerson newComment(String user_id, String comment){
+        CommentPerson cp = new CommentPerson();
+        cp.comment = comment;
+        cp.user_id = user_id;
+        return cp;
+    }
+
+
+    public class ReCommentPerson implements Serializable {
+        public String user_id;
+        public String user_name;
+        public String comment;
+        public String comment_date;
+        public String thumbnail_url_small;
+
+        public String getUser_id() {
+            return user_id;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+        public String getCommentDate() {
+            return comment_date;
+        }
+    }
+
+    public List<String> re_comment_person_id(){
+        List<String> result = new ArrayList<>();
+        for (CommentPerson user_id:comment_person) {
+            result.add(user_id.user_id);
+        }
+        return result;
+    }
+
+    public CommentPerson newReComment(String user_id, String comment){
+        CommentPerson cp = new CommentPerson();
+        cp.comment = comment;
+        cp.user_id = user_id;
+        return cp;
+    }
+
 }

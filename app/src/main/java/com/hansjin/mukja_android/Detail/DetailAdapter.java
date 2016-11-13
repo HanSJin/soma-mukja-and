@@ -3,7 +3,6 @@ package com.hansjin.mukja_android.Detail;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.hansjin.mukja_android.LikedPeople.LikedPeople;
 import com.hansjin.mukja_android.LikedPeople.LikedPeople_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.User;
@@ -29,8 +27,10 @@ import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Dialogs.CustomDialog;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
+import com.zhy.view.flowlayout.FlowLayout;
+import com.zhy.view.flowlayout.TagAdapter;
+import com.zhy.view.flowlayout.TagFlowLayout;
 
-import org.androidannotations.annotations.UiThread;
 import org.eazegraph.lib.charts.ValueLineChart;
 import org.eazegraph.lib.models.ValueLinePoint;
 import org.eazegraph.lib.models.ValueLineSeries;
@@ -38,6 +38,7 @@ import org.eazegraph.lib.models.ValueLineSeries;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,12 +53,15 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     private static final int TYPE_RANK_GRAPH = 2;
     private static final int TYPE_LIKE_PERSON = 3;
     private static final int TYPE_TAIL_SIMILAR = 4;
+    private static final int TYPE_COMMENT = 5;
 
     public DetailActivity activity;
     public Context context;
     private OnItemClickListener mOnItemClickListener;
     public Food food;
     public List<User> personList = new ArrayList<>();
+
+    public static CommentViewHolder commentViewHolder;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -87,6 +91,9 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         } else if (viewType == TYPE_TAIL_SIMILAR) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_simiral_tail, parent, false);
             return new SimiralTailViewHolder(v);
+        } else if (viewType == TYPE_COMMENT) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_detail_comment, parent, false);
+            return new CommentViewHolder(v);
         }
         return null;
     }
@@ -282,6 +289,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             }
         } else if (holder instanceof SimiralTailViewHolder) {
             SimiralTailViewHolder simiralTailViewHolder = (SimiralTailViewHolder) holder;
+        } else if (holder instanceof CommentViewHolder) {
+            commentViewHolder = (CommentViewHolder) holder;
+
+            addFlowChart_Comment(commentViewHolder.TFL_comment_all, food.comment_person);
         }
 
 
@@ -299,12 +310,15 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             return TYPE_LIKE_PERSON;
         else if (position == 4)
             return TYPE_TAIL_SIMILAR;
+        else if (position == 5)
+            return TYPE_COMMENT;
+
         return TYPE_IMAGE_HEADER;
     }
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 6;
     }
 
 
@@ -378,7 +392,28 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     }
 
 
+    public class CommentViewHolder extends ViewHolder {
+        public TextView TV_commenter_name, TV_commenter2_name, TV_comment, TV_comment2, TV_comment_info, TV_comment2_info, TV_comment_write;
+        public CircleImageView CIV_pic, CIV2_pic, CIV_me_pic;
+        public TagFlowLayout TFL_comment_all;
+        public TagFlowLayout TFL_comment_one;
 
+        public CommentViewHolder(View v) {
+            super(v);
+            TV_commenter_name = (TextView) v.findViewById(R.id.TV_commenter_name);
+            TV_commenter2_name = (TextView) v.findViewById(R.id.TV_commenter2_name);
+            TV_comment = (TextView) v.findViewById(R.id.TV_comment);
+            TV_comment2 = (TextView) v.findViewById(R.id.TV_comment2);
+            TV_comment_info = (TextView) v.findViewById(R.id.TV_comment_info);
+            TV_comment2_info = (TextView) v.findViewById(R.id.TV_comment2_info);
+            TV_comment_write = (TextView) v.findViewById(R.id.TV_comment_write);
+            CIV_pic = (CircleImageView) v.findViewById(R.id.CIV_pic);
+            CIV2_pic = (CircleImageView) v.findViewById(R.id.CIV2_pic);
+            CIV_me_pic = (CircleImageView) v.findViewById(R.id.CIV_me_pic);
+            TFL_comment_all = (TagFlowLayout) v.findViewById(R.id.TFL_comment_all);
+
+        }
+    }
 
 
     private String cal_rate(Food food) {
@@ -479,5 +514,137 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                         }
                     }
                 });
+    }
+
+
+
+    private void addFlowChart_Comment(final TagFlowLayout mFlowLayout, final List<Food.CommentPerson> commentPerson) {
+        final LayoutInflater mInflater = LayoutInflater.from(context);
+
+        mFlowLayout.setAdapter(new TagAdapter<Food.CommentPerson>(commentPerson){
+            @Override
+            public View getView(final FlowLayout parent, final int position, final Food.CommentPerson comment_person) {
+                final LinearLayout lv = (LinearLayout) mInflater.inflate(R.layout.cell_detail_comment1, mFlowLayout, false);
+                Log.i("zxc555", position + " : " + comment_person.comment);
+
+                TextView TV_commenter_name;
+                TextView TV_comment;
+                TextView TV_comment_info;
+                CircleImageView CIV_pic;
+                TextView TV_comment_write;
+
+                CIV_pic = (CircleImageView) lv.findViewById(R.id.CIV_pic);
+                TV_commenter_name = (TextView) lv.findViewById(R.id.TV_commenter_name);
+                TV_comment = (TextView) lv.findViewById(R.id.TV_comment);
+                TV_comment_info = (TextView) lv.findViewById(R.id.TV_comment_info);
+                TV_comment_write = (TextView) lv.findViewById(R.id.TV_comment_write);
+
+                Glide.with(context).
+                        load(comment_person.thumbnail_url_small).
+                        thumbnail(0.1f).
+                        into(CIV_pic);
+                TV_commenter_name.setText(comment_person.user_name);
+                TV_comment.setText(comment_person.comment);
+                TV_comment_info.setText(comment_person.comment_date);
+                TV_comment_write.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, ReCommentActivity_.class);
+                        intent.putExtra("posting_id", food._id);
+                        intent.putExtra("comment_id", comment_person.comment_id);
+                        context.startActivity(intent);
+
+                    }
+                });
+
+                //LinearLayout cell_detail_comment2 = (LinearLayout) lv.findViewById(R.id.cell_detail_comment2);
+                TagFlowLayout TFL_comment_all_1 = (TagFlowLayout) lv.findViewById(R.id.TFL_comment_all_1);
+
+                if(comment_person.re_comment_person.size()!=0) {
+                    addFlowChart_Re_Comment(TFL_comment_all_1, comment_person.re_comment_person);
+                }
+                return lv;
+            }
+
+            @Override
+            public boolean setSelected(int position, Food.CommentPerson s) {
+                return true;
+            }
+
+        });
+
+    }
+
+
+    private void addFlowChart_Re_Comment(final TagFlowLayout mFlowLayout, final List<Food.ReCommentPerson> reCommentPerson) {
+        final LayoutInflater mInflater = LayoutInflater.from(context);
+
+        mFlowLayout.setAdapter(new TagAdapter<Food.ReCommentPerson>(reCommentPerson){
+            @Override
+            public View getView(final FlowLayout parent, final int position, Food.ReCommentPerson re_comment_person) {
+                final LinearLayout lv = (LinearLayout) mInflater.inflate(R.layout.cell_detail_comment2, mFlowLayout, false);
+                Log.i("zxc555 re", position + " : " + re_comment_person.comment);
+                TextView TV_commenter2_name;
+                TextView TV_comment2;
+                TextView TV_comment2_info;
+                CircleImageView CIV2_pic;
+
+                CIV2_pic = (CircleImageView) lv.findViewById(R.id.CIV2_pic);
+                TV_commenter2_name = (TextView) lv.findViewById(R.id.TV_commenter2_name);
+                TV_comment2 = (TextView) lv.findViewById(R.id.TV_comment2);
+                TV_comment2_info = (TextView) lv.findViewById(R.id.TV_comment2_info);
+
+                Glide.with(context).
+                        load(re_comment_person.thumbnail_url_small).
+                        thumbnail(0.1f).
+                        into(CIV2_pic);
+                TV_commenter2_name.setText(re_comment_person.user_name);
+                TV_comment2.setText(re_comment_person.comment);
+                TV_comment2_info.setText(re_comment_person.comment_date);
+
+                TagFlowLayout TFL_comment_all_2 = (TagFlowLayout) lv.findViewById(R.id.TFL_comment_all_2);
+
+                List<Integer> me = new ArrayList<>();
+                me.add(0,1);
+
+                if(position == reCommentPerson.size()-1){
+                    addFlowChart_Comment_me(TFL_comment_all_2, me);
+                }
+                return lv;
+            }
+
+            @Override
+            public boolean setSelected(int position, Food.ReCommentPerson s) {
+                return true;
+            }
+        });
+
+    }
+
+
+    private void addFlowChart_Comment_me(final TagFlowLayout mFlowLayout, final List<Integer> me) {
+        final LayoutInflater mInflater = LayoutInflater.from(context);
+
+        mFlowLayout.setAdapter(new TagAdapter<Integer>(me){
+            @Override
+            public View getView(final FlowLayout parent, final int position, Integer re_comment_person) { //list size가 무조건 1인 me를 임의로 만듬 -> recylcerview 세로 길이 때문에 이렇게 코딩함
+                final LinearLayout lv = (LinearLayout) mInflater.inflate(R.layout.cell_detail_comment_me, mFlowLayout, false);
+                CircleImageView CIV_me_pic;
+
+                CIV_me_pic = (CircleImageView) lv.findViewById(R.id.CIV_me_pic);
+
+                Glide.with(context).
+                        load(SharedManager.getInstance().getMe().thumbnail_url_small).
+                        thumbnail(0.1f).
+                        into(CIV_me_pic);
+                return lv;
+            }
+
+            @Override
+            public boolean setSelected(int position, Integer s) {
+                return true;
+            }
+        });
+
     }
 }

@@ -56,6 +56,13 @@ public class User {
             return Constants.IMAGE_BASE_URL + thumbnail_url;
     }
 
+    public String getPic_small(){
+        if(social_type.equals("facebook"))
+            return thumbnail_url_small;
+        else
+            return Constants.IMAGE_BASE_URL + thumbnail_url_small;
+    }
+
     public static class Friends_NonFacebook_Waiting implements Serializable {
         public String user_id;
         public String date;
