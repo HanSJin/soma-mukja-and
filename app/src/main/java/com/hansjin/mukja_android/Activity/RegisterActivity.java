@@ -259,6 +259,7 @@ public class RegisterActivity extends AppCompatActivity {
         n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
         n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
         n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
+        n_food.author.author_location_point = SharedManager.getInstance().getMe().location_point;
 
         Map field = new HashMap();
         field.put("name", n_food.name);

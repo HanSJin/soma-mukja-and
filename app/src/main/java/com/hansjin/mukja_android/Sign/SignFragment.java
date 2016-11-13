@@ -60,6 +60,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.hansjin.mukja_android.Splash.SplashActivity.cityName;
+import static com.hansjin.mukja_android.Splash.SplashActivity.lat;
+import static com.hansjin.mukja_android.Splash.SplashActivity.lon;
+
 public class SignFragment extends Fragment {
     CallbackManager callbackManager;
     private LoginButton facebookLoginButton;
@@ -98,6 +102,9 @@ public class SignFragment extends Fragment {
                                     list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString(), "http://graph.facebook.com/" + jsonArray.getJSONObject(idx).get("id").toString() +"/picture?type=small"));
                                 }
                                 field.put("friends", list);
+                                User.LocationPoint locationPoint = new User.LocationPoint(lat, lon);
+                                field.put("location_point", locationPoint);
+                                field.put("location", cityName);
                                 connectSigninUser(field);//이미 최초 로그인을 한 기록이 있어서 회원가입이 되있는 경우
                             }catch (Exception e){
                                 e.printStackTrace();
@@ -117,15 +124,16 @@ public class SignFragment extends Fragment {
                                 n_user.app_version = getAppVersion(getActivity());
                                 n_user.nickname = object.optString("name");
                                 n_user.about_me = "자기소개 글을 입력해주세요";
-                                n_user.age = 0;
+                                n_user.birthday = object.optString("birthday");
                                 if(object.optString("gender").equals("male"))
                                     n_user.gender = false;
                                 else
                                     n_user.gender = true;
 
                                 n_user.job = "";
-                                n_user.location = SplashActivity.cityName;
+                                n_user.location = cityName;
                                 n_user.password = null;
+                                n_user.location_point = new User.LocationPoint(lat,lon);
                                 try{
                                     JSONArray jsonArray = response.getJSONObject().getJSONArray("data");
                                     int len = jsonArray.length();
@@ -225,6 +233,9 @@ public class SignFragment extends Fragment {
                                     list.add(0, n_user.newFriend(jsonArray.getJSONObject(idx).get("id").toString(), jsonArray.getJSONObject(idx).get("name").toString(), "http://graph.facebook.com/" + jsonArray.getJSONObject(idx).get("id").toString() +"/picture?type=small"));
                                 }
                                 field.put("friends", list);
+                                User.LocationPoint locationPoint = new User.LocationPoint(lat, lon);
+                                field.put("location_point", locationPoint);
+                                field.put("location", cityName);
                                 connectSigninUser(field);
                             }catch (Exception e){
                                 e.printStackTrace();
@@ -235,6 +246,9 @@ public class SignFragment extends Fragment {
         } else if(!prefs.getString("social_id","").equals("") || !prefs.getString("password","").equals("")){
             field.put("social_id", prefs.getString("social_id",""));
             field.put("password", prefs.getString("password",""));
+            User.LocationPoint locationPoint = new User.LocationPoint(lat, lon);
+            field.put("location_point", locationPoint);
+            field.put("location", cityName);
             connectSigninUser_NonFacebook(field);
         }
 
@@ -280,7 +294,9 @@ public class SignFragment extends Fragment {
                 field = new HashMap();
                 field.put("social_id", tempEmail);
                 field.put("password", tempPassword);
-
+                User.LocationPoint locationPoint = new User.LocationPoint(lat, lon);
+                field.put("location_point", locationPoint);
+                field.put("location", cityName);
                 connectSigninUser_NonFacebook(field);
             }
         });

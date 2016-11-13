@@ -1,20 +1,15 @@
 package com.hansjin.mukja_android.Template;
 
-import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
-import com.hansjin.mukja_android.ResultActivity_;
-import com.hansjin.mukja_android.Splash.SplashAdapter;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;

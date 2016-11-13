@@ -36,6 +36,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.hansjin.mukja_android.Splash.SplashActivity.lat;
+import static com.hansjin.mukja_android.Splash.SplashActivity.lon;
 
 
 public class SignupNonFacebookFragment extends Fragment {
@@ -90,7 +92,7 @@ public class SignupNonFacebookFragment extends Fragment {
                         n_user.app_version = getAppVersion(getActivity());
                         n_user.nickname = tempName;
                         n_user.about_me = "자기소개 글을 입력해주세요";
-                        n_user.age = 0;
+                        n_user.birthday = "";
                         if(RB_gender_female.isChecked()){
                             tempGender = true;
                         }
@@ -99,6 +101,7 @@ public class SignupNonFacebookFragment extends Fragment {
                         n_user.location = SplashActivity.cityName;
                         n_user.password = tempPw;
                         n_user.friends = null;
+                        n_user.location_point = new User.LocationPoint(lat,lon);
 
                         connectCreateUser(n_user);
                     }else{

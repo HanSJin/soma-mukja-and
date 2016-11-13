@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderFood;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderParent;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -224,7 +226,16 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
 
             }
 
-            itemViewHolder.write_time.setText(cal_time(food));
+            String distance= ", ";
+            User.LocationPoint location_point = food.author.author_location_point;
+            if(location_point.lat!=0 && location_point.lon!=0) {
+                distance += String.valueOf(CalculationByDistance(SharedManager.getInstance().getMe().location_point, location_point));
+                distance += "km";
+            }
+            else
+                distance = "";
+
+            itemViewHolder.user_info.setText(cal_time(food) + distance);
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
             itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
@@ -308,6 +319,32 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public double CalculationByDistance(User.LocationPoint StartP, User.LocationPoint EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.lat;
+        double lat2 = EndP.lat;
+        double lon1 = StartP.lon;
+        double lon2 = EndP.lon;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        double distance = (Radius * c);
+        return Math.round(distance*100d) / 100d;
     }
 
     private String cal_time(Food food) {

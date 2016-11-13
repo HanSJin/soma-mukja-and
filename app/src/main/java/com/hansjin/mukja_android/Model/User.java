@@ -35,7 +35,7 @@ public class User {
     public String thumbnail_url_small;
     public String nickname;//** nickname보다는 name이 낫지않나? 왜냐하면 페이스북 가입 유저들은 다 실명쓰는데 일반가입만 익명이면 형평성에 문제가될수도
     public String about_me;//*
-    public Integer age;//*
+    public String birthday;//*
     public Boolean gender;//*
     public String job;//보류?
     public String location;//회원가입 후, 팝업으로 동의구하기
@@ -48,6 +48,7 @@ public class User {
     public List<Friends_NonFacebook> friends_NonFacebook_Requested = new ArrayList<>();
     public int choice_cnt;
     public String choice_last_date;
+    public LocationPoint location_point;
 
     public String getPic(){
         if(social_type.equals("facebook"))
@@ -155,6 +156,18 @@ public class User {
         f.user_name = user_name;
         f.user_pic_small = user_pic_small;
         return f;
+    }
+
+
+    public static class LocationPoint{
+        public double lat;
+        public double lon;
+
+        public LocationPoint(double latitude, double longitude){
+            lat = latitude;
+            lon = longitude;
+        }
+
     }
 
 }

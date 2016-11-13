@@ -18,6 +18,7 @@ tools:context=".Splash.SplashActivity">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="오늘 추천해드릴 음식을 찾는 중..."
+            android:textColor="#FFFFFF"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="50dp"/>

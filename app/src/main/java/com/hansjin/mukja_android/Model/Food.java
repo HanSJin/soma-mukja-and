@@ -71,6 +71,7 @@ public class Food implements Serializable {
         public String author_nickname;
         public String author_thumbnail_url;
         public String author_thumbnail_url_small;
+        public User.LocationPoint author_location_point;
     }
 
 
