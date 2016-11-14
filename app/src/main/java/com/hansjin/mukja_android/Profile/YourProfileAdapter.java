@@ -1,6 +1,7 @@
-package com.hansjin.mukja_android.Splash;
+package com.hansjin.mukja_android.Profile;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,18 +9,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment;
 
 import java.util.ArrayList;
 
+import static com.hansjin.mukja_android.Utils.Constants.Constants.IMAGE_BASE_URL;
+
 /**
- * Created by kksd0900 on 16. 9. 30..
+ * Created by kksd0900 on 16. 10. 11..
  */
-public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder> {
+public class YourProfileAdapter extends RecyclerView.Adapter<YourProfileAdapter.ViewHolder> {
     private static final int TYPE_ITEM = 0;
 
     public Context context;
+    public YourProfileActivity activity;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
 
@@ -27,9 +33,10 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
         void onItemClick(View view, int position);
     }
 
-    public SplashAdapter(OnItemClickListener onItemClickListener, Context mContext) {
+    public YourProfileAdapter(OnItemClickListener onItemClickListener, Context mContext, YourProfileActivity mActivity) {
         mOnItemClickListener = onItemClickListener;
         context = mContext;
+        activity = mActivity;
         mDataset.clear();
     }
 
@@ -46,9 +53,9 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
     }
 
     @Override
-    public SplashAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public YourProfileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_food_default_item, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_liked_food, parent, false);
             return new ItemViewHolder(v);
         }
         return null;
@@ -66,20 +73,13 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             Food food = mDataset.get(position);
 
-            String tasteStr = "";
-            for (String taste : food.taste) {
-                tasteStr += ("#" + taste + ", ");
-            }
-            String countryStr = "";
-            for (String country : food.country) {
-                countryStr  += ("#" + country + ", ");
-            }
-            String cookingStr = "";
-            for (String cooking : food.cooking) {
-                cookingStr += ("#" + cooking + ", ");
-            }
-            itemViewHolder.foodName.setText(food.name);
-            itemViewHolder.foodDesc.setText(tasteStr + countryStr + cookingStr);
+            itemViewHolder.TV_food_name.setText(food.name);
+
+            String image_url = IMAGE_BASE_URL + food.image_url;
+            Glide.with(activity).
+                    load(image_url).
+                    thumbnail(0.1f).
+                    into(itemViewHolder.IV_food);
         }
     }
 
@@ -105,11 +105,15 @@ public class SplashAdapter extends RecyclerView.Adapter<SplashAdapter.ViewHolder
         }
     }
     public class ItemViewHolder extends ViewHolder {
-        public TextView foodName, foodDesc;
+        public TextView TV_food_name;
+        public ImageView IV_food;
+
         public ItemViewHolder(View v) {
             super(v);
-            foodName = (TextView) v.findViewById(R.id.food_name);
-            foodDesc = (TextView) v.findViewById(R.id.food_desc);
+            TV_food_name = (TextView) v.findViewById(R.id.TV_food_name);
+            IV_food = (ImageView) v.findViewById(R.id.IV_food);
+
         }
     }
+
 }

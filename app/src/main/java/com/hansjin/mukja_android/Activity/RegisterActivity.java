@@ -1,11 +1,14 @@
 package com.hansjin.mukja_android.Activity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.opengl.GLES20;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -24,6 +28,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.GlobalResponse;
@@ -43,7 +50,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,13 +80,17 @@ public class RegisterActivity extends AppCompatActivity {
     List<String> country_list = new ArrayList<>();
     List<String> cooking_list = new ArrayList<>();
 
-    List<String> category_list = new ArrayList<String>();
+    List<String> category_list_taste = new ArrayList<String>();
+    List<String> category_list_country = new ArrayList<String>();
+    List<String> category_list_cooking = new ArrayList<String>();
+
 
     Food n_food = new Food();
     Float rate_num = 10.0f;
 
     private String imagepath=null;
-    SharedPreferences prefs;
+    Boolean btn_push = false;
+
 
     @ViewById
     Toolbar cs_toolbar;
@@ -96,7 +109,11 @@ public class RegisterActivity extends AppCompatActivity {
     @ViewById
     RatingBar ratingBar;
     @ViewById
-    TagFlowLayout category_result;
+    TagFlowLayout category_result_taste;
+    @ViewById
+    TagFlowLayout category_result_country;
+    @ViewById
+    TagFlowLayout category_result_cooking;
     @ViewById
     TagFlowLayout ingredient_result;
 
@@ -118,8 +135,6 @@ public class RegisterActivity extends AppCompatActivity {
     @AfterViews
     void afterBindingView() {
         this.activity = this;
-
-        prefs = getSharedPreferences("TodayFood",0);
 
         setSupportActionBar(cs_toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -160,7 +175,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.finish) {
             //현재 순서 : 빈칸 체크 -> 이미지 업로드 -> 음식 등록 -> 별점 평가
-            check_blank();
+            if(!btn_push) {
+                btn_push = true;
+                check_blank();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -179,19 +197,21 @@ public class RegisterActivity extends AppCompatActivity {
                 String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
                 n_food.image_url = "lmjing_"+current_time;
 
-                try {
-                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    food_image.setImageBitmap(image_bitmap);
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                int[] maxTextureSize = new int[1];
+                GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
+
+                final int[] tempMaxTextureSize = maxTextureSize;
+
+                Glide.with(activity).load(imagepath).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        if (resource.getHeight() > tempMaxTextureSize[0]){
+                            int resizedWidth = food_image.getWidth();
+                            int resizedHeight = food_image.getHeight();
+                            food_image.setImageBitmap(resource.createScaledBitmap(resource, resizedWidth, resizedHeight, false));
+                        }
+                    }
+                });
             }
         }
     }
@@ -203,32 +223,9 @@ public class RegisterActivity extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
-    private void uploadFile() {
-
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        File file = new File(imagepath);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
-        String descriptionString = n_food.name;
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
-
-        Call<ResponseBody> call = conn.uploadImage(body, description, n_food.image_url);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Response<ResponseBody> response) {
-                RegisterFood();
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.e("Upload error:", t.getMessage());
-            }
-        });
-    }
-
     private void uploadFile1(final Food food) {
         File file = new File(imagepath);
-        RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), file);
+        RequestBody fbody = RequestBody.create(MediaType.parse("image/*"), saveBitmapToFile(file));
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.fileUploadWrite(food._id, fbody)
                 .subscribeOn(Schedulers.newThread())
@@ -262,6 +259,7 @@ public class RegisterActivity extends AppCompatActivity {
         n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
         n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
         n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
+        n_food.author.author_location_point = SharedManager.getInstance().getMe().location_point;
 
         Map field = new HashMap();
         field.put("name", n_food.name);
@@ -299,6 +297,49 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
+    public File saveBitmapToFile(File file){
+        try {
+
+            // BitmapFactory options to downsize the image
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            o.inSampleSize = 6;
+            // factor of downsizing the image
+
+            FileInputStream inputStream = new FileInputStream(file);
+            //Bitmap selectedBitmap = null;
+            BitmapFactory.decodeStream(inputStream, null, o);
+            inputStream.close();
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=75;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            inputStream = new FileInputStream(file);
+
+            Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+            inputStream.close();
+
+            // here i override the original image file
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+
+            return file;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private void check_blank(){
         //TODO:서버 이미지 처리 : 현재 rate,new_food등록 후 이미지 업로드 하는데 업로드할때 food_id보내므로 해당 food_id활용해서 서버단에서 uri 만든 후 update할 것
         n_food.name = edit_name.getText().toString();
@@ -307,9 +348,9 @@ public class RegisterActivity extends AppCompatActivity {
         else if(imagepath==null)
             Snackbar.make(ratingBar, "사진을 등록해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else if(n_food.taste.size()==0||n_food.country.size()==0||n_food.cooking.size()==0)
-            Snackbar.make(ratingBar, "맛/국가/조리방식 각 하나이상 선택해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            Snackbar.make(ratingBar, "맛/국가/조리방식 각 하나 이상 선택해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else if(n_food.ingredient.size()==0)
-            Snackbar.make(ratingBar, "식재료 하나이상 입력해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            Snackbar.make(ratingBar, "식재료 하나 이상 입력해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else if(rate_num==10.0f)
             Snackbar.make(ratingBar, "음식 평가 해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else
@@ -323,22 +364,27 @@ public class RegisterActivity extends AppCompatActivity {
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 if (!s.getSelectedItem().toString().equals("[맛]")
                         && !s.getSelectedItem().toString().equals("[국가]")
                         && !s.getSelectedItem().toString().equals("[조리방식]")) {
                     switch (type) {
                         case 1:
                             n_food.taste.add(s.getSelectedItem().toString());
+                            category_list_taste.add(s.getSelectedItem().toString());
+                            addFlowChart(category_result_taste, category_list_taste.toArray(new String[category_list_taste.size()]));
                             break;
                         case 2:
                             n_food.country.add(s.getSelectedItem().toString());
+                            category_list_country.add(s.getSelectedItem().toString());
+                            addFlowChart(category_result_country, category_list_country.toArray(new String[category_list_country.size()]));
                             break;
                         case 3:
                             n_food.cooking.add(s.getSelectedItem().toString());
+                            category_list_cooking.add(s.getSelectedItem().toString());
+                            addFlowChart(category_result_cooking, category_list_cooking.toArray(new String[category_list_cooking.size()]));
                             break;
                     }
-                    category_list.add(s.getSelectedItem().toString());
-                    addFlowChart(category_result, category_list.toArray(new String[category_list.size()]));
                 }
             }
 
@@ -346,6 +392,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+
     }
 
     private void set_rating() {
@@ -359,18 +407,65 @@ public class RegisterActivity extends AppCompatActivity {
                 //5점 만점
                 float st = 5f / ratingBar.getNumStars();
                 rate_num = st * v;
-                Toast.makeText(getApplicationContext(),String.valueOf(rate_num),Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void addFlowChart(final TagFlowLayout mFlowLayout, String[] array) {
         final LayoutInflater mInflater = LayoutInflater.from(getApplication());
-        mFlowLayout.setAdapter(new TagAdapter<String>(array) {
+
+        mFlowLayout.setAdapter(new TagAdapter<String>(array){
             @Override
-            public View getView(FlowLayout parent, int position, String s) {
-                TextView tv = (TextView) mInflater.inflate(R.layout.tag_result, mFlowLayout, false);
+            public View getView(final FlowLayout parent, final int position, String s) {
+                final TextView tv = (TextView) mInflater.inflate(R.layout.tag_result, mFlowLayout, false);
                 tv.setText(s);
+
+                int type = parent.getId();
+                switch(type){
+                    case R.id.category_result_taste:
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                category_list_taste.remove(position);
+                                mFlowLayout.removeViewAt(position);
+                                n_food.taste.remove(position);
+                                addFlowChart(category_result_taste, category_list_taste.toArray(new String[category_list_taste.size()]));
+                            }
+                        });
+                        break;
+                    case R.id.category_result_country:
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                category_list_country.remove(position);
+                                mFlowLayout.removeViewAt(position);
+                                n_food.country.remove(position);
+                                addFlowChart(category_result_country, category_list_country.toArray(new String[category_list_country.size()]));
+                            }
+                        });
+                        break;
+                    case R.id.category_result_cooking:
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                category_list_cooking.remove(position);
+                                mFlowLayout.removeViewAt(position);
+                                n_food.cooking.remove(position);
+                                addFlowChart(category_result_cooking, category_list_cooking.toArray(new String[category_list_cooking.size()]));
+                            }
+                        });
+                        break;
+                    case R.id.ingredient_result:
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mFlowLayout.removeViewAt(position);
+                                n_food.ingredient.remove(position);
+                                addFlowChart(ingredient_result,n_food.ingredient.toArray(new String[n_food.ingredient.size()]));
+                            }
+                        });
+                }
+
                 return tv;
             }
 
@@ -379,6 +474,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return s.equals("Android");
             }
         });
+
     }
 
     public void food_rate(Food food) {

@@ -95,10 +95,6 @@ public class Tab1RecommandFragment extends TabParentFragment {
             adapter = new Tab1RecommandAdapter(new Tab1RecommandAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    Intent intent = new Intent(activity, DetailActivity_.class);
-                    intent.putExtra("food", adapter.mDataset.get(position));
-                    startActivity(intent);
-                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
@@ -115,6 +111,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
         });
     }
 
+
     @Override
     public void refresh() {
         page = 1;
@@ -126,7 +123,11 @@ public class Tab1RecommandFragment extends TabParentFragment {
 
     @Override
     public void reload() {
-
+        page = 1;
+        endOfPage = false;
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        connectRecommand(getField());
     }
 
     private Category getField() {

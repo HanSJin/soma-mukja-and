@@ -33,7 +33,7 @@
                 android:textColor="#885588"
                 android:textStyle="bold"/>
             <TextView
-                android:id="@+id/write_time"
+                android:id="@+id/user_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
@@ -50,15 +50,4 @@
             android:src="@drawable/more"
             android:background="?attr/selectableItemBackground"/>
     </RelativeLayout>
-    <TextView
-        android:id="@+id/author_name"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="12dp"
-        android:layout_gravity="left|center_vertical"
-        android:gravity="left|center_vertical"
-        android:textSize="14sp"
-        android:textColor="#885588"
-        android:textStyle="bold"
-        android:text="author_name"/>
 </LinearLayout>

@@ -1,63 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="500px"
-    android:layout_height="400px"
+    android:layout_width="300dp"
+    android:layout_height="350dp"
     android:orientation="vertical">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="50">
+        android:layout_height="match_parent">
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="수정하고싶은 자기소개 글을 입력해주세요."
+            android:id="@+id/TV_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="수정하고 싶은 자기소개 글을 입력해주세요"
+            android:layout_centerHorizontal="true"
             android:gravity="center"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="250">
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ET_about_me"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="100"
-        android:orientation="horizontal">
-        <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="100"></LinearLayout>
-        <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="100">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="취소"
-                android:id="@+id/BT_no"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="100"></LinearLayout>
-        <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="100">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="확인"
-                android:id="@+id/BT_yes"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="100"></LinearLayout>
-    </LinearLayout>
+            android:layout_marginTop="25dp"
+            android:id="@+id/ET_about_me"
+            android:layout_width="300dp"
+            android:layout_height="175dp"
+            android:layout_below="@id/TV_edit"
+            android:background="@drawable/xml_border_bottom_line"/>
+        <Button
+            android:id="@+id/BT_no"
+            android:layout_marginTop="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="취소"
+            android:background="@drawable/category_btn"
+            android:layout_below="@id/ET_about_me"
+            android:layout_marginLeft="40dp"/>
+        <Button
+            android:id="@+id/BT_yes"
+            android:layout_marginTop="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="확인"
+            android:background="@drawable/category_btn"
+            android:layout_below="@id/ET_about_me"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"/>
+    </RelativeLayout>
+
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.hansjin.mukja_android.TabActivity.Tab1Recommand;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,7 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
+import com.hansjin.mukja_android.LikedPeople.LikedPeople_;
 import com.hansjin.mukja_android.Model.Category;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
@@ -34,11 +38,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment.activity;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -93,6 +98,9 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     }
 
     public void clear() {
+        category_food.taste.clear();
+        category_food.country.clear();
+        category_food.cooking.clear();
         mDataset.clear();
         push_tag.clear();
     }
@@ -123,6 +131,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
             itemViewHolder.cellFoodHeader.setVisibility(View.GONE);
             itemViewHolder.foodName.setText(food.name);
+
             //TODO: 정보 띄워주기 서버와 연동 후 화면 테스트해보기
             Glide.with(context).
                     load(Constants.IMAGE_BASE_URL+food.image_url).
@@ -130,21 +139,72 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     into(itemViewHolder.food_img);
             itemViewHolder.rate_num.setText(cal_rate(food));
             itemViewHolder.category_tag.setText(combine_tag(food));
-            if (food.like_cnt==0)
+            if (food.like_person.size()==0)
                 itemViewHolder.people_like.setText("가장 먼저 좋아요를 눌러주세요!");
-            else
-                itemViewHolder.people_like.setText(food.like_cnt+"명의 사람들이 좋아해요");
-            //itemViewHolder.friend_like.setText(cal_friend(food));
+            else {
+                User me = SharedManager.getInstance().getMe();
+                List<String> food_like_list = food.like_person_id();
+                List<String> friend_list = me.friends_id();
+                String tempFriend = "";
+                String tempMe = "";
+                boolean isYou = false;
+                boolean isMe = false;
+
+                int like_person_size = food.like_person.size();
+
+                for(int i=0;i<food_like_list.size();i++){
+                    if(food_like_list.get(i).equals(me._id)){
+                        isMe = true;
+                    }
+                    for(int j=0;j<friend_list.size();j++){
+                        if(food_like_list.get(i).equals(friend_list.get(j))){
+                            tempFriend = me.friends.get(j).getUser_name();
+                            isYou = true;
+                            break;
+                        }
+                    }
+                }
+
+                String txt = "";
+                if(!isYou){
+                    if(isMe) //me
+                        if(like_person_size==1)
+                            txt = "회원님이 좋아해요";
+                        else
+                            txt = "회원님 외 " + (like_person_size-1) + "명의 사람들이 좋아해요";
+                    else{ // x
+                        if(like_person_size==1)
+                            txt = "1명의 사람이 좋아해요";
+                        else
+                            txt = like_person_size + "명의 사람들이 좋아해요";
+                    }
+                }else{//좋아요한 내 친구가 1명 이상일 때
+                    if(isMe) { //you me
+                        if(like_person_size==2)
+                            txt = "회원님, " + tempFriend + "님이 좋아해요";
+                        else
+                            txt = "회원님, " + tempFriend + "님 외 " + (like_person_size - 2) + "명의 사람들이 좋아해요";
+                    }
+                    else //you
+                        if(like_person_size==1)
+                            txt = tempFriend+"님이 좋아해요";
+                        else
+                            txt = tempFriend+ "님 외 " + (like_person_size-1) + "명의 사람들이 좋아해요";
+                }
+
+                itemViewHolder.people_like.setText(txt);
+
+            }
 
             itemViewHolder.heart.setImageDrawable(fragment.getResources().getDrawable(R.drawable.heart_gray));
             itemViewHolder.star.setImageDrawable(fragment.getResources().getDrawable(R.drawable.star_gray));
-            setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
-            setImamge(food.rate_person_id(),itemViewHolder.star,R.drawable.star_yellow);
+            setImamge(food.like_person_id(), itemViewHolder.heart, R.drawable.heart_red);
+            setImamge(food.rate_person_id(), itemViewHolder.star, R.drawable.star_yellow);
             itemViewHolder.eat_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     food_like(food, position-1);
-                    setImamge(food.like_person,itemViewHolder.heart,R.drawable.heart_red);
+                    setImamge(food.like_person_id(),itemViewHolder.heart,R.drawable.heart_red);
                 }
             });
 
@@ -165,6 +225,28 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                 }
             });
 
+            itemViewHolder.food_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailActivity_.class);
+                    intent.putExtra("food", food);
+                    context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                }
+            });
+
+            itemViewHolder.people_like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(food.like_cnt>0)
+                        return;
+
+                    Intent intent = new Intent(context, LikedPeople_.class);
+                    intent.putExtra("food", food);
+                    context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                }
+            });
 
         } else if (holder instanceof ViewHolderFoodCategory) {
 
@@ -180,7 +262,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                         TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.category_btn, parent, false);
                         tv.setText(s);
                         if(push_tag.contains(s)){
-                            Drawable r = fragment.getResources().getDrawable(R.drawable.category_btn_selected);
+                            Drawable r = fragment.getResources().getDrawable(R.drawable.category_btn_selected_red);
                             tv.setBackground(r);
                             tv.setTextColor(0xFFFFFFFF);
                         }
@@ -215,7 +297,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
                             fragment.connectRecommand(category_food);
                             push_tag.add(s);
-                            Log.i("please", "눌림");
                         }
                         return true;
                     }
@@ -277,7 +358,9 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                 i+=0.5f;
             }
         }
-        return String.valueOf(total/cnt);
+
+        String str = String.format("%.2f", total/cnt);
+        return str;
     }
 
     @Override
@@ -313,8 +396,11 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
+                            Log.i("makejin", "response " + response);
                             mDataset.get(index).like_cnt = response.like_cnt;
+                            Log.i("makejin", "response.like_cnt " + response.like_cnt);
                             mDataset.get(index).like_person = response.like_person;
+                            Log.i("makejin", "response.like_person " + response.like_person);
                             notifyDataSetChanged();
                         } else {
                             Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
@@ -322,7 +408,6 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     }
                 });
     }
-
     public void food_rate(Food food, final int index) {
         LoadingUtil.startLoading(fragment.indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
@@ -352,4 +437,5 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     }
                 });
     }
+
 }

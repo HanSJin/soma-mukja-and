@@ -14,12 +14,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.hansjin.mukja_android.Activity.RegisterActivity;
 import com.hansjin.mukja_android.Activity.RegisterActivity_;
-import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
@@ -47,7 +47,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     public LinearLayout indicator;
-    FloatingActionButton fab;
+    ImageButton fab;
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
@@ -87,10 +87,6 @@ public class Tab2FeedsFragment extends TabParentFragment {
             adapter = new Tab2FeedsAdapter(new Tab2FeedsAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    Intent intent = new Intent(activity, DetailActivity_.class);
-                    intent.putExtra("food", adapter.mDataset.get(position));
-                    startActivity(intent);
-                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
@@ -106,7 +102,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
             }
         });
 
-        fab = (FloatingActionButton)view.findViewById(R.id.add_button);
+        fab = (ImageButton)view.findViewById(R.id.add_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,7 +127,11 @@ public class Tab2FeedsFragment extends TabParentFragment {
 
     @Override
     public void reload() {
-
+        page = 1;
+        endOfPage = false;
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        connectFeed(page);
     }
 
     void connectFeed(final int page_num) {

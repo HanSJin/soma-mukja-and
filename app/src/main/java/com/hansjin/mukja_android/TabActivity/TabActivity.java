@@ -13,6 +13,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.facebook.FacebookSdk;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
@@ -38,6 +39,8 @@ public class TabActivity extends AppCompatActivity {
     private long backKeyPressedTime = 0;
     private Toast toast;
     SharedPreferences sp;
+
+    @ViewById
     public LinearLayout indicator;
 
 
@@ -52,19 +55,20 @@ public class TabActivity extends AppCompatActivity {
     //SharedPreferences sp = getSharedPreferences("TodayFood", Context.MODE_PRIVATE);
     @AfterViews
     void afterBindingView() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
         AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
 
         // Create items
         AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.tab_1, R.drawable.icon_recommand, R.color.colorBottomTabBackGround);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.tab_2, R.drawable.icon_feed, R.color.colorBottomTabBackGround);
-//        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tab_3, R.drawable.timeline, R.color.colorBottomTabBackGround);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tab_3, R.drawable.icon_feed, R.color.colorBottomTabBackGround); //list
         AHBottomNavigationItem item4 = new AHBottomNavigationItem(R.string.tab_4, R.drawable.icon_explore, R.color.colorBottomTabBackGround);
         AHBottomNavigationItem item5 = new AHBottomNavigationItem(R.string.tab_5, R.drawable.icon_mypage, R.color.colorBottomTabBackGround);
 
         // Add items
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
-//        bottomNavigation.addItem(item3);
+        bottomNavigation.addItem(item3);
         bottomNavigation.addItem(item4);
         bottomNavigation.addItem(item5);
 

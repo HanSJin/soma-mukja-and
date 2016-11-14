@@ -27,7 +27,7 @@
 
         <include layout="@layout/view_loading_indicator" android:id="@+id/indicator" />
 
-        <android.support.design.widget.FloatingActionButton
+        <ImageButton
             android:id="@+id/add_button"
             android:layout_width="56dp"
             android:layout_height="56dp"

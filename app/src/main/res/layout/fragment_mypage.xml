@@ -32,7 +32,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
+                    android:layout_height="220dp"
                     android:id="@+id/relative_1">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                         android:orientation="vertical">
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
+                            android:layout_height="120dp"
                             android:orientation="horizontal"
                             android:background="@drawable/cover_basic">
                             <LinearLayout
@@ -50,15 +50,16 @@
                                 <RelativeLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent">
-
                                     <Button
                                         android:id="@+id/BT_pref_anal"
                                         android:background="@drawable/category_btn_mypage"
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="26dp"
                                         android:text="취향 분석"
-                                        android:layout_marginLeft="10dp"
-                                        android:layout_marginBottom="3dp"
+                                        android:textSize="13sp"
+                                        android:textColor="#FFFFFF"
+                                        android:layout_marginLeft="16dp"
+                                        android:layout_marginBottom="10dp"
                                         android:layout_alignParentBottom="true"
                                         android:layout_alignParentLeft="true" />
                                 </RelativeLayout>
@@ -84,11 +85,13 @@
                                         android:id="@+id/BT_food_rate"
                                         android:background="@drawable/category_btn_mypage"
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="26dp"
                                         android:text="음식 평가"
+                                        android:textSize="13sp"
+                                        android:textColor="#FFFFFF"
                                         android:layout_alignParentBottom="true"
-                                        android:layout_marginBottom="3dp"
-                                        android:layout_marginRight="10dp"
+                                        android:layout_marginBottom="10dp"
+                                        android:layout_marginRight="16dp"
                                         android:layout_alignParentRight="true"/>
                                 </RelativeLayout>
                             </LinearLayout>
@@ -96,31 +99,37 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:background="#00FFFFFF">
+                            android:layout_height="match_parent"
+                            android:background="#FFFFFFFF">
                             <TextView
                                 android:id="@+id/TV_user_name"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="25dp"
                                 android:text="user_name"
-                                android:textStyle="bold"/>
+                                android:gravity="center"
+                                android:layout_gravity="center"
+                                android:textStyle="bold"
+                                android:textSize="17sp"/>
                             <TextView
                                 android:id="@+id/TV_about_me"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
-                                android:layout_marginTop="20dp"
+                                android:layout_marginTop="10dp"
                                 android:text="about_me"
-                                android:layout_below="@id/TV_user_name"/>
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:layout_gravity="center"
+                                android:layout_below="@id/TV_user_name"
+                                android:textSize="13sp"/>
                             <Button
                                 android:id="@+id/BT_edit_about_me"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
                                 android:layout_toRightOf="@+id/TV_about_me"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginBottom="20dp"
+                                android:layout_marginTop="60dp"
                                 android:background="@drawable/edit"
                                 android:layout_marginLeft="5dp"/>
                         </RelativeLayout>
@@ -136,19 +145,27 @@
                         android:clickable="true"/>
                 </RelativeLayout>
 
-                <RelativeLayout
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
+                    android:layout_height="match_parent"
+                    android:background="#F3F3F3"
+                    android:padding="15dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="좋아한 메뉴"
+                        android:textColor="@color/colorGrayText"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="15dp"/>
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/recycler_view"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="#F3F3F3"
                             android:paddingBottom="56dp"
                             android:scrollbars="vertical" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -159,226 +176,3 @@
 
 
 </android.support.design.widget.CoordinatorLayout>
-
-
-
-
-        <!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<android.support.design.widget.CoordinatorLayout-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-
-    <!--<android.support.design.widget.AppBarLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:theme="@style/AppTheme.AppBarOverlay" >-->
-
-        <!--<include layout="@layout/toolbar_mypage" android:id="@+id/cs_toolbar" />-->
-
-    <!--</android.support.design.widget.AppBarLayout>-->
-
-    <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginTop="?attr/actionBarSize">-->
-
-        <!--<android.support.v4.widget.SwipeRefreshLayout-->
-            <!--android:id="@+id/pull_to_refresh"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" >-->
-
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:orientation="vertical">-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="0px"-->
-                        <!--android:layout_weight="30">-->
-                        <!--<FrameLayout-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="match_parent">-->
-                            <!--<LinearLayout-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent"-->
-                                <!--android:orientation="vertical">-->
-                                <!--<LinearLayout-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="0px"-->
-                                    <!--android:layout_weight="25">-->
-                                    <!--<FrameLayout-->
-                                        <!--android:layout_width="match_parent"-->
-                                        <!--android:layout_height="match_parent">-->
-                                        <!--<LinearLayout-->
-                                            <!--android:layout_width="match_parent"-->
-                                            <!--android:layout_height="match_parent"-->
-                                            <!--android:background="@drawable/backgroundimage1"-->
-                                            <!--android:orientation="vertical">-->
-                                            <!--<LinearLayout-->
-                                                <!--android:layout_width="match_parent"-->
-                                                <!--android:layout_height="0px"-->
-                                                <!--android:layout_weight="18"></LinearLayout>-->
-                                            <!--<LinearLayout-->
-                                                <!--android:layout_width="match_parent"-->
-                                                <!--android:layout_height="0px"-->
-                                                <!--android:layout_weight="7"-->
-                                                <!--android:orientation="horizontal">-->
-                                                <!--<LinearLayout-->
-                                                    <!--android:layout_width="0px"-->
-                                                    <!--android:layout_height="match_parent"-->
-                                                    <!--android:layout_weight="10"></LinearLayout>-->
-                                                <!--<LinearLayout-->
-                                                    <!--android:layout_width="0px"-->
-                                                    <!--android:layout_height="match_parent"-->
-                                                    <!--android:layout_weight="120">-->
-                                                    <!--<Button-->
-                                                        <!--android:layout_width="match_parent"-->
-                                                        <!--android:layout_height="match_parent"-->
-                                                        <!--android:text="취향 분석"-->
-                                                        <!--android:id="@+id/BT_pref_anal"/>-->
-                                                <!--</LinearLayout>-->
-                                                <!--<LinearLayout-->
-                                                    <!--android:layout_width="0px"-->
-                                                    <!--android:layout_height="match_parent"-->
-                                                    <!--android:layout_weight="280"></LinearLayout>-->
-                                                <!--<LinearLayout-->
-                                                    <!--android:layout_width="0px"-->
-                                                    <!--android:layout_height="match_parent"-->
-                                                    <!--android:layout_weight="120">-->
-                                                    <!--<Button-->
-                                                        <!--android:layout_width="match_parent"-->
-                                                        <!--android:layout_height="match_parent"-->
-                                                        <!--android:text="음식 평가"-->
-                                                        <!--android:id="@+id/BT_food_rate"/>-->
-                                                <!--</LinearLayout>-->
-                                                <!--<LinearLayout-->
-                                                    <!--android:layout_width="0px"-->
-                                                    <!--android:layout_height="match_parent"-->
-                                                    <!--android:layout_weight="10"></LinearLayout>-->
-
-                                            <!--</LinearLayout>-->
-
-                                        <!--</LinearLayout>-->
-                                    <!--</FrameLayout>-->
-                                <!--</LinearLayout>-->
-                                <!--<LinearLayout-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="0px"-->
-                                    <!--android:layout_weight="5">-->
-                                <!--</LinearLayout>-->
-                            <!--</LinearLayout>-->
-
-                            <!--<LinearLayout-->
-                                <!--android:layout_width="78dp"-->
-                                <!--android:layout_height="78dp"-->
-                                <!--android:background="@drawable/userinformation3"-->
-                                <!--android:layout_gravity="center_horizontal|bottom"-->
-                                <!--android:layout_marginBottom="10dp">-->
-                                <!--<ImageView-->
-                                    <!--android:id="@+id/profile_image"-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="match_parent"-->
-                                    <!--android:clickable="true"/>-->
-                            <!--</LinearLayout>-->
-                        <!--</FrameLayout>-->
-
-
-                    <!--</LinearLayout>-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="0px"-->
-                        <!--android:layout_weight="15"-->
-                        <!--android:orientation="vertical">-->
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="0px"-->
-                            <!--android:layout_weight="5">-->
-                            <!--<RelativeLayout-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent">-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="wrap_content"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="name"-->
-                                    <!--android:layout_centerHorizontal="true"-->
-                                    <!--android:textStyle="bold"-->
-                                    <!--android:paddingBottom="10dp"-->
-                                    <!--android:paddingRight="10dp"-->
-                                    <!--android:id="@+id/TV_name"/>-->
-                            <!--</RelativeLayout>-->
-                        <!--</LinearLayout>-->
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="0px"-->
-                            <!--android:layout_weight="5">-->
-                            <!--<RelativeLayout-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent">-->
-                                <!--<TextView-->
-                                    <!--android:layout_width="wrap_content"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:text="about_me"-->
-                                    <!--android:layout_centerHorizontal="true"-->
-                                    <!--android:textSize="10dp"-->
-                                    <!--android:textColor="@color/colorBlack"-->
-                                    <!--android:id="@+id/TV_about_me"/>-->
-                                <!--<Button-->
-                                    <!--android:layout_toRightOf="@id/TV_about_me"-->
-                                    <!--android:layout_width="20dp"-->
-                                    <!--android:layout_height="20dp"-->
-                                    <!--android:text="."-->
-                                    <!--android:textSize="10dp"-->
-                                    <!--android:id="@+id/BT_edit_about_me"/>-->
-                            <!--</RelativeLayout>-->
-                        <!--</LinearLayout>-->
-
-                    <!--</LinearLayout>-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="0px"-->
-                        <!--android:layout_weight="55"-->
-                        <!--android:orientation="vertical"-->
-                        <!--android:background="@color/colorGrayBackGround">-->
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="0px"-->
-                            <!--android:layout_weight="5">-->
-                            <!--<TextView-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent"-->
-                                <!--android:text="좋아한 메뉴"-->
-                                <!--android:layout_marginLeft="5dp"-->
-                                <!--android:layout_marginTop="5dp"-->
-                                <!--android:layout_marginBottom="5dp"-->
-                                <!--android:textSize="10dp"-->
-                                <!--android:textColor="@color/colorBlack"-->
-                                <!--android:textStyle="bold"/>-->
-                        <!--</LinearLayout>-->
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="0px"-->
-                            <!--android:layout_weight="50">-->
-                            <!--<android.support.v7.widget.RecyclerView-->
-                                <!--android:id="@+id/recycler_view"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent"-->
-                                <!--android:background="#F3F3F3"-->
-                                <!--android:paddingBottom="56dp"-->
-                                <!--android:scrollbars="vertical">-->
-                            <!--</android.support.v7.widget.RecyclerView>-->
-                        <!--</LinearLayout>-->
-                    <!--</LinearLayout>-->
-                <!--</LinearLayout>-->
-
-
-
-        <!--</android.support.v4.widget.SwipeRefreshLayout>-->
-
-        <!--<include layout="@layout/view_loading_indicator" android:id="@+id/indicator" />-->
-
-    <!--</RelativeLayout>-->
-
-<!--</android.support.design.widget.CoordinatorLayout>-->

@@ -13,4 +13,20 @@ public class TimeFormmater {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         return sdf.format(new Date());
     }
+    public static String getTimeFromUTCToLocal(String time) {
+        String formatted = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        sdf2.setTimeZone(TimeZone.getDefault());
+        try {
+            Date date = sdf.parse(time);
+            formatted = sdf2.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return formatted;
+    }
 }
+

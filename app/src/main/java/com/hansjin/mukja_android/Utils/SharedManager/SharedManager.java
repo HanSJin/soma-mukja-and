@@ -9,6 +9,8 @@ import com.hansjin.mukja_android.Model.User;
 public class SharedManager {
     private volatile static SharedManager single;
     private User me;
+    private User you;
+
     private Category category;
 
     public static SharedManager getInstance() {
@@ -25,6 +27,21 @@ public class SharedManager {
     private SharedManager() {
 
     }
+
+    public boolean setYou(User response) {
+        try {
+            this.you = response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public User getYou() {
+        return this.you;
+    }
+
 
     public boolean setMe(User response) {
         try {

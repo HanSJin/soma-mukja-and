@@ -17,6 +17,7 @@ import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class PopupEditAboutMe extends Activity {
                 //ET_about_me.getText()
                 Map field = new HashMap();
                 field.put("about_me", ET_about_me.getText().toString());
-                connectUpdateUserAboutme(prefs.getString("user_id", ""), field);
+                connectUpdateUserAboutme(SharedManager.getInstance().getMe()._id, field);
             }
         });
     }
@@ -81,6 +82,7 @@ public class PopupEditAboutMe extends Activity {
                     @Override
                     public final void onNext(com.hansjin.mukja_android.Model.User response) {
                         if (response != null) {
+                            Log.i("makejin", "response "+response);
                         } else {
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

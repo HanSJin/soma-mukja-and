@@ -24,7 +24,7 @@
     <!-- Mijung-->
     <color name="colorGrayText">#7f7f7f</color>
     <color name="ratingStar">#f1c40f</color>
-
+    <color name="theme">#ff00bfff</color>
 
 
 </resources>

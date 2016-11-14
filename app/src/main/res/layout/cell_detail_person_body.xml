@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="130dp"
     android:background="@color/colorWhite"
-    android:layout_marginTop="16dp">
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,4 +15,23 @@
         android:text="이 음식을 좋아하는 사람들"
         android:textSize="13sp"
         android:textColor="@color/colorGrayLine"/>
+
+    <LinearLayout
+        android:id="@+id/layout_person"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/no_person"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="아직 이 음식을 좋아한 사람들이 없습니다."
+            android:textSize="13sp"
+            android:textColor="@color/colorGrayText"/>
+
+    </LinearLayout>
 </LinearLayout>

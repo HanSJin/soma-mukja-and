@@ -1,23 +1,40 @@
 package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.Connections.CSConnection;
+import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.hansjin.mukja_android.Utils.Constants.Constants.API_BASE_URL;
+import static com.hansjin.mukja_android.Utils.Constants.Constants.IMAGE_BASE_URL;
 
 /**
  * Created by kksd0900 on 16. 9. 30..
@@ -28,15 +45,20 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     public Context context;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
+    public FoodRate foodRate;
+
+    User user = null;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
 
-    public FoodRateAdapter(OnItemClickListener onItemClickListener, Context mContext) {
+    public FoodRateAdapter(OnItemClickListener onItemClickListener, Context mContext, FoodRate mFoodRate) {
+
         mOnItemClickListener = onItemClickListener;
         context = mContext;
         mDataset.clear();
+        foodRate = mFoodRate;
     }
 
     public void addData(Food item) {
@@ -54,23 +76,32 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
     @Override
     public FoodRateAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_rate_food, parent, false);
-            return new ItemViewHolder(v);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_rate_food, parent, false);
+            return new RatingViewHolder(v);
         }
         return null;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        if (holder instanceof ItemViewHolder) {
+        if (holder instanceof RatingViewHolder) {
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mOnItemClickListener.onItemClick(v, position);
                 }
             });
-            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            Food food = mDataset.get(position);
+            RatingViewHolder itemViewHolder = (RatingViewHolder) holder;
+            Log.i("makejin11","");
+            final Food food = mDataset.get(position);
+
+
+            if(FoodRate.isMine)
+                user = SharedManager.getInstance().getMe();
+            else
+                user = SharedManager.getInstance().getYou();
+
+            final User tempUser = user;
 
             String tasteStr = "";
             for (String taste : food.taste) {
@@ -84,15 +115,42 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             for (String cooking : food.cooking) {
                 cookingStr += ("#" + cooking + ", ");
             }
-            String imgStr = food.image_url;
 
             itemViewHolder.TV_food_name.setText(food.name);
             itemViewHolder.TV_category.setText(tasteStr + countryStr + cookingStr);
 
-            String image_url = API_BASE_URL + "/images/food/" + imgStr;
-            //new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + imgStr);
-            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
+            List<String> rate_person_id = food.rate_person_id();
 
+            if(rate_person_id.contains(tempUser._id)) { //이미 rating 했었다면
+                for(int i=0;i<food.rate_person.size();i++){
+                    if(food.rate_person.get(i).getUser_id().equals(tempUser._id)){
+                        itemViewHolder.ratingBar1.setRating(food.rate_person.get(i).getRate_num());
+                        break;
+                    }
+                }
+            }else{
+                itemViewHolder.ratingBar1.setRating(0);
+            }
+
+            Log.i("zxc", ""+FoodRate.isMine);
+            if(user._id.equals(SharedManager.getInstance().getMe()._id))
+                itemViewHolder.ratingBar1.setIsIndicator(false);
+            else
+                itemViewHolder.ratingBar1.setIsIndicator(true);
+            itemViewHolder.ratingBar1.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+
+                    if(fromUser) {
+                        food.rate_person.add(0, food.newrate(tempUser._id, rating));
+                        food_rate(food, position);
+                    }
+                }
+            });
+
+
+            String image_url = IMAGE_BASE_URL + food.image_url;
+            Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
         }
     }
 
@@ -117,26 +175,51 @@ public class FoodRateAdapter extends RecyclerView.Adapter<FoodRateAdapter.ViewHo
             container = itemView;
         }
     }
-    public class ItemViewHolder extends ViewHolder {
+    public class RatingViewHolder extends ViewHolder {
         public TextView TV_food_name, TV_category;
-        Button BT_star_1;
-        Button BT_star_2;
-        Button BT_star_3;
-        Button BT_star_4;
-        Button BT_star_5;
         ImageView IV_food;
+        private RatingBar ratingBar1;
 
-        public ItemViewHolder(View v) {
+        public RatingViewHolder(View v) {
             super(v);
-            TV_food_name = (TextView) v.findViewById(R.id.cell_rate_food_name).findViewById(R.id.TV_food_name);
-            TV_category = (TextView) v.findViewById(R.id.cell_rate_food_category).findViewById(R.id.TV_category);
-
-            BT_star_1 = (Button) v.findViewById(R.id.BT_star_1);
-            BT_star_2 = (Button) v.findViewById(R.id.BT_star_2);
-            BT_star_3 = (Button) v.findViewById(R.id.BT_star_3);
-            BT_star_4 = (Button) v.findViewById(R.id.BT_star_4);
-            BT_star_5 = (Button) v.findViewById(R.id.BT_star_5);
+            TV_food_name = (TextView) v.findViewById(R.id.TV_food_name);
+            TV_category = (TextView) v.findViewById(R.id.TV_category);
             IV_food = (ImageView) v.findViewById(R.id.IV_food);
+            ratingBar1 = (RatingBar) v.findViewById(R.id.ratingBar);
         }
+    }
+
+    public void food_rate(Food food, final int index) {
+        LoadingUtil.startLoading(foodRate.indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.rateFood(food, user._id, food._id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Food>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(foodRate.indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Food response) {
+                        if (response != null) {
+                            if(mDataset.get(index).rate_cnt != response.rate_cnt) {
+                                mDataset.get(index).rate_cnt = response.rate_cnt;
+                                FoodRate.actionBar.setTitle("음식 평가 - " + ++user.rated_food_num + "개 완료");
+                            }
+                            mDataset.get(index).rate_person = response.rate_person;
+                            mDataset.get(index).rate_distribution = response.rate_distribution;
+                            notifyDataSetChanged();
+
+                        } else {
+                            Toast.makeText(context, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

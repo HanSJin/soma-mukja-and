@@ -15,7 +15,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ViewHolderFood extends ViewHolderParent {
     public LinearLayout cellFoodHeader, cellFoodBodyImage, cellFoodBodyDesc, cellFoodTail, eat_btn, rate_btn, layout_like_people;
-    public TextView foodName, authorName, rate_num, category_tag, people_like, friend_like, write_time;
+    public TextView foodName, authorName, rate_num, category_tag, people_like, friend_like, user_info;
     public ImageView heart,star,food_img, report_btn;
     public CircleImageView author_image;
 
@@ -34,8 +34,7 @@ public class ViewHolderFood extends ViewHolderParent {
         rate_num = (TextView) v.findViewById(R.id.food_rate_num);
         category_tag = (TextView) v.findViewById(R.id.txt_category);
         people_like = (TextView) v.findViewById(R.id.txt_people_like);
-        friend_like = (TextView) v.findViewById(R.id.txt_friend_like);
-        write_time = (TextView) v.findViewById(R.id.write_time);
+        user_info = (TextView) v.findViewById(R.id.user_info);
 
         heart = (ImageView) v.findViewById(R.id.heart_img);
         star = (ImageView) v.findViewById(R.id.star_img);

@@ -1,6 +1,7 @@
 package com.hansjin.mukja_android.Utils.Connections;
 
 import com.hansjin.mukja_android.Model.Category;
+import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Model.Result;
@@ -76,12 +77,6 @@ public interface CSConnection {
     @POST("/food/post")
     Observable<Food> foodPost(@Body Food food);
 
-    @Multipart
-    @POST("upload/food/{image_url}")
-    Call<ResponseBody> uploadImage(@Part("photo") MultipartBody.Part photo,
-                                   @Part("name") RequestBody name,
-                                   @Path("image_url") String food_id);
-
     @POST("/sign/up")
     Observable<User> signupUser(@Body User user);
 
@@ -110,5 +105,83 @@ public interface CSConnection {
     Observable<GlobalResponse> foodView(@Path("uid") String uid,
                                         @Path("food_id") String food_id);
 
+    @GET("/users/{uid}/mylist")
+    Observable<List<Food>> getLikedFood(@Path("uid") String uid);
+
+    @GET("explore")
+    Observable<List<Explore>> getExploreRanking();
+
+    @GET("/like/{food_id}")
+    Observable<List<User>> getLikedPerson(@Path("food_id") String food_id);
+
+    @Multipart
+    @POST("post/{user_id}/image/upload/profile")
+    Observable<User> fileUploadWrite_User(@Path("user_id") String user_id,
+                                     @Part("post_image\"; filename=\"android_post_image_file") RequestBody file);
+
+    @POST("/users/{user_id}/edit/profile/facebook")
+    Observable<User> updateUserImage_Facebook(@Path("user_id") String user_id,
+                                   @Body Map<String, Object> fields);
+
+    @GET("/users/{uid}/myinfo")
+    Observable<User> getUserInfo(@Path("uid") String uid);
+
+    @POST("/sign/in/NonFacebook")
+    Observable<User> signinUser_NonFacebook(@Body Map<String, Object> fields);
+
+
+    @POST("/user/withdrawal")
+    Observable<User> withdrawalUser(@Body Map<String, Object> fields);
+
+
+    //친구 요청 가져오기 //너가 친구 요청 //friends_NonFacebook_Waiting
+    @GET("requests/waiting/{uid}/{page}")
+    Observable<List<User>> getRequests(@Path("uid") String uid,
+                                       @Path("page") int page);
+
+    //친구 요청 가져오기 2 //내가 친구 요청 //friends_NonFacebook_Requested
+    @GET("requests/requested/{uid}/{page}")
+    Observable<List<User>> getRequests2(@Path("uid") String uid,
+                                        @Path("page") int page);
+
+    //친구 요청 가져오기 3 //우린 이미 친구 //friends_NonFacebook
+    @GET("requests/friends/{uid}/{page}")
+    Observable<List<User>> getRequests3(@Path("uid") String uid,
+                                        @Path("page") int page);
+
+    //친구수락 OK 정보 전송
+    @POST("/friends/accept/{me_id}/{you_id}")
+    Observable<User> acceptYou(@Body User You,
+                               @Path("me_id") String me_id,
+                               @Path("you_id") String you_id);
+
+    //친구수락 NO 정보 전송
+    @POST("/friends/reject/{me_id}/{you_id}")
+    Observable<User> rejectYou(@Body User You,
+                               @Path("me_id") String me_id,
+                               @Path("you_id") String you_id);
+
+
+    @GET("user/{you_id}/{me_id}/view")
+    Observable<GlobalResponse> userView(@Path("me_id") String me_id,
+                                        @Path("you_id") String you_id);
+
+    @POST("/food/comment/{food_id}")
+    Observable<GlobalResponse> commentFood(@Path("food_id") String food_id, @Body Map<String, Object> fields);
+
+    @GET("/food/comment/get/{food_id}")
+    Observable<List<Food.CommentPerson>> getCommentFood(@Path("food_id") String food_id);
+
+    @GET("/food/comment/get/{food_id}/{comment_id}")
+    Observable<List<Food.CommentPerson>> getOneCommentFood(@Path("food_id") String food_id,
+                                                                 @Path("comment_id") String comment_id);
+
+
+    @POST("/food/comment/{food_id}/{comment_id}")
+    Observable<GlobalResponse> oneCommentFood(@Path("food_id") String food_id, @Path("comment_id") String comment_id, @Body Map<String, Object> fields);
+
+
+
 }
+
 
