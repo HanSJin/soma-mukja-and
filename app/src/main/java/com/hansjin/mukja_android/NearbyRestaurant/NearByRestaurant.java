@@ -31,11 +31,13 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.NearbyRestaurant.search.Item;
 import com.hansjin.mukja_android.NearbyRestaurant.search.OnFinishSearchListener;
 import com.hansjin.mukja_android.NearbyRestaurant.search.Searcher;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Splash.SplashActivity;
+import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import net.daum.mf.map.api.CalloutBalloonAdapter;
 import net.daum.mf.map.api.CameraUpdateFactory;
@@ -61,24 +63,17 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
 
     private static final String LOG_TAG = "MapActivity";
     public final String DAUM_MAPS_ANDROID_APP_API_KEY = "32573ae520e55ed29aeafdb325ae7977";
-    //public final String DAUM_MAPS_ANDROID_APP_API_KEY = "fe449a8b1ae1cfd7f56bbbd14791d36e";
     private MapView mMapView;
     private EditText mEditTextQuery;
     private Button mButtonSearch;
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
 
-    LocationManager locationManager;
-    LocationListener locationListener;
-
-
     private ProgressBar pb_1 = null;
-
-    private boolean isGPSEnabled = false;
-    private boolean isNetworkEnabled = false;
 
     private static final String TAG = "debug";
 
     String keyword = null;
+    User.LocationPoint location_point;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -86,8 +81,6 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
     private GoogleApiClient client;
 
     Button BT_X;
-
-    Handler mHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,8 +92,8 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
         getSupportActionBar().setTitle("근처 음식점");
 
         keyword = getIntent().getStringExtra("food_name");
+        location_point = (User.LocationPoint) getIntent().getSerializableExtra("location_point");
 
-        Toast.makeText(getApplicationContext(), keyword, Toast.LENGTH_SHORT).show();
 
         mMapView = (MapView) findViewById(R.id.map_view);
         mMapView.setDaumMapApiKey(DAUM_MAPS_ANDROID_APP_API_KEY);
@@ -360,6 +353,7 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
             @Override
             public void onSuccess(final List<Item> itemList) {
                 showResult(itemList);
+                showToast(itemList.size() + "개의 " + keyword + " 음식점을 찾았습니다!");
             }
 
             @Override
@@ -381,8 +375,8 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
 
     private boolean showResult(List<Item> itemList) {
         MapPointBounds mapPointBounds = new MapPointBounds();
-
-        for (int i = 0; i < itemList.size(); i++) {
+        int i;
+        for (i = 0; i < itemList.size(); i++) {
             Item item = itemList.get(i);
 
             MapPOIItem poiItem = new MapPOIItem();
@@ -403,14 +397,66 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
             mTagItemMap.put(poiItem.getTag(), item);
         }
 
-        mMapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
+
+        //현재 내 위치
+        Item item = new Item();
+        item.title = "현재 내 위치";
+
+        MapPOIItem poiItem = new MapPOIItem();
+        poiItem.setItemName(item.title);
+        poiItem.setTag(i++);
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(SplashActivity.lat, SplashActivity.lon);
+        poiItem.setMapPoint(mapPoint);
+        poiItem.setMapPoint(mapPoint);
+        mapPointBounds.add(mapPoint);
+        poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+        poiItem.setCustomImageResourceId(R.drawable.location_pin_now);
+        poiItem.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
+        poiItem.setCustomSelectedImageResourceId(R.drawable.location_pin_now);
+        poiItem.setCustomImageAutoscale(false);
+        poiItem.setCustomImageAnchor(0.5f, 1.0f);
+
+        mMapView.addPOIItem(poiItem);
+        mTagItemMap.put(poiItem.getTag(), item);
+
+
+
+        //이 글을 쓸 당시 위치
+        Item item2 = new Item();
+        item2.title = "글 쓴 당시 위치";
+
+        MapPOIItem poiItem2 = new MapPOIItem();
+        poiItem2.setItemName(item2.title);
+        poiItem2.setTag(i++);
+        MapPoint mapPoint2 = MapPoint.mapPointWithGeoCoord(location_point.lat, location_point.lon);
+        poiItem2.setMapPoint(mapPoint2);
+        poiItem2.setMapPoint(mapPoint2);
+        mapPointBounds.add(mapPoint2);
+        poiItem2.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+        poiItem2.setCustomImageResourceId(R.drawable.location_pin_writing);
+        poiItem2.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
+        poiItem2.setCustomSelectedImageResourceId(R.drawable.location_pin_writing);
+        poiItem2.setCustomImageAutoscale(false);
+        poiItem2.setCustomImageAnchor(0.5f, 1.0f);
+
+        mMapView.addPOIItem(poiItem2);
+        mTagItemMap.put(poiItem2.getTag(), item2);
+
+
 
         MapPOIItem[] poiItems = mMapView.getPOIItems();
+
         if (poiItems.length > 0) {
-            mMapView.selectPOIItem(poiItems[0], false);
+
+            //mMapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(SharedManager.getInstance().getMe().location_point.lat, SharedManager.getInstance().getMe().location_point.lon), 3, true);
+            //mMapView.selectPOIItem(poiItems[0], true);
+            mMapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
+
+
             return true;
         }
 
+        mMapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
         return false; // 검색결과 없음
 
     }
@@ -437,20 +483,20 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
-        Item item = mTagItemMap.get(mapPOIItem.getTag());
-        StringBuilder sb = new StringBuilder();
-        sb.append("title=").append(item.title).append("\n");
-        sb.append("imageUrl=").append(item.imageUrl).append("\n");
-        sb.append("address=").append(item.address).append("\n");
-        sb.append("newAddress=").append(item.newAddress).append("\n");
-        sb.append("zipcode=").append(item.zipcode).append("\n");
-        sb.append("phone=").append(item.phone).append("\n");
-        sb.append("category=").append(item.category).append("\n");
-        sb.append("longitude=").append(item.longitude).append("\n");
-        sb.append("latitude=").append(item.latitude).append("\n");
-        sb.append("distance=").append(item.distance).append("\n");
-        sb.append("direction=").append(item.direction).append("\n");
-        Toast.makeText(this, sb.toString(), Toast.LENGTH_SHORT).show();
+//        Item item = mTagItemMap.get(mapPOIItem.getTag());
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("title=").append(item.title).append("\n");
+//        sb.append("imageUrl=").append(item.imageUrl).append("\n");
+//        sb.append("address=").append(item.address).append("\n");
+//        sb.append("newAddress=").append(item.newAddress).append("\n");
+//        sb.append("zipcode=").append(item.zipcode).append("\n");
+//        sb.append("phone=").append(item.phone).append("\n");
+//        sb.append("category=").append(item.category).append("\n");
+//        sb.append("longitude=").append(item.longitude).append("\n");
+//        sb.append("latitude=").append(item.latitude).append("\n");
+//        sb.append("distance=").append(item.distance).append("\n");
+//        sb.append("direction=").append(item.direction).append("\n");
+//        Toast.makeText(this, sb.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

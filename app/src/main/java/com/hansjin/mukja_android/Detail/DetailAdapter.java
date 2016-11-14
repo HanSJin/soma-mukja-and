@@ -148,6 +148,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 public void onClick(View v) {
                     Intent intent = new Intent(activity, NearByRestaurant.class);
                     intent.putExtra("food_name",food.name);
+                    intent.putExtra("location_point", food.author.author_location_point);
                     activity.startActivity(intent);
                 }
             });
@@ -214,17 +215,18 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
             }
 
-            if(food.like_cnt>0) {
                 descBodyViewHolder.txt_people_like.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(food.like_cnt>0)
+                            return;
                         Intent intent = new Intent(context, LikedPeople_.class);
                         intent.putExtra("food", food);
                         context.startActivity(intent);
                         activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                     }
                 });
-            }
+
         } else if (holder instanceof GraphBodyViewHolder) {
             GraphBodyViewHolder graphBodyViewHolder = (GraphBodyViewHolder) holder;
 

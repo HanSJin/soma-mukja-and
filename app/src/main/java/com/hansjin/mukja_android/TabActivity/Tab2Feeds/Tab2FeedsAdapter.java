@@ -302,10 +302,14 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             itemViewHolder.people_like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(food.like_cnt>0)
+                        return;
+
                     Intent intent = new Intent(context, LikedPeople_.class);
                     intent.putExtra("food", food);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+
                 }
             });
         }

@@ -159,7 +159,7 @@ public class User {
     }
 
 
-    public static class LocationPoint{
+    public static class LocationPoint implements Serializable{
         public double lat;
         public double lon;
 
