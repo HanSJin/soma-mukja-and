@@ -545,6 +545,11 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                         load(comment_person.thumbnail_url_small).
                         thumbnail(0.1f).
                         into(CIV_pic);
+
+                Log.i("zxc", "comment_person.thumbnail_url_small : " + comment_person.thumbnail_url_small );
+                Log.i("zxc", "CIV_pic : " + CIV_pic);
+
+
                 TV_commenter_name.setText(comment_person.user_name);
                 TV_comment.setText(comment_person.comment);
                 TV_comment_info.setText(comment_person.comment_date);

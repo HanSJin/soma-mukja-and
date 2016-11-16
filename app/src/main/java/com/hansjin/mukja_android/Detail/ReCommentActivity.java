@@ -117,7 +117,8 @@ public class ReCommentActivity extends AppCompatActivity {
                 load(SharedManager.getInstance().getMe().getPic_small()).
                 into(CIV_pic);
 
-        connGetOneCommentPosting(posting_id, comment_id);
+        refresh();
+        //connGetOneCommentPosting(posting_id, comment_id);
     }
 
 
