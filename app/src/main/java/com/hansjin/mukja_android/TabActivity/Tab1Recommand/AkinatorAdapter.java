@@ -1,7 +1,6 @@
-package com.hansjin.mukja_android.TabActivity.Tab5MyPage;
+package com.hansjin.mukja_android.TabActivity.Tab1Recommand;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,30 +11,31 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Utils.Constants.Constants;
 
 import java.util.ArrayList;
 
-import static com.hansjin.mukja_android.Utils.Constants.Constants.IMAGE_BASE_URL;
 
 /**
- * Created by kksd0900 on 16. 10. 11..
+ * Created by kksd0900 on 16. 9. 30..
  */
-public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.ViewHolder> {
+public class AkinatorAdapter extends RecyclerView.Adapter<AkinatorAdapter.ViewHolder> {
     private static final int TYPE_ITEM = 0;
 
     public Context context;
-    public Tab5MyPageFragment fragment;
+    public AkinatorActivity activity;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
+
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
 
-    public Tab5MyPageAdapter(OnItemClickListener onItemClickListener, Context mContext, Tab5MyPageFragment mFragment) {
+    public AkinatorAdapter(OnItemClickListener onItemClickListener, Context mContext, AkinatorActivity mActivity) {
         mOnItemClickListener = onItemClickListener;
         context = mContext;
-        fragment = mFragment;
+        activity = mActivity;
         mDataset.clear();
     }
 
@@ -52,9 +52,9 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
     }
 
     @Override
-     public Tab5MyPageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AkinatorAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_liked_food, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
             return new ItemViewHolder(v);
         }
         return null;
@@ -70,15 +70,31 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
                 }
             });
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+
             Food food = mDataset.get(position);
+            String tasteStr = "";
+            for (String taste : food.taste) {
+                tasteStr += ("#" + taste + ", ");
+            }
+            String countryStr = "";
+            for (String country : food.country) {
+                countryStr  += ("#" + country + ", ");
+            }
+            String cookingStr = "";
+            for (String cooking : food.cooking) {
+                cookingStr += ("#" + cooking + ", ");
+            }
 
-            itemViewHolder.TV_food_name.setText(food.name);
+            //itemViewHolder.TV_food_name.setText(food.name);
+            itemViewHolder.food_name.setText(food.name);
+            itemViewHolder.food_desc.setText(tasteStr + countryStr + cookingStr);
 
-            String image_url = IMAGE_BASE_URL + food.image_url;
             Glide.with(context).
-                    load(image_url).
+                    load(Constants.IMAGE_BASE_URL+food.image_url).
                     thumbnail(0.1f).
                     into(itemViewHolder.IV_food);
+            //new DownloadImageTask(itemViewHolder.IV_food).execute(API_BASE_URL + "/images/food/" + food.image_url);
+            //Glide.with(context).load(image_url).into(itemViewHolder.IV_food);
         }
     }
 
@@ -104,15 +120,19 @@ public class Tab5MyPageAdapter extends RecyclerView.Adapter<Tab5MyPageAdapter.Vi
         }
     }
     public class ItemViewHolder extends ViewHolder {
-        public TextView TV_food_name;
-        public ImageView IV_food;
+        public TextView food_name, food_desc;
+        ImageView IV_food;
+
 
         public ItemViewHolder(View v) {
             super(v);
-            TV_food_name = (TextView) v.findViewById(R.id.TV_food_name);
+            food_name = (TextView) v.findViewById(R.id.food_name);
+            food_desc = (TextView) v.findViewById(R.id.food_desc);
+
+
             IV_food = (ImageView) v.findViewById(R.id.IV_food);
+
 
         }
     }
-
 }

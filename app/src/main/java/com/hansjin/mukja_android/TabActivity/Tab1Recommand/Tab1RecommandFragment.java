@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
+    Button BT_akinator;
 
     /**
      * Create a new instance of the fragment
@@ -83,6 +85,15 @@ public class Tab1RecommandFragment extends TabParentFragment {
         Toolbar cs_toolbar = (Toolbar)view.findViewById(R.id.cs_toolbar);
         activity.setSupportActionBar(cs_toolbar);
         activity.getSupportActionBar().setTitle("LOGO");
+
+        BT_akinator = (Button) view.findViewById(R.id.BT_akinator);
+        BT_akinator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), AkinatorActivity.class));
+            }
+        });
+
 
         if (recyclerView == null) {
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -148,8 +159,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
                         initViewSetting(view);
-                        //adapter.notifyDataSetChanged();
-                        //pullToRefresh.setRefreshing(false);
+                        pullToRefresh.setRefreshing(false);
                     }
 
                     @Override

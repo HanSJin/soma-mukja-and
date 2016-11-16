@@ -8,10 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.GlobalResponse;
 import com.hansjin.mukja_android.Model.User;
@@ -34,9 +36,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.hansjin.mukja_android.R.id.CIV_pic;
 
 @EActivity(R.layout.activity_detail)
 public class DetailActivity extends AppCompatActivity {
@@ -57,7 +62,13 @@ public class DetailActivity extends AppCompatActivity {
     public LinearLayout indicator;
 
     @ViewById
+    public CircleImageView CIV_pic;
+
+    @ViewById
     public EditText ET_comment;
+
+    @ViewById
+    public Button BT_comment;
 
     @Click
     void BT_comment() {
@@ -101,16 +112,23 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        connFoodView();
-        connLikedPerson();
+        Glide.with(activity).
+                load(SharedManager.getInstance().getMe().getPic_small()).
+                into(CIV_pic);
+
+        refresh();
+//        connFoodView();
+//        connLikedPerson();
+//        connGetCommentFood();
     }
 
     void refresh() {
+        connFoodView();
+        connLikedPerson();
+        connGetCommentFood();
         adapter.notifyDataSetChanged();
         LoadingUtil.stopLoading(indicator);
         pullToRefresh.setRefreshing(false);
-        connFoodView();
-        connLikedPerson();
     }
 
 
