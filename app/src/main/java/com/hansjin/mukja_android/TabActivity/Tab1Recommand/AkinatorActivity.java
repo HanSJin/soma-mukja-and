@@ -1,6 +1,7 @@
 package com.hansjin.mukja_android.TabActivity.Tab1Recommand;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,11 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
@@ -48,6 +51,8 @@ public class AkinatorActivity extends AppCompatActivity {
     private RelativeLayout RL_replay;
     private RelativeLayout RL_yes;
 
+    private ImageView IV_pic;
+
 
     private RecyclerView.LayoutManager layoutManager;
 
@@ -60,6 +65,10 @@ public class AkinatorActivity extends AppCompatActivity {
     List<String> question_cooking = new ArrayList<>();
     List<String> question_country = new ArrayList<>();
     List<String> question_taste = new ArrayList<>();
+
+    List<String> question_cooking_img = new ArrayList<>();
+    List<String> question_country_img = new ArrayList<>();
+    List<String> question_taste_img = new ArrayList<>();
 
 
     Category category_db;
@@ -154,6 +163,8 @@ public class AkinatorActivity extends AppCompatActivity {
         RL_replay = (RelativeLayout) findViewById(R.id.RL_replay);
         RL_yes = (RelativeLayout) findViewById(R.id.RL_yes);
 
+        IV_pic = (ImageView) findViewById(R.id.IV_pic);
+
         RL_replay.setVisibility(View.INVISIBLE);
 
         question_cooking.add(0, "밥인가요?");
@@ -167,11 +178,29 @@ public class AkinatorActivity extends AppCompatActivity {
         question_cooking.add(8, "즉석 요리인가요?");
         question_cooking.add(9, "익히지 않은(생) 요리인가요?");
 
+        question_cooking_img.add(0, Constants.IMAGE_BASE_URL+"cooking_0.jpg");
+        question_cooking_img.add(1, Constants.IMAGE_BASE_URL+"cooking_1.jpg");
+        question_cooking_img.add(2, Constants.IMAGE_BASE_URL+"cooking_2.jpg");
+        question_cooking_img.add(3, Constants.IMAGE_BASE_URL+"cooking_3.jpg");
+        question_cooking_img.add(4, Constants.IMAGE_BASE_URL+"cooking_4.jpg");
+        question_cooking_img.add(5, Constants.IMAGE_BASE_URL+"cooking_5.jpg");
+        question_cooking_img.add(6, Constants.IMAGE_BASE_URL+"cooking_6.jpg");
+        question_cooking_img.add(7, Constants.IMAGE_BASE_URL+"cooking_7.jpg");
+        question_cooking_img.add(8, Constants.IMAGE_BASE_URL+"cooking_8.jpg");
+        question_cooking_img.add(9, Constants.IMAGE_BASE_URL+"cooking_9.jpg");
+
         question_country.add(0, "한식인가요?");
         question_country.add(1, "중식인가요?");
         question_country.add(2, "일식인가요?");
         question_country.add(3, "양식인가요?");
         question_country.add(4, "기타인가요?");
+
+        question_country_img.add(0, Constants.IMAGE_BASE_URL+"country_0.jpg");
+        question_country_img.add(1, Constants.IMAGE_BASE_URL+"country_1.jpg");
+        question_country_img.add(2, Constants.IMAGE_BASE_URL+"country_2.jpg");
+        question_country_img.add(3, Constants.IMAGE_BASE_URL+"country_3.jpg");
+        question_country_img.add(4, Constants.IMAGE_BASE_URL+"country_4.jpg");
+
 
         question_taste.add(0, "달콤한가요?");
         question_taste.add(1, "짭짤한가요?");
@@ -189,7 +218,29 @@ public class AkinatorActivity extends AppCompatActivity {
         question_taste.add(13, "담백한가요?");
         question_taste.add(14, "느끼한가요?");
 
+        question_taste_img.add(0, Constants.IMAGE_BASE_URL+"taste_0.jpg");
+        question_taste_img.add(1, Constants.IMAGE_BASE_URL+"taste_1.jpg");
+        question_taste_img.add(2, Constants.IMAGE_BASE_URL+"taste_2.jpg");
+        question_taste_img.add(3, Constants.IMAGE_BASE_URL+"taste_3.jpg");
+        question_taste_img.add(4, Constants.IMAGE_BASE_URL+"taste_4.jpg");
+        question_taste_img.add(5, Constants.IMAGE_BASE_URL+"taste_5.jpg");
+        question_taste_img.add(6, Constants.IMAGE_BASE_URL+"taste_6.jpg");
+        question_taste_img.add(7, Constants.IMAGE_BASE_URL+"taste_7.jpg");
+        question_taste_img.add(8, Constants.IMAGE_BASE_URL+"taste_8.jpg");
+        question_taste_img.add(9, Constants.IMAGE_BASE_URL+"taste_9.jpg");
+        question_taste_img.add(10, Constants.IMAGE_BASE_URL+"taste_10.jpg");
+        question_taste_img.add(11, Constants.IMAGE_BASE_URL+"taste_11.jpg");
+        question_taste_img.add(12, Constants.IMAGE_BASE_URL+"taste_12.jpg");
+        question_taste_img.add(13, Constants.IMAGE_BASE_URL+"taste_13.jpg");
+        question_taste_img.add(14, Constants.IMAGE_BASE_URL+"taste_14.jpg");
+
+
         TV_question.setText(question_cooking.get(i));
+        Glide.with(getApplicationContext()).
+                load(question_cooking_img.get(i)).
+                thumbnail(0.1f).
+                fitCenter().
+                into(IV_pic);
 
         BT_yes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,12 +252,22 @@ public class AkinatorActivity extends AppCompatActivity {
                         category_query.cooking.add(category_db.cooking.get(i));
                         i=0;
                         TV_question.setText(question_country.get(i));
+                        Glide.with(getApplicationContext()).
+                                load(question_country_img.get(i)).
+                                thumbnail(0.1f).
+                                fitCenter().
+                                into(IV_pic);
                         NEXT_QUESTION_TYPE = QUESTION_TYPE_COUNTRY;
                         break;
                     case QUESTION_TYPE_COUNTRY :
                         category_query.country.add(category_db.country.get(i));
                         i=0;
                         TV_question.setText(question_taste.get(i));
+                        Glide.with(getApplicationContext()).
+                                load(question_taste_img.get(i)).
+                                thumbnail(0.1f).
+                                fitCenter().
+                                into(IV_pic);
                         NEXT_QUESTION_TYPE = QUESTION_TYPE_TASTE;
                         break;
                     case QUESTION_TYPE_TASTE :
@@ -232,12 +293,28 @@ public class AkinatorActivity extends AppCompatActivity {
                 switch (NEXT_QUESTION_TYPE){
                     case QUESTION_TYPE_COOKING :
                         TV_question.setText(question_cooking.get(++i));
+                        Glide.with(getApplicationContext()).
+                                load(question_cooking_img.get(i)).
+                                thumbnail(0.1f).
+                                fitCenter().
+                                into(IV_pic);
                         break;
                     case QUESTION_TYPE_COUNTRY :
                         TV_question.setText(question_country.get(++i));
+                        Glide.with(getApplicationContext()).
+                                load(question_country_img.get(i)).
+                                thumbnail(0.1f).
+                                fitCenter().
+                                into(IV_pic);
+                        Log.i("zxc", "Qwe" + question_country_img.get(i));
                         break;
                     case QUESTION_TYPE_TASTE :
                         TV_question.setText(question_taste.get(++i));
+                        Glide.with(getApplicationContext()).
+                                load(question_taste_img.get(i)).
+                                thumbnail(0.1f).
+                                fitCenter().
+                                into(IV_pic);
                         break;
                     case QUESTION_TYPE_FINISH :
                         //

@@ -22,13 +22,23 @@
             android:layout_marginLeft="0dp"
             android:padding="10dp" />
 
-        <Button
-            android:id="@+id/BT_akinator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Akinator"
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_round_replay">
+            <Button
+                android:id="@+id/BT_akinator"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/mark_genie"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
     </RelativeLayout>
 
 
