@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "352090258441",
+    "firebase_url": "https://soma-mukja-and.firebaseio.com",
+    "project_id": "soma-mukja-and",
+    "storage_bucket": "soma-mukja-and.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352090258441:android:829a03099ac7b7fb",
+        "android_client_info": {
+          "package_name": "com.hansjin.mukja_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "352090258441-m3e6n1tjfuaj3dg08upjf4guqjtde353.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKVZoOvyvL1fBc3HpGMBrtsdrSijNCteM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
