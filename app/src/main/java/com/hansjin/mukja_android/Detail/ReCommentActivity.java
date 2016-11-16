@@ -117,8 +117,8 @@ public class ReCommentActivity extends AppCompatActivity {
                 load(SharedManager.getInstance().getMe().getPic_small()).
                 into(CIV_pic);
 
-        refresh();
-        //connGetOneCommentPosting(posting_id, comment_id);
+        //refresh();
+        connGetOneCommentPosting(posting_id, comment_id);
     }
 
 
@@ -201,6 +201,7 @@ public class ReCommentActivity extends AppCompatActivity {
 
     @Background
     void connGetOneCommentPosting(String posting_id, String comment_id){
+        LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.getOneCommentFood(posting_id, comment_id)
                 .subscribeOn(Schedulers.newThread())
@@ -228,6 +229,8 @@ public class ReCommentActivity extends AppCompatActivity {
                             }
                             recyclerView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
+                            LoadingUtil.stopLoading(indicator);
+                            pullToRefresh.setRefreshing(false);
                         } else {
                             Toast.makeText(activity, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
