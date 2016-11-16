@@ -67,17 +67,23 @@
                 android:layout_height="0px"
                 android:layout_weight="10"></LinearLayout>
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:layout_weight="30">
                 <Button
                     android:id="@+id/BT_push_setting"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="푸쉬 설정(스위치)"
+                    android:text="푸쉬 설정"
                     android:textSize="20dp"
-                    android:gravity="left|center_vertical"
+                    android:gravity="center_vertical"
                     android:background="@color/colorWhite"/>
+                <Switch
+                    android:id="@+id/push_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

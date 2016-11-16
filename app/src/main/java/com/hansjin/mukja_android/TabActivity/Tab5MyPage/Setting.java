@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Sign.SignActivity;
@@ -43,6 +46,7 @@ public class Setting extends AppCompatActivity {
     Button BT_privacy_rule;
     Button BT_logout;
     Button BT_withdrawal;
+    Switch ST_push;
 
     public static boolean isWithdrawal = false;
 
@@ -73,6 +77,7 @@ public class Setting extends AppCompatActivity {
         BT_privacy_rule = (Button) findViewById(R.id.BT_privacy_rule);
         BT_logout = (Button) findViewById(R.id.BT_logout);
         BT_withdrawal = (Button) findViewById(R.id.BT_withdrawal);
+        ST_push = (Switch) findViewById(R.id.push_switch);
 
         BT_X.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,6 +139,24 @@ public class Setting extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), PopupRequest.class));
                 //탈퇴 기능 완성했지만 쓰지않는걸로(탈퇴를 완벽하게 구현하려면 서버단에서 data 조인해서 지워야할 것이 무진장 많음)
                 //startActivity(new Intent(getApplicationContext(), PopupWithdrawal.class));
+            }
+        });
+
+        if(SharedManager.getInstance().getPush())
+            ST_push.setChecked(true);
+        else
+            ST_push.setChecked(false);
+
+        ST_push.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked == true){
+                    FirebaseMessaging.getInstance().subscribeToTopic("push_on");
+                    SharedManager.getInstance().setPush(true);
+                }else{
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("push_on");
+                    SharedManager.getInstance().setPush(false);
+                }
             }
         });
 

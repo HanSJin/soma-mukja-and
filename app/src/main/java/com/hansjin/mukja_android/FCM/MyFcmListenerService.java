@@ -32,16 +32,15 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         String title = data.get("title");
         String msg = data.get("message");
         */
+
+
+
         RemoteMessage.Notification dd = message.getNotification();
         String title = dd.getTitle();
         String msg = dd.getBody();
 
         sendNotification(title, msg);
 
-        // 전달 받은 정보로 뭔가를 하면 된다.
-        Log.i("fcm","받았다");
-        Log.i("fcm","title : "+title);
-        Log.i("fcm","msg : "+msg);
     }
 
     /**

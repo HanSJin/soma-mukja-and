@@ -48,6 +48,7 @@ import java.util.TimerTask;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Sign.SignActivity;
@@ -88,9 +89,6 @@ public class SplashActivity extends AppCompatActivity {
     @AfterViews
     void afterBindingView() {
         this.activity = this;
-
-        //fcm token값
-        Log.i("fcm","token : "+ FirebaseInstanceId.getInstance().getToken());
 
         //앱 출시 정상적으로 되면 테스트해보기
         //mBackgroundThread = new BackgroundThread();
