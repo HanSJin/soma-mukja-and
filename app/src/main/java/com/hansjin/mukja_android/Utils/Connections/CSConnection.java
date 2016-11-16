@@ -180,7 +180,37 @@ public interface CSConnection {
     @POST("/food/comment/{food_id}/{comment_id}")
     Observable<GlobalResponse> oneCommentFood(@Path("food_id") String food_id, @Path("comment_id") String comment_id, @Body Map<String, Object> fields);
 
+    //Akinator - cooking
+    @POST("/food/akinator/cooking/{me_id}")
+    Observable<List<Food>> getAkinatorCooking(@Path("me_id") String me_id,
+                                                @Body Category fields);
 
+    //Akinator - country
+    @POST("/food/akinator/country/{me_id}")
+    Observable<List<Food>> getAkinatorCountry(@Path("me_id") String me_id,
+                                              @Body Category fields);
+
+    //Akinator - taste
+    @POST("/food/akinator/taste/{me_id}")
+    Observable<List<Food>> getAkinatorTaste(@Path("me_id") String me_id,
+                                              @Body Category fields);
+
+
+
+    //Akinator - cooking
+    @POST("/food/akinator/cooking/no/{me_id}")
+    Observable<List<Food>> getAkinatorCooking_No(@Path("me_id") String me_id,
+                                              @Body Category fields);
+
+    //Akinator - country
+    @POST("/food/akinator/country/no/{me_id}")
+    Observable<List<Food>> getAkinatorCountry_No(@Path("me_id") String me_id,
+                                              @Body Category fields);
+
+    //Akinator - taste
+    @POST("/food/akinator/taste/no/{me_id}")
+    Observable<List<Food>> getAkinatorTaste_No(@Path("me_id") String me_id,
+                                            @Body Category fields);
 
 }
 

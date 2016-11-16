@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hansjin.mukja_android"
-    android:versionCode="388"
-    android:versionName="0.0.0.388">
+    android:versionCode="467"
+    android:versionName="0.0.0.467">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -21,6 +21,7 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
         <activity
             android:name=".Splash.SplashActivity_"
             android:launchMode="singleTask"
@@ -28,6 +29,7 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -107,25 +109,27 @@
         <activity
             android:name=".Utils.PopupNotCompleted"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
-        <activity android:name=".Utils.PopupRequest"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" ></activity>
-        <!--<activity android:name=".Splash.SplashTest2"-->
-            <!--android:launchMode="singleTask"-->
-            <!--android:screenOrientation="portrait">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
+        <activity
+            android:name=".Utils.PopupRequest"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+        <!-- <activity android:name=".Splash.SplashTest2" -->
+        <!-- android:launchMode="singleTask" -->
+        <!-- android:screenOrientation="portrait"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
 
         <activity
             android:name=".Detail.ReCommentActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".Detail.ReCommentActivity_"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".TabActivity.Tab1Recommand.AkinatorActivity"></activity>
     </application>
 
 </manifest>

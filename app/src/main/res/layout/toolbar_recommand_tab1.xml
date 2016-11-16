@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    app:layout_collapseMode="pin"
+    app:titleTextAppearance="@style/Toolbar.TitleText"
+    android:background="@drawable/xml_border_bottom_line"
+    android:layout_gravity="left|center_vertical"
+    android:gravity="left|center_vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:scaleType="fitStart"
+            android:layout_marginLeft="0dp"
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/BT_akinator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Akinator"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"/>
+    </RelativeLayout>
+
+
+</android.support.v7.widget.Toolbar>

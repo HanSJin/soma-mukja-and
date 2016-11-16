@@ -90,6 +90,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
     }
 
     public void addData(Food item) {
+        Log.i("zxc", "makejin : " + item.name);
         mDataset.add(item);
     }
 
@@ -107,6 +108,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
     @Override
     public ViewHolderParent onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.i("zxc", "onCreateViewHolder : "+viewType);
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_food, parent, false);
             return new ViewHolderFood(v);
@@ -128,6 +130,8 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
             });
             final ViewHolderFood itemViewHolder = (ViewHolderFood) holder;
             final Food food = mDataset.get(position-1);
+
+            Log.i("zxc", "position : " + food.name);
 
             itemViewHolder.cellFoodHeader.setVisibility(View.GONE);
             itemViewHolder.foodName.setText(food.name);
@@ -156,11 +160,13 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     if(food_like_list.get(i).equals(me._id)){
                         isMe = true;
                     }
-                    for(int j=0;j<friend_list.size();j++){
-                        if(food_like_list.get(i).equals(friend_list.get(j))){
-                            tempFriend = me.friends.get(j).getUser_name();
-                            isYou = true;
-                            break;
+                    if(friend_list!=null) {
+                        for (int j = 0; j < friend_list.size(); j++) {
+                            if (food_like_list.get(i).equals(friend_list.get(j))) {
+                                tempFriend = me.friends.get(j).getUser_name();
+                                isYou = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -284,9 +290,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                                 category_food.cooking.remove(s);
 
                             fragment.connectRecommand(category_food);
-
                             push_tag.remove(s);
-
                         }else {
                             if(entry.getKey()==taste_list)
                                 category_food.taste.add(s);
@@ -365,6 +369,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
     @Override
     public int getItemViewType(int position) {
+        Log.i("zxc", "getItemViewType() : " + position);
         if(position == 0) {
             return TYPE_HEADER;
         }
@@ -373,6 +378,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
 
     @Override
     public int getItemCount() {
+        Log.i("zxc", "getItemCount() : " + mDataset.size()+1);
         return mDataset.size() + 1; //+1 is for the footer as it's an extra item
     }
 
