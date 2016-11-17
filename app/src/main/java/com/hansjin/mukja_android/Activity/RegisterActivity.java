@@ -91,6 +91,8 @@ public class RegisterActivity extends AppCompatActivity {
     private String imagepath=null;
     Boolean btn_push = false;
 
+    String tempName;
+
 
     @ViewById
     Toolbar cs_toolbar;
@@ -236,8 +238,9 @@ public class RegisterActivity extends AppCompatActivity {
                         n_food = food;
                         n_food.rate_person.add(0,n_food.newrate(SharedManager.getInstance().getMe()._id,rate_num));
                         food_rate(food);
-                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
-                        finish();
+                        Log.i("zxc", "업로드 완료 : " + food.name);
+//                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
+//                        finish();
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -255,46 +258,93 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     void RegisterFood() {
-        n_food.author.author_id = SharedManager.getInstance().getMe()._id;
-        n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
-        n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
-        n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
-        n_food.author.author_location_point = SharedManager.getInstance().getMe().location_point;
+        for(int i=0;i<10;i++) {
+            n_food.author.author_id = SharedManager.getInstance().getMe()._id;
+            n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
+            n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
+            n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
+            n_food.author.author_location_point = SharedManager.getInstance().getMe().location_point;
+            n_food.name = tempName + i;
+//            Map field = new HashMap();
+//            field.put("name", n_food.name+String.valueOf(i));
+//            field.put("taste", n_food.taste);
+//            field.put("cooking", n_food.cooking);
+//            field.put("country", n_food.country);
+//            field.put("ingredient", n_food.ingredient);
+//            field.put("author", n_food.author);
+//            field.put("image_url", n_food.image_url);
+//            Log.d("hansjin", "Filed" + field.toString());
 
-        Map field = new HashMap();
-        field.put("name", n_food.name);
-        field.put("taste", n_food.taste);
-        field.put("cooking", n_food.cooking);
-        field.put("country", n_food.country);
-        field.put("ingredient", n_food.ingredient);
-        field.put("author", n_food.author);
-        field.put("image_url", n_food.image_url);
-        Log.d("hansjin", "Filed" + field.toString());
+            final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+            conn.foodPost(n_food)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Food>() {
+                        @Override
+                        public final void onCompleted() {
 
-        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.foodPost(n_food)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Food>() {
-                    @Override
-                    public final void onCompleted() {
+                        }
 
-                    }
-                    @Override
-                    public final void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public final void onNext(Food response) {
-                        if (response != null) {
-                            Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
-                            uploadFile1(response);
-                        } else {
+                        @Override
+                        public final void onError(Throwable e) {
+                            e.printStackTrace();
                             Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
+
+                        @Override
+                        public final void onNext(Food response) {
+                            if (response != null) {
+                                Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
+                                uploadFile1(response);
+                            } else {
+                                Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+
+        //  n_food.author.author_id = SharedManager.getInstance().getMe()._id;
+//        n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
+//        n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
+//        n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
+//        n_food.author.author_location_point = SharedManager.getInstance().getMe().location_point;
+//
+//        Map field = new HashMap();
+//        field.put("name", n_food.name);
+//        field.put("taste", n_food.taste);
+//        field.put("cooking", n_food.cooking);
+//        field.put("country", n_food.country);
+//        field.put("ingredient", n_food.ingredient);
+//        field.put("author", n_food.author);
+//        field.put("image_url", n_food.image_url);
+//        Log.d("hansjin", "Filed" + field.toString());
+//
+//        final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+//        conn.foodPost(n_food)
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<Food>() {
+//                    @Override
+//                    public final void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public final void onError(Throwable e) {
+//                        e.printStackTrace();
+//                        Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public final void onNext(Food response) {
+//                        if (response != null) {
+//                            Toast.makeText(getApplicationContext(), "음식 업로드에 성공했습니다!", Toast.LENGTH_SHORT).show();
+//                            uploadFile1(response);
+//                        } else {
+//                            Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
     }
 
     public File saveBitmapToFile(File file){
@@ -343,6 +393,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void check_blank(){
         //TODO:서버 이미지 처리 : 현재 rate,new_food등록 후 이미지 업로드 하는데 업로드할때 food_id보내므로 해당 food_id활용해서 서버단에서 uri 만든 후 update할 것
         n_food.name = edit_name.getText().toString();
+        tempName = n_food.name;
         if(n_food.name==null)
             Snackbar.make(ratingBar, "음식명을 작성해주세요.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         else if(imagepath==null)

@@ -89,6 +89,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
 
     @Override
     public ViewHolderParent onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.i("zxc", "onCreateViewHolder_feed : " + viewType);
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_food, parent, false);
             return new ViewHolderFood(v);

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+
 import java.util.regex.Pattern
 
 def AAVersion = '4.1.0'
@@ -57,6 +58,7 @@ dependencies {
     compile 'com.github.blackfizz:eazegraph:1.2.2@aar'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.google.android.gms:play-services-appindexing:9.6.1'
+    compile 'com.google.firebase:firebase-messaging:9.6.1'
     compile 'org.jsoup:jsoup:1.8.3'
     compile 'me.xiaopan:pagerslidingtabstrip:1.7.1'
     testCompile 'junit:junit:4.12'
@@ -94,3 +96,6 @@ tasks.whenTaskAdded { task ->
         task.dependsOn 'incrementVersionName'
     }
 }
+
+// ADD THIS AT THE BOTTOM
+apply plugin: 'com.google.gms.google-services'
