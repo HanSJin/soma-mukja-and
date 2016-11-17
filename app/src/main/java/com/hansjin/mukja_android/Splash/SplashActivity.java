@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
         */
-        uiThread3();
+//        uiThread3();
 /*
         Map field = new HashMap();
         field.put("social_id", prefs.getString("social_id","793160210817466"));
@@ -113,12 +114,13 @@ public class SplashActivity extends AppCompatActivity {
         //startActivity(intent);
         //finish();
         /*}else {
-            Map field = new HashMap();
-            field.put("social_id", prefs.getString("social_id", ""));
-
-            connectSigninUser(field);
         }
         */
+
+        Map field = new HashMap();
+        field.put("social_id", "918563564943796");
+
+        connectSigninUser(field);
 
 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);

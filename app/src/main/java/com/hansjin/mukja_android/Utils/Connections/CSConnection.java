@@ -77,6 +77,9 @@ public interface CSConnection {
     @POST("/food/post")
     Observable<Food> foodPost(@Body Food food);
 
+    @GET("/user/{uid}/analyst")
+    Observable<List<Food>> getAnalyst(@Path("uid") String uid);
+
     @POST("/sign/up")
     Observable<User> signupUser(@Body User user);
 
