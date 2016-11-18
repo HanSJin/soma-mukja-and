@@ -17,6 +17,8 @@ import java.util.Map;
 
 public class AnalystManager {
 
+    public static String[] colorSet = {"#52CCDD", "#FA6E78", "#64C464", "#F5C35F", "#966ED2"};
+
     /*
         do : food + taste + cooking + country + ingredient
         then => List<keyword>
@@ -46,7 +48,7 @@ public class AnalystManager {
             if (containerDictionary.containsKey(keyword)) {
                 containerDictionary.put(keyword, containerDictionary.get(keyword)+1);
             } else {
-                containerDictionary.put(keyword, 0);
+                containerDictionary.put(keyword, 1);
             }
         }
         return containerDictionary;

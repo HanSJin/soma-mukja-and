@@ -85,12 +85,11 @@ public class AnalystTasteViewHolder extends ViewHolderParent {
         Map<String, Integer> sortByValue = AnalystManager.sortByValue(containerDictionary);
 
         int index = 0;
-        String[] colorSet = {"#52CCDD", "#FA6E78", "#64C464", "#F5C35F", "#966ED2"};
         Iterator<String> keys = sortByValue.keySet().iterator();
         while(keys.hasNext() && index<5) {
             String taste = keys.next();
             int tasteValue = sortByValue.get(taste);
-            mPieChart.addPieSlice(new PieModel(taste, tasteValue+1, Color.parseColor(colorSet[index])));
+            mPieChart.addPieSlice(new PieModel(taste, tasteValue+1, Color.parseColor(AnalystManager.colorSet[index])));
             layoutList.get(index).setVisibility(View.VISIBLE);
             tasteList.get(index).setText(taste);
             index++;

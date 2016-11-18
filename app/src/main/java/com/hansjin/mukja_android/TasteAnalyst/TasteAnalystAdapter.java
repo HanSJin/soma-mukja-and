@@ -91,6 +91,7 @@ public class TasteAnalystAdapter extends RecyclerView.Adapter<ViewHolderParent> 
                 }
             });
             AnalystCountryViewHolder viewHolderParent = (AnalystCountryViewHolder)holder;
+            viewHolderParent.initViewHolder(analyst, context);
         }
         else if (holder instanceof AnalystIngredientViewHolder) {
             holder.container.setOnClickListener(new View.OnClickListener() {
