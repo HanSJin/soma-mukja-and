@@ -1,6 +1,7 @@
 package com.hansjin.mukja_android.TasteAnalyst;
 
 import android.content.Intent;
+import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.hansjin.mukja_android.Model.Analyst;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
@@ -69,33 +71,38 @@ public class TasteAnalystActivity extends AppCompatActivity {
             }, getApplicationContext(), this, indicator);
         }
         recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        connTasteAnalyst(SharedManager.getInstance().getMe()._id);
     }
 
-//    void connectFeed(final int page_num) {
-//        LoadingUtil.startLoading(indicator);
-//        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-//        conn.getFeedList(SharedManager.getInstance().getMe()._id, page_num)
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<List<Food>>() {
-//                    @Override
-//                    public final void onCompleted() {
-//                        LoadingUtil.stopLoading(indicator);
-//                        adapter.notifyDataSetChanged();
-//                        pullToRefresh.setRefreshing(false);
-//                    }
-//                    @Override
-//                    public final void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
-//                    }
-//                    @Override
-//                    public final void onNext(List<Food> response) {
-//
-//                    }
-//                });
-//    }
+    void connTasteAnalyst(final String uid) {
+        LoadingUtil.startLoading(indicator);
+        CSConnection conn = ServiceGenerator.createService(CSConnection.class);
+        conn.getAnalyst(uid)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Analyst>() {
+                    @Override
+                    public final void onCompleted() {
+                        LoadingUtil.stopLoading(indicator);
+                    }
+                    @Override
+                    public final void onError(Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(activity, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public final void onNext(Analyst response) {
+                        uiThread(response);
+                    }
+                });
+    }
+
+    @UiThread
+    void uiThread(Analyst response) {
+        if (response != null)
+            adapter.analyst = response;
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.hansjin.mukja_android.Model.Analyst;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TasteAnalyst.ViewHolders.AnalystCountryViewHolder;
 import com.hansjin.mukja_android.TasteAnalyst.ViewHolders.AnalystIngredientViewHolder;
@@ -28,6 +29,8 @@ public class TasteAnalystAdapter extends RecyclerView.Adapter<ViewHolderParent> 
     public TasteAnalystActivity activity;
     public LinearLayout indicator;
     private OnItemClickListener mOnItemClickListener;
+
+    Analyst analyst;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -68,6 +71,7 @@ public class TasteAnalystAdapter extends RecyclerView.Adapter<ViewHolderParent> 
                 }
             });
             AnalystKeywordViewHolder viewHolderParent = (AnalystKeywordViewHolder)holder;
+            viewHolderParent.initViewHolder(analyst, context);
         }
         else if (holder instanceof AnalystTasteViewHolder) {
             holder.container.setOnClickListener(new View.OnClickListener() {
