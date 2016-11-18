@@ -40,7 +40,7 @@
             android:layout_centerInParent="true"
             android:paddingLeft="50dp"
             android:paddingBottom="70dp"
-            android:textSize="27sp"
+            android:textSize="24sp"
             android:textColor="#EEFC5052"
             android:visibility="gone"/>
 
@@ -51,7 +51,7 @@
             android:layout_centerInParent="true"
             android:paddingRight="180dp"
             android:paddingTop="10dp"
-            android:textSize="24sp"
+            android:textSize="23sp"
             android:textColor="#BBFC5052"
             android:visibility="gone"/>
 

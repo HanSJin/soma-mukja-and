@@ -70,6 +70,7 @@ public class AnalystKeywordViewHolder extends ViewHolderParent {
         Iterator<String> keys = sortByValue.keySet().iterator();
         while(keys.hasNext() && index<9) {
             keywordTexts.get(index).setText(keys.next());
+            keywordTexts.get(index).setVisibility(View.VISIBLE);
             index++;
         }
     }

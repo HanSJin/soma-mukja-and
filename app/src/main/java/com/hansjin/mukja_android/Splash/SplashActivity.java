@@ -118,7 +118,8 @@ public class SplashActivity extends AppCompatActivity {
         */
 
         Map field = new HashMap();
-        field.put("social_id", "918563564943796");
+        field.put("social_id", "918563564943796"); // hansjin
+//        field.put("social_id", "1144627562273587"); // juwon
 
         connectSigninUser(field);
 

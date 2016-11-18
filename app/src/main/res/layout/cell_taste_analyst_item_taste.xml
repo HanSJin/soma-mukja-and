@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="300dp"
     android:layout_marginBottom="12dp"
     android:background="@color/colorWhite">
 
@@ -15,10 +16,35 @@
         android:textSize="13sp"
         android:textColor="@color/colorGrayText"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </LinearLayout>
+        <org.eazegraph.lib.charts.PieChart
+            android:id="@+id/piechart"
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            app:egLegendTextSize="0sp"
+            app:egLegendHeight="0dp"
+            app:egLegendColor="@color/colorWhite"
+            app:egUsePieRotation="true"
+            app:egValueTextSize="0sp"
+            app:egAutoCenter="true"
+            app:egOpenClockwise="false"
+            app:egInnerValueUnit="%"/>
+
+        <ImageView
+            android:id="@+id/user_thumb"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:scaleType="centerCrop">
+
+        </ImageView>
+
+    </RelativeLayout>
 
 </LinearLayout>
