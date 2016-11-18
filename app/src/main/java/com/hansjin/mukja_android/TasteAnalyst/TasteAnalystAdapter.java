@@ -118,6 +118,6 @@ public class TasteAnalystAdapter extends RecyclerView.Adapter<ViewHolderParent> 
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 3;
     }
 }

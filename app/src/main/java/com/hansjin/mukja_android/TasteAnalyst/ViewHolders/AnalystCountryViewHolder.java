@@ -71,25 +71,30 @@ public class AnalystCountryViewHolder extends ViewHolderParent {
         Map<String, Integer> containerDictionary = AnalystManager.makeContainerDictionary(analyst.countries);
         Map<String, Integer> sortByValue = AnalystManager.sortByValue(containerDictionary);
 
-        Log.d("hansjin", sortByValue.toString());
+        Iterator<String> keys_temp = sortByValue.keySet().iterator();
+        int total_count = 0;
+        while(keys_temp.hasNext()) {
+            total_count += sortByValue.get(keys_temp.next());
+        }
+
         int index = 0;
         Iterator<String> keys = sortByValue.keySet().iterator();
         while(keys.hasNext() && index<4) {
             String country = keys.next();
+            int value = sortByValue.get(country);
             layoutList.get(index).setVisibility(View.VISIBLE);
             countTxtList.get(index).setText(country);
+            percentList.get(index).setText((int)(((float)value/(float)total_count*100))+"%");
             if (country.equals("한식")) {
-                countTxtList.get(index).setTextColor(Color.parseColor(AnalystManager.colorSet[1]));
+                countTxtList.get(index).setTextColor(Color.parseColor(AnalystManager.colorSet[0]));
             } else if (country.equals("중식")) {
-                countTxtList.get(index).setTextColor(Color.parseColor(AnalystManager.colorSet[2]));
+                countTxtList.get(index).setTextColor(Color.parseColor(AnalystManager.colorSet[1]));
             } else if (country.equals("일식")) {
-                countTxtList.get(index).setTextColor(Color.parseColor(AnalystManager.colorSet[3]));
+                countTxtList.get(index).setTextColor(Color.parseColor(AnalystManager.colorSet[2]));
             } else if (country.equals("양식")) {
-                countTxtList.get(index).setTextColor(Color.parseColor(AnalystManager.colorSet[4]));
+                countTxtList.get(index).setTextColor(Color.parseColor(AnalystManager.colorSet[3]));
             }
             index++;
         }
-
-
     }
 }
