@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -84,7 +85,6 @@ public class SplashActivity extends AppCompatActivity {
 
     ImageView IV_logo, IV_user;
 
-
     @AfterViews
     void afterBindingView() {
         this.activity = this;
@@ -115,7 +115,6 @@ public class SplashActivity extends AppCompatActivity {
         /*}else {
             Map field = new HashMap();
             field.put("social_id", prefs.getString("social_id", ""));
-
             connectSigninUser(field);
         }
         */

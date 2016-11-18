@@ -35,6 +35,7 @@ import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.Tab2Feeds.Tab2FeedsAdapter;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
+import com.hansjin.mukja_android.TasteAnalyst.TasteAnalystActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
@@ -162,7 +163,8 @@ public class Tab5MyPageFragment extends TabParentFragment {
         BT_pref_anal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PopupNotCompleted.class));
+                startActivity(new Intent(getActivity(), TasteAnalystActivity_.class));
+                activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
             }
         });
         BT_food_rate.setOnClickListener(new View.OnClickListener() {

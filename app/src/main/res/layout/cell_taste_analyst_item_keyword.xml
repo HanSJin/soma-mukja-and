@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@color/colorWhite"
+    android:layout_marginBottom="12dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="16dp"
+        android:text="선호 키워드"
+        android:textSize="13sp"
+        android:textColor="@color/colorGrayText"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_keyword"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="4dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/keyword_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="30sp"
+            android:textColor="#FFFC5052"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/keyword_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingLeft="50dp"
+            android:paddingBottom="70dp"
+            android:textSize="24sp"
+            android:textColor="#EEFC5052"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/keyword_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingRight="180dp"
+            android:paddingTop="10dp"
+            android:textSize="23sp"
+            android:textColor="#BBFC5052"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/keyword_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingLeft="80dp"
+            android:paddingTop="70dp"
+            android:textSize="21sp"
+            android:textColor="#AAFC5052"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/keyword_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingRight="50dp"
+            android:paddingTop="100dp"
+            android:textSize="20sp"
+            android:textColor="#99FC5052"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/keyword_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingRight="200dp"
+            android:paddingTop="60dp"
+            android:textSize="18sp"
+            android:textColor="#88FC5052"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/keyword_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingLeft="180dp"
+            android:paddingTop="30dp"
+            android:textSize="14sp"
+            android:textColor="#77FC5052"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/keyword_8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingLeft="223dp"
+            android:paddingBottom="30dp"
+            android:textSize="14sp"
+            android:textColor="#66FC5052"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/keyword_9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingRight="180dp"
+            android:paddingBottom="50dp"
+            android:textSize="11sp"
+            android:textColor="#55FC5052"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
