@@ -175,13 +175,11 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                     if(food_like_list.get(i).equals(me._id)){
                         isMe = true;
                     }
-                    if (friend_list!=null && friend_list.size()>0) {
-                        for (int j = 0; j < friend_list.size(); j++) {
-                            if (food_like_list.get(i).equals(friend_list.get(j))) {
-                                tempFriend = me.friends.get(j).getUser_name();
-                                isYou = true;
-                                break;
-                            }
+                    for(int j=0;j<friend_list.size();j++){
+                        if(food_like_list.get(i).equals(friend_list.get(j))){
+                            tempFriend = me.friends.get(j).getUser_name();
+                            isYou = true;
+                            break;
                         }
                     }
                 }
@@ -217,17 +215,17 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
             }
 
-                descBodyViewHolder.txt_people_like.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(food.like_cnt>0)
-                            return;
-                        Intent intent = new Intent(context, LikedPeople_.class);
-                        intent.putExtra("food", food);
-                        context.startActivity(intent);
-                        activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
-                    }
-                });
+            descBodyViewHolder.txt_people_like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(food.like_cnt>0)
+                        return;
+                    Intent intent = new Intent(context, LikedPeople_.class);
+                    intent.putExtra("food", food);
+                    context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                }
+            });
 
         } else if (holder instanceof GraphBodyViewHolder) {
             GraphBodyViewHolder graphBodyViewHolder = (GraphBodyViewHolder) holder;

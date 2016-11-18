@@ -85,7 +85,6 @@ public class SplashActivity extends AppCompatActivity {
 
     ImageView IV_logo, IV_user;
 
-
     @AfterViews
     void afterBindingView() {
         this.activity = this;
@@ -103,7 +102,7 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
         */
-//        uiThread3();
+        uiThread3();
 /*
         Map field = new HashMap();
         field.put("social_id", prefs.getString("social_id","793160210817466"));
@@ -114,16 +113,11 @@ public class SplashActivity extends AppCompatActivity {
         //startActivity(intent);
         //finish();
         /*}else {
+            Map field = new HashMap();
+            field.put("social_id", prefs.getString("social_id", ""));
+            connectSigninUser(field);
         }
         */
-
-        Map field = new HashMap();
-//        field.put("social_id", "918563564943796"); // hansjin
-//        field.put("social_id", "1144627562273587"); // juwon
-        field.put("social_id", "1114025895371841"); // mijung
-
-
-        connectSigninUser(field);
 
 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
