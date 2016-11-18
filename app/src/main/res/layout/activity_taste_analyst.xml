@@ -26,6 +26,8 @@
             android:scrollbars="vertical"
             android:background="@color/colorGrayBackGround" />
 
+        <include android:id="@+id/view_empty_analyst" layout="@layout/view_empty_analyst"/>
+
         <include android:id="@+id/indicator" layout="@layout/view_loading_indicator"/>
 
     </RelativeLayout>

@@ -45,7 +45,7 @@ public class TasteAnalystActivity extends AppCompatActivity {
     Toolbar cs_toolbar;
 
     @ViewById
-    LinearLayout indicator;
+    LinearLayout indicator, view_empty_analyst;
 
     @ViewById
     RecyclerView recyclerView;
@@ -102,6 +102,13 @@ public class TasteAnalystActivity extends AppCompatActivity {
         if (response != null)
             adapter.analyst = response;
         adapter.notifyDataSetChanged();
+
+        if (response.food_names.size() < 3 &&
+                response.tastes.size() < 3 &&
+                response.countries.size() < 3 &&
+                response.cookings.size() < 3 &&
+                response.ingredients.size() < 3 )
+            view_empty_analyst.setVisibility(View.VISIBLE);
     }
 
     @Override
