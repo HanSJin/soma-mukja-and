@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.Utils.Connections;
 
+import com.hansjin.mukja_android.Model.Analyst;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
@@ -76,6 +77,9 @@ public interface CSConnection {
 
     @POST("/food/post")
     Observable<Food> foodPost(@Body Food food);
+
+    @GET("/users/{uid}/analyst")
+    Observable<Analyst> getAnalyst(@Path("uid") String uid);
 
     @POST("/sign/up")
     Observable<User> signupUser(@Body User user);

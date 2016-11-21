@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hansjin.mukja_android"
-    android:versionCode="441"
-    android:versionName="0.0.0.441">
+    android:versionCode="443"
+    android:versionName="0.0.0.443">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -112,7 +112,6 @@
         <activity
             android:name=".Utils.PopupRequest"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
-
         <activity
             android:name=".Detail.ReCommentActivity"
             android:screenOrientation="portrait"
@@ -120,22 +119,24 @@
         <activity
             android:name=".Detail.ReCommentActivity_"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".TasteAnalyst.TasteAnalystActivity_"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
-        <service
-            android:name=".FCM.MyFcmListenerService">
+        <service android:name=".FCM.MyFcmListenerService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <service
-            android:name=".FCM.MyInstanceIDListenerService">
+        <service android:name=".FCM.MyInstanceIDListenerService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <activity android:name=".TabActivity.Tab1Recommand.AkinatorActivity"></activity>
+
+        <activity android:name=".TabActivity.Tab1Recommand.AkinatorActivity" />
     </application>
 
 </manifest>
