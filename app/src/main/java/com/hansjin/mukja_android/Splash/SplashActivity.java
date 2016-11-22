@@ -318,7 +318,7 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    
+
     @Background
     void connectSigninUser(final Map field) {
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);

@@ -364,7 +364,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
         int update, now;
 
         for(int i=0;i<5;i++){
-            if(i==5)
+            if(i==4)
                 return "방금 전";
             else {
                 update = Integer.valueOf(food.update_date.substring(su_arr[i*2],su_arr[i*2+1]));

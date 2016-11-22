@@ -313,6 +313,10 @@ public class RegisterActivity extends AppCompatActivity {
         n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
         n_food.author.author_location_point = SharedManager.getInstance().getMe().location_point;
 
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
+        n_food.update_date = current_time;
+
         Map field = new HashMap();
         field.put("name", n_food.name);
         field.put("taste", n_food.taste);
@@ -321,6 +325,7 @@ public class RegisterActivity extends AppCompatActivity {
         field.put("ingredient", n_food.ingredient);
         field.put("author", n_food.author);
         field.put("image_url", n_food.image_url);
+        field.put("update_date",current_time);
         Log.d("hansjin", "Filed" + field.toString());
 
         final CSConnection conn = ServiceGenerator.createService(CSConnection.class);
