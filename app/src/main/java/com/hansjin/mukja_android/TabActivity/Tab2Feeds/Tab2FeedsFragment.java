@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -47,7 +49,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     public LinearLayout indicator;
-    ImageButton fab;
+    Button fab;
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
@@ -61,6 +63,17 @@ public class Tab2FeedsFragment extends TabParentFragment {
         b.putInt("index", index);
         fragment.setArguments(b);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // just as usual
+        page = 1;
+        endOfPage = false;
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        connectFeed(page);
     }
 
     @Nullable
@@ -102,7 +115,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
             }
         });
 
-        fab = (ImageButton)view.findViewById(R.id.add_button);
+        fab = (Button) view.findViewById(R.id.add_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +138,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
         connectFeed(page);
     }
 
+
     @Override
     public void reload() {
         page = 1;
@@ -133,6 +147,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
         adapter.notifyDataSetChanged();
         connectFeed(page);
     }
+
 
     void connectFeed(final int page_num) {
         LoadingUtil.startLoading(indicator);
