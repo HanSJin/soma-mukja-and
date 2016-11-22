@@ -238,12 +238,9 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-                        n_food = food;
-                        n_food.rate_person.add(0,n_food.newrate(SharedManager.getInstance().getMe()._id,rate_num));
-                        food_rate(food);
                         Log.i("zxc", "업로드 완료 : " + food.name);
 //                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
-//                        finish();
+                        finish();
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -317,6 +314,8 @@ public class RegisterActivity extends AppCompatActivity {
         String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
         n_food.update_date = current_time;
 
+        n_food.rate_person.add(0, n_food.newrate(SharedManager.getInstance().getMe()._id, rate_num));
+
         Map field = new HashMap();
         field.put("name", n_food.name);
         field.put("taste", n_food.taste);
@@ -335,7 +334,6 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<Food>() {
                     @Override
                     public final void onCompleted() {
-                        finish();
                     }
 
                     @Override
