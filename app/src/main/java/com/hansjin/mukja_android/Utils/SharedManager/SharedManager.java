@@ -1,6 +1,5 @@
 package com.hansjin.mukja_android.Utils.SharedManager;
 
-import com.google.android.gms.common.api.BooleanResult;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.User;
 
@@ -12,9 +11,9 @@ public class SharedManager {
     private User me;
     private User you;
     private Category category;
-    private Boolean push;
 
     public static SharedManager getInstance() {
+
         if (single == null) {
             synchronized(SharedManager.class) {
                 if (single == null) {
@@ -73,17 +72,5 @@ public class SharedManager {
         return true;
     }
 
-    public Boolean getPush() {
-        return this.push;
-    }
 
-    public boolean setPush(Boolean push) {
-        try {
-            this.push = push;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
 }

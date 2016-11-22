@@ -22,6 +22,7 @@ import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.PopupNotCompleted;
 import com.hansjin.mukja_android.Utils.PopupRequest;
+import com.hansjin.mukja_android.Utils.SharedManager.PreferenceManager;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.HashMap;
@@ -142,7 +143,7 @@ public class Setting extends AppCompatActivity {
             }
         });
 
-        if(SharedManager.getInstance().getPush())
+        if(PreferenceManager.getInstance(getApplicationContext()).getPush())
             ST_push.setChecked(true);
         else
             ST_push.setChecked(false);
@@ -152,10 +153,10 @@ public class Setting extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked == true){
                     FirebaseMessaging.getInstance().subscribeToTopic("push_on");
-                    SharedManager.getInstance().setPush(true);
+                    PreferenceManager.getInstance(getApplicationContext()).setPush(true);
                 }else{
                     FirebaseMessaging.getInstance().unsubscribeFromTopic("push_on");
-                    SharedManager.getInstance().setPush(false);
+                    PreferenceManager.getInstance(getApplicationContext()).setPush(false);
                 }
             }
         });

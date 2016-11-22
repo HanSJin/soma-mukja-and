@@ -31,6 +31,7 @@ import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.SharedManager.PreferenceManager;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import rx.Subscriber;
@@ -158,7 +159,7 @@ public class SignupNonFacebookFragment extends Fragment {
                         if (response != null) {
                             //회원가입 시 push_on
                             FirebaseMessaging.getInstance().subscribeToTopic("push_on");
-                            SharedManager.getInstance().setPush(true);
+                            PreferenceManager.getInstance(getApplicationContext()).setPush(true);
 
                             SharedManager.getInstance().setMe(response);
                             Intent intent = new Intent(getActivity(), TabActivity_.class);

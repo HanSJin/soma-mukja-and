@@ -44,6 +44,7 @@ import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.SharedManager.PreferenceManager;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import org.json.JSONArray;
@@ -115,6 +116,9 @@ public class SignFragment extends Fragment {
                             //오류 해결해야함!
                             //connectSigninUser하고 connecSignup 또 함
                             //SharedManager.getInstance().getMe()가 SharedManager.getInstance().setMe()보다 일찍불려서 그럼.
+
+
+                            Log.i("pref","자동 로그인 처리 함수 호출 이후");
 
                             //최초 로그인 => 회원가입(DB에 없을때)
                             if(SharedManager.getInstance().getMe() == null) {
@@ -378,7 +382,7 @@ public class SignFragment extends Fragment {
                         if (response != null) {
                             //회원가입 시 push_on
                             FirebaseMessaging.getInstance().subscribeToTopic("push_on");
-                            SharedManager.getInstance().setPush(true);
+                            PreferenceManager.getInstance(getApplicationContext()).setPush(true);
 
                             SharedManager.getInstance().setMe(response);
 
@@ -415,9 +419,6 @@ public class SignFragment extends Fragment {
                     public final void onNext(User response) {
                         if (response != null) {
                             try{
-                                //회원가입 시 push_on
-                                FirebaseMessaging.getInstance().subscribeToTopic("push_on");
-                                SharedManager.getInstance().setPush(true);
 
                                 SharedManager.getInstance().setMe(response);
                                 editor.putString("social_id", response.social_id);
@@ -462,7 +463,7 @@ public class SignFragment extends Fragment {
                             }
                             //회원가입 시 push_on
                             FirebaseMessaging.getInstance().subscribeToTopic("push_on");
-                            SharedManager.getInstance().setPush(true);
+                            PreferenceManager.getInstance(getApplicationContext()).setPush(true);
                             SharedManager.getInstance().setMe(response);
 
                             editor.putString("social_id", response.social_id);
