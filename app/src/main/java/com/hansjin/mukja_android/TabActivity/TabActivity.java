@@ -110,7 +110,7 @@ public class TabActivity extends AppCompatActivity {
             }
         });
 
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         adapter = new BottomTabPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         currentFragment = adapter.getCurrentFragment();
