@@ -119,7 +119,7 @@ public class GroupRecommandActivity extends AppCompatActivity {
         conn.recommendationResult(field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Food>>() {
+                .subscribe(new Subscriber<Recommand>() {
                     @Override
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
@@ -133,14 +133,14 @@ public class GroupRecommandActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(List<Food> response) {
+                    public final void onNext(Recommand response) {
 
                         Log.i("ddddd","connectRecommand6");
                         adapter.mDataset.clear();
-                        if (response != null && response.size()>0) {
+                        if (response != null && response.listFood.size()>0) {
 
                             Log.i("ddddd","connectRecommand7");
-                            for (Food food : response) {
+                            for (Food food : response.listFood) {
                                 adapter.addData(food);
                             }
                         } else {

@@ -358,7 +358,7 @@ public class AkinatorActivity extends AppCompatActivity {
         conn.recommendationResult(field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Food>>() {
+                .subscribe(new Subscriber<Recommand>() {
                     @Override
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
@@ -369,11 +369,11 @@ public class AkinatorActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(List<Food> response) {
+                    public final void onNext(Recommand response) {
                         adapter.clear();
-                        if (response != null && response.size()>0) {
+                        if (response != null && response.listFood.size()>0) {
                             //new
-                            for (Food food : response) {
+                            for (Food food : response.listFood) {
                                 adapter.addData(food);
                             }
                             adapter.notifyDataSetChanged();

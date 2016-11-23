@@ -207,7 +207,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
         conn.recommendationResult(field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Food>>() {
+                .subscribe(new Subscriber<Recommand>() {
                     @Override
                     public final void onCompleted() {
                         Log.i("ddd","connetRecommand Success");
@@ -222,13 +222,13 @@ public class Tab1RecommandFragment extends TabParentFragment {
                         Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
-                    public final void onNext(List<Food> response) {
+                    public final void onNext(Recommand response) {
                         Log.i("ddd","connetRecommand6");
                         adapter.mDataset.clear();
-                        if (response != null && response.size()>0) {
+                        if (response != null && response.listFood.size()>0) {
 
                             Log.i("ddd","connetRecommand7");
-                            for (Food food : response) {
+                            for (Food food : response.listFood) {
                                 adapter.addData(food);
                             }
                         } else {

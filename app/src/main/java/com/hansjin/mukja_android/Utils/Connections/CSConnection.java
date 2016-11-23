@@ -58,7 +58,7 @@ public interface CSConnection {
 
     //recommendation 결과 값
     @POST("/recommand")
-    Observable<List<Food>> recommendationResult(@Body Category fields);
+    Observable<Recommand> recommendationResult(@Body Category fields);
 
 
     //피드 가져오기
