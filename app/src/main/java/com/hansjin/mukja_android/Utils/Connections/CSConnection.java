@@ -5,6 +5,7 @@ import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.GlobalResponse;
+import com.hansjin.mukja_android.Model.Recommand;
 import com.hansjin.mukja_android.Model.Result;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Model.itemScores;
@@ -56,9 +57,8 @@ public interface CSConnection {
     Observable<List<Food>> similarResult(@Path("food_id") String food_id);
 
     //recommendation 결과 값
-    @POST("/recommand/{uid}")
-    Observable<List<Food>> recommendationResult(@Path("uid") String uid,
-                                                @Body Category fields);
+    @POST("/recommand")
+    Observable<List<Food>> recommendationResult(@Body Category fields);
 
 
     //피드 가져오기

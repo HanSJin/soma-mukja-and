@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.Recommand;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.AkinatorActivity;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandAdapter;
@@ -33,6 +34,7 @@ import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Subscriber;
@@ -55,8 +57,6 @@ public class GroupRecommandActivity extends AppCompatActivity {
     SwipeRefreshLayout pullToRefresh;
 
     private RecyclerView.LayoutManager layoutManager;
-
-    Category category_query = new Category();
     Category field = new Category();
 
 
@@ -66,29 +66,19 @@ public class GroupRecommandActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_recommand);
         activity = this;
 
-        setSupportActionBar(cs_toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("그룹 음식 추천");
+        Intent intent = getIntent();
+        field.group = intent.getStringArrayListExtra("group");
+        Log.i("ddddd","받음 : "+field.group);
 
-        LoadingUtil.stopLoading(indicator);
         initView();
-        pullToRefresh.setRefreshing(false);
+
 
         if (recyclerView == null) {
-            recyclerView = (RecyclerView) findViewById(R.id.recycler_view_search);
+            recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
             recyclerView.setHasFixedSize(true);
             layoutManager = new LinearLayoutManager(activity);
             recyclerView.setLayoutManager(layoutManager);
         }
-
-        indicator = (LinearLayout) findViewById(R.id.indicator);
-
-        //category_query 초기화
-        category_query.taste = new ArrayList<String>();
-        category_query.country = new ArrayList<String>();
-        category_query.cooking = new ArrayList<String>();
-
 
         if (adapter == null) {
             adapter = new GroupRecommandAdapter(new GroupRecommandAdapter.OnItemClickListener() {
@@ -102,20 +92,31 @@ public class GroupRecommandActivity extends AppCompatActivity {
             }, activity, this);
         }
         recyclerView.setAdapter(adapter);
+        LoadingUtil.stopLoading(indicator);
+        pullToRefresh.setRefreshing(false);
 
         connectRecommand(field);
     }
 
     private void initView() {
+        indicator = (LinearLayout) findViewById(R.id.indicator);
         cs_toolbar = (Toolbar) findViewById(R.id.cs_toolbar);
         pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pull_to_refresh);
+
+        setSupportActionBar(cs_toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("그룹 추천 음식");
     }
 
 
     void connectRecommand(Category field) {
+        Log.i("ddddd","connectRecommand1 field.group : "+field.group);
+        field.group.add(SharedManager.getInstance().getMe()._id);
+        Log.i("ddddd","connectRecommand2 내 id더함 field.group : "+field.group);
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.recommendationResult(SharedManager.getInstance().getMe()._id, field)
+        conn.recommendationResult(field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Food>>() {
@@ -127,17 +128,23 @@ public class GroupRecommandActivity extends AppCompatActivity {
                     }
                     @Override
                     public final void onError(Throwable e) {
+                        Log.i("ddddd","connectRecommand5");
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public final void onNext(List<Food> response) {
+
+                        Log.i("ddddd","connectRecommand6");
                         adapter.mDataset.clear();
                         if (response != null && response.size()>0) {
+
+                            Log.i("ddddd","connectRecommand7");
                             for (Food food : response) {
                                 adapter.addData(food);
                             }
                         } else {
+                            Log.i("ddddd","connectRecommand8");
                             endOfPage = true;
                         }
                     }

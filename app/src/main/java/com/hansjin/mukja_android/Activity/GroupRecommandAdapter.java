@@ -16,6 +16,7 @@ import com.hansjin.mukja_android.ViewHolder.ViewHolderFood;
 import com.hansjin.mukja_android.ViewHolder.ViewHolderFoodCategory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -29,6 +30,7 @@ public class GroupRecommandAdapter extends RecyclerView.Adapter<GroupRecommandAd
     public GroupRecommandActivity activity;
     private OnItemClickListener mOnItemClickListener;
     public ArrayList<Food> mDataset = new ArrayList<>();
+
 
 
     public interface OnItemClickListener {
@@ -88,15 +90,15 @@ public class GroupRecommandAdapter extends RecyclerView.Adapter<GroupRecommandAd
             Food food = mDataset.get(position);
             String tasteStr = "";
             for (String taste : food.taste) {
-                tasteStr += ("#" + taste + ", ");
+                tasteStr += ("#" + taste + " ");
             }
             String countryStr = "";
             for (String country : food.country) {
-                countryStr  += ("#" + country + ", ");
+                countryStr  += ("#" + country + " ");
             }
             String cookingStr = "";
             for (String cooking : food.cooking) {
-                cookingStr += ("#" + cooking + ", ");
+                cookingStr += ("#" + cooking + " ");
             }
 
             //itemViewHolder.TV_food_name.setText(food.name);

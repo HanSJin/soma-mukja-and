@@ -3,10 +3,13 @@ package com.hansjin.mukja_android.TabActivity.Tab3List;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.hansjin.mukja_android.Activity.GroupRecommandActivity;
 import com.hansjin.mukja_android.R;
@@ -39,6 +43,7 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
     public static ArrayList<User> mDataset = new ArrayList<>();
     public Tab3ListFragment Tab3ListFragment;
 
+    HashMap<Integer,String> group = new HashMap<>();
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
@@ -66,7 +71,7 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
     @Override
     public Tab3ListAdapter3.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_request_user, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_request_user_3, parent, false);
             return new RequestViewHolder3(v);
         }
         return null;
@@ -90,19 +95,17 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
             itemViewHolder.TV_user_name.setText(user.nickname);
             //itemViewHolder.TV_category.setText(user.location + user.language + user.activity);
             itemViewHolder.TV_about_me.setText(user.about_me);
-            itemViewHolder.BT_no.setOnClickListener(new View.OnClickListener() {
+
+            itemViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View v) {
-                    user_reject(user, position);
-                }
-            });
-            itemViewHolder.BT_group.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, GroupRecommandActivity.class);
-                    //수정
-                    //intent.putExtra("group",)
-                    context.startActivity(intent);
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            group.put(position,getItem(position)._id);
+                        } else {
+                            group.remove(position);
+                            Log.i("zaza","grop.remove : "+group);
+                            Log.i("zaza","position : "+position);
+                        }
                 }
             });
 
@@ -133,20 +136,19 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
         }
     }
     public class RequestViewHolder3 extends ViewHolder {
-        public TextView TV_user_name, TV_category, TV_about_me;
+        public TextView TV_user_name, TV_about_me;
         ImageView IV_user;
-        Button BT_no, BT_group;
+        Button BT_no;
+        CheckBox checkBox;
 
 
         public RequestViewHolder3(View v) {
             super(v);
             TV_user_name = (TextView) v.findViewById(R.id.TV_user_name);
-            TV_category = (TextView) v.findViewById(R.id.TV_category);
             TV_about_me = (TextView) v.findViewById(R.id.TV_about_me);
             IV_user = (ImageView) v.findViewById(R.id.IV_user);
-
             BT_no = (Button) v.findViewById(R.id.BT_no);
-            BT_group = (Button) v.findViewById(R.id.group_button);
+            checkBox = (CheckBox) v.findViewById(R.id.checkbox);
         }
     }
 

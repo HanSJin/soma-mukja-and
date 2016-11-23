@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.Recommand;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
@@ -351,9 +352,10 @@ public class AkinatorActivity extends AppCompatActivity {
     }
 
     void connectRecommand(Category field) {
+        field.group.add(SharedManager.getInstance().getMe()._id);
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.recommendationResult(SharedManager.getInstance().getMe()._id, field)
+        conn.recommendationResult(field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Food>>() {

@@ -264,14 +264,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     void RegisterFood() {
-        for (index = 0; index < 10; index++) {
+        //for (index = 0; index < 10; index++) {
 
             n_food.author.author_id = SharedManager.getInstance().getMe()._id;
             n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
             n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
             n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
             n_food.author.author_location_point = SharedManager.getInstance().getMe().location_point;
-            n_food.name = tempName + index;
+            n_food.name = tempName;
             SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
             n_food.update_date = current_time;
@@ -314,7 +314,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         }
                     });
-        }
+        //}
 
 
         /*

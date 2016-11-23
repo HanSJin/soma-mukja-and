@@ -22,6 +22,7 @@ import com.hansjin.mukja_android.Activity.RegisterActivity_;
 import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Food;
+import com.hansjin.mukja_android.Model.Recommand;
 import com.hansjin.mukja_android.Model.itemScores;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
@@ -179,6 +180,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
 
                     @Override
                     public final void onError(Throwable e) {
+                        Log.i("ddd","connetCategory onerror");
                         e.printStackTrace();
                         Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
@@ -188,37 +190,49 @@ public class Tab1RecommandFragment extends TabParentFragment {
                         if (response != null) {
                             SharedManager.getInstance().setCategory(response);
                             connectRecommand(getField());
+                        }else{
+                            Log.i("ddd","connetCategory onNext Error");
                         }
                     }
                 });
     }
 
     void connectRecommand(Category field) {
+        field.group.add(SharedManager.getInstance().getMe()._id);
+        Log.i("ddd","connetRecommand3");
         LoadingUtil.startLoading(indicator);
+        Log.i("ddd","connetRecommand4");
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.recommendationResult(SharedManager.getInstance().getMe()._id, field)
+        Log.i("ddd","connetRecommand5");
+        conn.recommendationResult(field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Food>>() {
                     @Override
                     public final void onCompleted() {
+                        Log.i("ddd","connetRecommand Success");
                         LoadingUtil.stopLoading(indicator);
                         adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
                     }
                     @Override
                     public final void onError(Throwable e) {
+                        Log.i("ddd","connetRecommand onError");
                         e.printStackTrace();
                         Toast.makeText(getActivity().getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public final void onNext(List<Food> response) {
+                        Log.i("ddd","connetRecommand6");
                         adapter.mDataset.clear();
                         if (response != null && response.size()>0) {
+
+                            Log.i("ddd","connetRecommand7");
                             for (Food food : response) {
                                 adapter.addData(food);
                             }
                         } else {
+                            Log.i("ddd","connetRecommand onNext Error");
                             endOfPage = true;
                         }
                     }

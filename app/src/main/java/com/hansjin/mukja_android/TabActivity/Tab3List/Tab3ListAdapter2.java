@@ -127,14 +127,13 @@ public class Tab3ListAdapter2 extends RecyclerView.Adapter<Tab3ListAdapter2.View
         }
     }
     public class RequestViewHolder2 extends ViewHolder {
-        public TextView TV_user_name, TV_category, TV_about_me, TV_check;
+        public TextView TV_user_name, TV_about_me, TV_check;
         ImageView IV_user;
 
 
         public RequestViewHolder2(View v) {
             super(v);
             TV_user_name = (TextView) v.findViewById(R.id.TV_user_name);
-            TV_category = (TextView) v.findViewById(R.id.TV_category);
             TV_about_me = (TextView) v.findViewById(R.id.TV_about_me);
             TV_check = (TextView) v.findViewById(R.id.TV_check);
             IV_user = (ImageView) v.findViewById(R.id.IV_user);
