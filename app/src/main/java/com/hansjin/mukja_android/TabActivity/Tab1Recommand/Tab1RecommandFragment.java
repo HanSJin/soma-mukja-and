@@ -80,6 +80,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
         page = 1;
         endOfPage = false;
         connectCategory(view);
+        Log.i("reeee","onResume");
     }
 
 
@@ -88,6 +89,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_recommand, container, false);
         connectCategory(view);
+        Log.i("reeee","onCreate");
         return view;
     }
 
@@ -147,6 +149,8 @@ public class Tab1RecommandFragment extends TabParentFragment {
         adapter.clear();
         adapter.notifyDataSetChanged();
         connectRecommand(getField());
+        connectCategory(view);
+        Log.i("reeee","refresh");
     }
 
     @Override
@@ -156,6 +160,8 @@ public class Tab1RecommandFragment extends TabParentFragment {
         adapter.clear();
         adapter.notifyDataSetChanged();
         connectRecommand(getField());
+
+        Log.i("reeee","reload");
     }
 
     private Category getField() {

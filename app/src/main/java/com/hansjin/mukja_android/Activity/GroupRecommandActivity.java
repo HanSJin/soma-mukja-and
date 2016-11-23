@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -54,11 +55,18 @@ public class GroupRecommandActivity extends AppCompatActivity {
     public boolean endOfPage = false;
 
     private Toolbar cs_toolbar;
-    SwipeRefreshLayout pullToRefresh;
+    private TextView algo_txt;
 
     private RecyclerView.LayoutManager layoutManager;
     Category field = new Category();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +101,6 @@ public class GroupRecommandActivity extends AppCompatActivity {
         }
         recyclerView.setAdapter(adapter);
         LoadingUtil.stopLoading(indicator);
-        pullToRefresh.setRefreshing(false);
 
         connectRecommand(field);
     }
@@ -101,7 +108,7 @@ public class GroupRecommandActivity extends AppCompatActivity {
     private void initView() {
         indicator = (LinearLayout) findViewById(R.id.indicator);
         cs_toolbar = (Toolbar) findViewById(R.id.cs_toolbar);
-        pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pull_to_refresh);
+        algo_txt = (TextView) findViewById(R.id.algo_txt);
 
         setSupportActionBar(cs_toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -110,7 +117,7 @@ public class GroupRecommandActivity extends AppCompatActivity {
     }
 
 
-    void connectRecommand(Category field) {
+    void connectRecommand(final Category field) {
         Log.i("ddddd","connectRecommand1 field.group : "+field.group);
         field.group.add(SharedManager.getInstance().getMe()._id);
         Log.i("ddddd","connectRecommand2 내 id더함 field.group : "+field.group);
@@ -124,7 +131,6 @@ public class GroupRecommandActivity extends AppCompatActivity {
                     public final void onCompleted() {
                         LoadingUtil.stopLoading(indicator);
                         adapter.notifyDataSetChanged();
-                        pullToRefresh.setRefreshing(false);
                     }
                     @Override
                     public final void onError(Throwable e) {
@@ -142,6 +148,13 @@ public class GroupRecommandActivity extends AppCompatActivity {
                             Log.i("ddddd","connectRecommand7");
                             for (Food food : response.listFood) {
                                 adapter.addData(food);
+                            }
+                            switch (response.algo){
+                                case 1 : algo_txt.setText("오류");break;
+                                case 2 : algo_txt.setText("음식 취향이 많이 다르셔서 모두가 좋아할만한 음식 추천해드려요!");break;
+                                case 3 : algo_txt.setText(field.group.size()+"명 모두 좋아하실만한 음식 추천해드려요!");break;
+                                case 4 : algo_txt.setText("오류");break;
+                                default: break;
                             }
                         } else {
                             Log.i("ddddd","connectRecommand8");
