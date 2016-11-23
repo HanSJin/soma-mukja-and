@@ -73,16 +73,6 @@ public class Tab1RecommandFragment extends TabParentFragment {
         return fragment;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // just as usual
-        page = 1;
-        endOfPage = false;
-        connectCategory(view);
-        Log.i("reeee","onResume");
-    }
-
 
     @Nullable
     @Override
