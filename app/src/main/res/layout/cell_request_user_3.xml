@@ -66,13 +66,7 @@
         android:layout_marginLeft="10dp"
         android:orientation="vertical"
         android:gravity="center">
-        <Button
-            android:id="@+id/BT_no"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="친구 끊기"
-            android:layout_gravity="center"
-            android:background="@drawable/category_btn"/>
+
     </LinearLayout>
 
     <!--<include layout="@layout/cell_posting_header" android:id="@+id/cell_posting_header" />-->

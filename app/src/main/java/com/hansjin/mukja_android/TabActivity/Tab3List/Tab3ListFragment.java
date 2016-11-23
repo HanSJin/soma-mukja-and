@@ -280,9 +280,10 @@ public class Tab3ListFragment extends TabParentFragment {
         itemTouchHelper_left.attachToRecyclerView(recyclerView);
 
 
-        connRequest(1);
-        connRequest2(1);
-        connRequest3(1);
+        refresh(1);
+        refresh(2);
+        refresh(3);
+
 
     }
 
@@ -293,7 +294,9 @@ public class Tab3ListFragment extends TabParentFragment {
 
     @Override
     public void reload() {
-        refresh(current_tab_num);
+        refresh(1);
+        refresh(2);
+        refresh(3);
     }
 
     public void refresh(int i) {

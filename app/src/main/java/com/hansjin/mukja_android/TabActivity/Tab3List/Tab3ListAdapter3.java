@@ -65,7 +65,7 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
     @Override
     public Tab3ListAdapter3.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_request_user, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_request_user_3, parent, false);
             return new RequestViewHolder3(v);
         }
         return null;
@@ -123,7 +123,7 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
         }
     }
     public class RequestViewHolder3 extends ViewHolder {
-        public TextView TV_user_name, TV_category, TV_about_me;
+        public TextView TV_user_name, TV_about_me;
         ImageView IV_user;
         Button BT_no;
 
@@ -131,7 +131,6 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
         public RequestViewHolder3(View v) {
             super(v);
             TV_user_name = (TextView) v.findViewById(R.id.TV_user_name);
-            TV_category = (TextView) v.findViewById(R.id.TV_category);
             TV_about_me = (TextView) v.findViewById(R.id.TV_about_me);
             IV_user = (ImageView) v.findViewById(R.id.IV_user);
 
