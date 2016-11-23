@@ -27,7 +27,6 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -88,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
     Food n_food = new Food();
     Float rate_num = 10.0f;
 
-    private String imagepath=null;
+    private String imagepath = null;
     Boolean btn_push = false;
 
     String tempName;
@@ -119,10 +118,12 @@ public class RegisterActivity extends AppCompatActivity {
     @ViewById
     TagFlowLayout ingredient_result;
 
+    public static int index = 0;
+
     @Click
     void btn_ingredient() {
         n_food.ingredient.add(edit_ingredient.getText().toString());
-        addFlowChart(ingredient_result,n_food.ingredient.toArray(new String[n_food.ingredient.size()]));
+        addFlowChart(ingredient_result, n_food.ingredient.toArray(new String[n_food.ingredient.size()]));
         edit_ingredient.setText("");
     }
 
@@ -158,18 +159,20 @@ public class RegisterActivity extends AppCompatActivity {
         for (String cooking : SharedManager.getInstance().getCategory().cooking) {
             cooking_list.add(cooking);
         }
-        initSpinner(taste_spinner,taste_list,1);
-        initSpinner(country_spinner,country_list,2);
-        initSpinner(cooking_spinner,cooking_list,3);
+        initSpinner(taste_spinner, taste_list, 1);
+        initSpinner(country_spinner, country_list, 2);
+        initSpinner(cooking_spinner, cooking_list, 3);
 
         set_rating();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -177,7 +180,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.finish) {
             //현재 순서 : 빈칸 체크 -> 이미지 업로드 -> 음식 등록 -> 별점 평가
-            if(!btn_push) {
+            if (!btn_push) {
                 btn_push = true;
                 check_blank();
             }
@@ -188,8 +191,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
-            if(requestCode == 1){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
                 Uri selectedImageUri = data.getData();
                 imagepath = getPath(selectedImageUri);
                 Log.e("imagepath : ", imagepath);
@@ -197,31 +200,32 @@ public class RegisterActivity extends AppCompatActivity {
                 //TODO:임시데이터 넣음 user+현재시간으로 바꿀 것
                 SimpleDateFormat sdfNow = new SimpleDateFormat("yyMMddHHmmssSSS");
                 String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
-                n_food.image_url = "lmjing_"+current_time;
+                n_food.image_url = "lmjing_" + current_time;
 
                 int[] maxTextureSize = new int[1];
                 GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
 
                 final int[] tempMaxTextureSize = maxTextureSize;
 
-                Glide.with(activity).load(imagepath).asBitmap().override(500,300).into(new SimpleTarget<Bitmap>() {
+                Glide.with(activity).load(imagepath).asBitmap()./*override(500,300).*/into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         food_image.setImageBitmap(resource);
-                        /*
-                        if (resource.getHeight() > tempMaxTextureSize[0]){
+
+                        if (resource.getHeight() > tempMaxTextureSize[0]) {
                             int resizedWidth = food_image.getWidth();
                             int resizedHeight = food_image.getHeight();
                             food_image.setImageBitmap(resource.createScaledBitmap(resource, resizedWidth, resizedHeight, false));
                         }
-                        */
+
                     }
                 });
             }
         }
     }
+
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
@@ -239,14 +243,16 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public final void onCompleted() {
                         Log.i("zxc", "업로드 완료 : " + food.name);
-//                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
+                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
                         finish();
                     }
+
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(), Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                     }
+
                     @Override
                     public final void onNext(Food response) {
                         if (response != null) {
@@ -258,14 +264,20 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     void RegisterFood() {
-        /*
-        for(int i=0;i<10;i++) {
+        for (index = 0; index < 10; index++) {
+
             n_food.author.author_id = SharedManager.getInstance().getMe()._id;
             n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
             n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
             n_food.author.author_thumbnail_url_small = SharedManager.getInstance().getMe().thumbnail_url_small;
             n_food.author.author_location_point = SharedManager.getInstance().getMe().location_point;
-            n_food.name = tempName + i;
+            n_food.name = tempName + index;
+            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String current_time = sdfNow.format(new Date(System.currentTimeMillis()));
+            n_food.update_date = current_time;
+
+            n_food.rate_person.add(0, n_food.newrate(SharedManager.getInstance().getMe()._id, rate_num));
+
 //            Map field = new HashMap();
 //            field.put("name", n_food.name+String.valueOf(i));
 //            field.put("taste", n_food.taste);
@@ -303,7 +315,9 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
         }
-        */
+
+
+        /*
         n_food.author.author_id = SharedManager.getInstance().getMe()._id;
         n_food.author.author_nickname = SharedManager.getInstance().getMe().nickname;
         n_food.author.author_thumbnail_url = SharedManager.getInstance().getMe().thumbnail_url;
@@ -352,6 +366,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
+                */
     }
 
     public File saveBitmapToFile(File file){
@@ -389,7 +404,7 @@ public class RegisterActivity extends AppCompatActivity {
             file.createNewFile();
             FileOutputStream outputStream = new FileOutputStream(file);
 
-            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 50 , outputStream);
 
             return file;
         } catch (Exception e) {

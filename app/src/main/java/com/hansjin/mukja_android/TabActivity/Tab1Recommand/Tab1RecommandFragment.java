@@ -48,7 +48,7 @@ import rx.schedulers.Schedulers;
  * Created by kksd0900 on 16. 10. 11..
  */
 public class Tab1RecommandFragment extends TabParentFragment {
-    TabActivity activity;
+    public static TabActivity activity;
 
     public Tab1RecommandAdapter adapter;
     private RecyclerView recyclerView;

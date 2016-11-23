@@ -176,11 +176,13 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                     if(food_like_list.get(i).equals(me._id)){
                         isMe = true;
                     }
-                    for(int j=0;j<friend_list.size();j++){
-                        if(food_like_list.get(i).equals(friend_list.get(j))){
-                            tempFriend = me.friends.get(j).getUser_name();
-                            isYou = true;
-                            break;
+                    if(friend_list!=null) {
+                        for (int j = 0; j < friend_list.size(); j++) {
+                            if (food_like_list.get(i).equals(friend_list.get(j))) {
+                                tempFriend = me.friends.get(j).getUser_name();
+                                isYou = true;
+                                break;
+                            }
                         }
                     }
                 }

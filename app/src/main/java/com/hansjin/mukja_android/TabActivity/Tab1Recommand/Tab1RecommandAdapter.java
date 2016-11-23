@@ -43,7 +43,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment.activity;
+import static com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment.activity;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
