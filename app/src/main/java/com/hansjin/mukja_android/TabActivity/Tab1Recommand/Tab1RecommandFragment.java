@@ -58,6 +58,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
     Button BT_akinator;
+    View view;
 
     /**
      * Create a new instance of the fragment
@@ -70,10 +71,20 @@ public class Tab1RecommandFragment extends TabParentFragment {
         return fragment;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // just as usual
+        page = 1;
+        endOfPage = false;
+        connectCategory(view);
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recommand, container, false);
+        view = inflater.inflate(R.layout.fragment_recommand, container, false);
         connectCategory(view);
         return view;
     }
@@ -106,6 +117,10 @@ public class Tab1RecommandFragment extends TabParentFragment {
             adapter = new Tab1RecommandAdapter(new Tab1RecommandAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
+                    Intent intent = new Intent(getContext(), DetailActivity_.class);
+                    intent.putExtra("food", adapter.getItem(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }

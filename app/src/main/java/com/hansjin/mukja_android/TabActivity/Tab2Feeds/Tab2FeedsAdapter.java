@@ -290,6 +290,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             if (position == mDataset.size()-1 && !fragment.endOfPage)
                 fragment.connectFeed(++fragment.page);
 
+            /*
             itemViewHolder.food_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -299,6 +300,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             });
+            */
 
             itemViewHolder.people_like.setOnClickListener(new View.OnClickListener() {
                 @Override

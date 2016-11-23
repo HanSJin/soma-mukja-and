@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import com.hansjin.mukja_android.Activity.GroupRecommandActivity;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Profile.YourProfileActivity;
@@ -95,6 +96,15 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
                     user_reject(user, position);
                 }
             });
+            itemViewHolder.BT_group.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, GroupRecommandActivity.class);
+                    //수정
+                    //intent.putExtra("group",)
+                    context.startActivity(intent);
+                }
+            });
 
             Glide.with(context).load(user.getPic()).into(itemViewHolder.IV_user);
 
@@ -125,7 +135,7 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
     public class RequestViewHolder3 extends ViewHolder {
         public TextView TV_user_name, TV_category, TV_about_me;
         ImageView IV_user;
-        Button BT_no;
+        Button BT_no, BT_group;
 
 
         public RequestViewHolder3(View v) {
@@ -136,7 +146,7 @@ public class Tab3ListAdapter3 extends RecyclerView.Adapter<Tab3ListAdapter3.View
             IV_user = (ImageView) v.findViewById(R.id.IV_user);
 
             BT_no = (Button) v.findViewById(R.id.BT_no);
-
+            BT_group = (Button) v.findViewById(R.id.group_button);
         }
     }
 
