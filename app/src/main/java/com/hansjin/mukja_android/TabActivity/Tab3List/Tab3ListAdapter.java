@@ -45,7 +45,6 @@ public class Tab3ListAdapter extends RecyclerView.Adapter<Tab3ListAdapter.ViewHo
     }
 
     public Tab3ListAdapter(OnItemClickListener onItemClickListener, Context mContext, Tab3ListFragment mTab3ListFragment) {
-
         mOnItemClickListener = onItemClickListener;
         context = mContext;
         mDataset.clear();

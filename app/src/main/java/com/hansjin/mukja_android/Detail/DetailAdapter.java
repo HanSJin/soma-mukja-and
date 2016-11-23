@@ -150,6 +150,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                     intent.putExtra("food_name",food.name);
                     intent.putExtra("location_point", food.author.author_location_point);
                     activity.startActivity(intent);
+                    Toast.makeText(context, "음식점 view 이벤트 발생", Toast.LENGTH_SHORT).show();
                 }
             });
 

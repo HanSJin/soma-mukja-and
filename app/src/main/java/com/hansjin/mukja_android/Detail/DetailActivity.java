@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -76,10 +78,16 @@ public class DetailActivity extends AppCompatActivity {
         ET_comment.setText("");
     }
 
+
+
+    int ScrollOffsetY_MAX = 0;
+    long start;
+    long end;
+
     @AfterViews
     void afterBindingView() {
         this.activity = this;
-
+        start = System.currentTimeMillis();
         food = (Food) getIntent().getSerializableExtra("food");
 
         setSupportActionBar(cs_toolbar);
@@ -104,6 +112,27 @@ public class DetailActivity extends AppCompatActivity {
         }
         recyclerView.setAdapter(adapter);
 
+
+
+
+
+
+
+
+
+        recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = recyclerView.computeVerticalScrollOffset();
+
+                Log.d("asd", "scrollY: " + scrollY);
+
+                if(getY() < scrollY){
+                    setY(scrollY);
+                }
+
+            }
+        });
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -120,6 +149,21 @@ public class DetailActivity extends AppCompatActivity {
 //        connFoodView();
 //        connLikedPerson();
 //        connGetCommentFood();
+    }
+
+    private void setY(int y){
+        ScrollOffsetY_MAX = y;
+    }
+
+    private int getY(){
+        return ScrollOffsetY_MAX;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        end = System.currentTimeMillis();
+        Toast.makeText(getApplicationContext(), "최대 스크롤 길이 : " + getY() + " / 뷰 체류시간 : " + (end-start)/1000.0 +"(초)", Toast.LENGTH_SHORT).show();
     }
 
     void refresh() {
