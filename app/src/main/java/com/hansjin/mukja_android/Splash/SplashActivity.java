@@ -66,6 +66,7 @@ import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.SharedManager.PreferenceManager;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import com.hansjin.mukja_android.Utils.VersionUpdate.MarketVersionChecker;
 import rx.Subscriber;
@@ -259,10 +260,20 @@ public class SplashActivity extends AppCompatActivity {
     private final TimerTask spashScreenFinished = new TimerTask() {
         @Override
         public void run() {
-            Intent splash = new Intent(activity, SignActivity.class);
-            splash.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(splash);
-            finish();
+            String temp_id = PreferenceManager.getInstance(getApplicationContext()).get_id();
+            Log.i("zxc", "temp_id : " + temp_id);
+            if(temp_id.equals("")){
+                Intent splash = new Intent(activity, SignActivity.class);
+                splash.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(splash);
+                finish();
+            }else{
+                Map field = new HashMap();
+                field.put("_id", temp_id);
+
+                connectSigninUser_all(field);
+            }
+
         }
     };
 
@@ -320,9 +331,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     @Background
-    void connectSigninUser(final Map field) {
+    void connectSigninUser_all(final Map field) {
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
-        conn.signinUser(field)
+        conn.signinUser_all(field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {
@@ -337,6 +348,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(User response) {
                         if (response != null) {
+                            Log.i("zxc", "response._id : " + response._id);
                             SharedManager.getInstance().setMe(response);
                             uiThread();
                         } else {
@@ -345,7 +357,6 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
 
     //gps 관련

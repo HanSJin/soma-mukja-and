@@ -150,6 +150,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
 
 
     void connectFeed(final int page_num) {
+        Log.i("zc", "zxc : " +  SharedManager.getInstance().getMe()._id);
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.getFeedList(SharedManager.getInstance().getMe()._id, page_num)

@@ -147,8 +147,7 @@ public class ReCommentAdapter extends RecyclerView.Adapter<ReCommentAdapter.View
                 TV_comment_middle_dot = (TextView) lv.findViewById(R.id.TV_comment_middle_dot);
 
                 Glide.with(context).
-                        load(comment_person.thumbnail_url_small).
-                        thumbnail(0.1f).
+                        load(comment_person.getPic_small()).
                         into(CIV_pic);
                 TV_commenter_name.setText(comment_person.user_name);
                 TV_comment.setText(comment_person.comment);
@@ -194,8 +193,7 @@ public class ReCommentAdapter extends RecyclerView.Adapter<ReCommentAdapter.View
                 TV_comment2_info = (TextView) lv.findViewById(R.id.TV_comment2_info);
 
                 Glide.with(context).
-                        load(re_comment_person.thumbnail_url_small).
-                        thumbnail(0.1f).
+                        load(re_comment_person.getPic_small()).
                         into(CIV2_pic);
                 TV_commenter2_name.setText(re_comment_person.user_name);
                 TV_comment2.setText(re_comment_person.comment);

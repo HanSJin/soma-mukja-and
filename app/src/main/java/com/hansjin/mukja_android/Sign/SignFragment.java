@@ -218,7 +218,7 @@ public class SignFragment extends Fragment {
 
         info = (TextView) view.findViewById(R.id.info);
 
-
+/*
         if(isLoggedIn()){
             field.put("social_id", AccessToken.getCurrentAccessToken().getUserId());
             new GraphRequest(
@@ -257,7 +257,7 @@ public class SignFragment extends Fragment {
             field.put("location", cityName);
             connectSigninUser_NonFacebook(field);
         }
-
+*/
 
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -419,6 +419,7 @@ public class SignFragment extends Fragment {
                     public final void onNext(User response) {
                         if (response != null) {
                             try{
+                                PreferenceManager.getInstance(getActivity()).set_id(response._id);
 
                                 SharedManager.getInstance().setMe(response);
                                 editor.putString("social_id", response.social_id);
@@ -461,6 +462,8 @@ public class SignFragment extends Fragment {
                                 Toast.makeText(getActivity(), "ID 혹은 PW를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
+                            PreferenceManager.getInstance(getActivity()).set_id(response._id);
+
                             //회원가입 시 push_on
                             FirebaseMessaging.getInstance().subscribeToTopic("push_on");
                             PreferenceManager.getInstance(getApplicationContext()).setPush(true);

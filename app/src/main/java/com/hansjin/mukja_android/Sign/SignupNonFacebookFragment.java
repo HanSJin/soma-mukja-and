@@ -160,6 +160,7 @@ public class SignupNonFacebookFragment extends Fragment {
                             //회원가입 시 push_on
                             FirebaseMessaging.getInstance().subscribeToTopic("push_on");
                             PreferenceManager.getInstance(getApplicationContext()).setPush(true);
+                            PreferenceManager.getInstance(getActivity()).set_id(response._id);
 
                             SharedManager.getInstance().setMe(response);
                             Intent intent = new Intent(getActivity(), TabActivity_.class);

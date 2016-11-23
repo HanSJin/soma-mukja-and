@@ -13,8 +13,6 @@ public class PreferenceManager {
     private static SharedPreferences prefs;
     private static SharedPreferences.Editor editor;
 
-    private Boolean push;
-
     public static PreferenceManager getInstance(Context ctx) {
         if (single == null) {
             synchronized(PreferenceManager.class) {
@@ -25,6 +23,20 @@ public class PreferenceManager {
         }
 
         return single;
+    }
+    public boolean set_id(String _id){
+        try {
+            editor.putString("_id", _id);
+            editor.commit();
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public String get_id(){
+        return prefs.getString("_id","");
     }
 
     public PreferenceManager(Context ctx){

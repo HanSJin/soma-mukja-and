@@ -130,18 +130,8 @@ public class ReCommentActivity extends AppCompatActivity {
         pullToRefresh.setRefreshing(false);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("hansjin", "onActivityResult");
-        if (requestCode == Constants.ACTIVITY_CODE_TAB2_REFRESH_REQUEST) {
-            if (resultCode == Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT) {
-                Log.d("hansjin", "refresh");
-                refresh();
-            }
-        }
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -172,14 +162,14 @@ public class ReCommentActivity extends AppCompatActivity {
         field.put("me_id", SharedManager.getInstance().getMe()._id);
         field.put("comment", comment);// commenter_name
         field.put("me_name", SharedManager.getInstance().getMe().nickname);
-        field.put("me_pic_small", SharedManager.getInstance().getMe().getPic_small());
+        field.put("thumbnail_url", SharedManager.getInstance().getMe().thumbnail_url);
         conn.oneCommentFood(posting_id, comment_id, field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GlobalResponse>() {
+                .subscribe(new Subscriber<List<Food.CommentPerson>>() {
                     @Override
                     public final void onCompleted() {
-                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
+                        //setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
                         //adapter.
                         //pullToRefresh.callOnClick(); // 댓글 작성하고 등록 누르면 내 댓글 새로고침 되도록 해야함
                     }
@@ -188,9 +178,11 @@ public class ReCommentActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     @Override
-                    public final void onNext(GlobalResponse response) {
-                        if (response.code == 0) {
+                    public final void onNext(List<Food.CommentPerson> response) {
+                        if (response != null) {
                             Toast.makeText(activity, "댓글이 정상적으로 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                            adapter.comment_person = response;
+                            adapter.notifyDataSetChanged();
                         } else {
                             Toast.makeText(activity, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }

@@ -32,6 +32,7 @@ import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
 import com.hansjin.mukja_android.Utils.PredictionIO.PredictionIOLearnEvent;
+import com.hansjin.mukja_android.Utils.SharedManager.PreferenceManager;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
@@ -93,7 +94,7 @@ public class Tab1RecommandFragment extends TabParentFragment {
                 startActivity(new Intent(getActivity(), AkinatorActivity.class));
             }
         });
-
+        Log.i("zxc", "temp_id : " + PreferenceManager.getInstance(getActivity()).get_id());
 
         if (recyclerView == null) {
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);

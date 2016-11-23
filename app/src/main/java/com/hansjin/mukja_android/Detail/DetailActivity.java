@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.Detail;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -176,6 +177,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
@@ -256,23 +258,27 @@ public class DetailActivity extends AppCompatActivity {
         field.put("me_id", SharedManager.getInstance().getMe()._id);
         field.put("comment", comment);// commenter_name
         field.put("me_name", SharedManager.getInstance().getMe().nickname);
-        field.put("me_pic_small", SharedManager.getInstance().getMe().thumbnail_url_small);
+        field.put("thumbnail_url", SharedManager.getInstance().getMe().thumbnail_url);
+        Log.i("zxc", "field.toString() : " + field.toString());
         conn.commentFood(food._id, field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GlobalResponse>() {
+                .subscribe(new Subscriber<List<Food.CommentPerson>>() {
                     @Override
                     public final void onCompleted() {
-                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
+                        //setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
                     }
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
                     }
                     @Override
-                    public final void onNext(GlobalResponse response) {
-                        if (response.code == 0) {
+                    public final void onNext(List<Food.CommentPerson> response) {
+                        Log.i("zxc", "asd : " + response.get(0).getComment());
+                        if (response != null) {
                             Toast.makeText(activity, "댓글이 정상적으로 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                            adapter.food.comment_person = response;
+                            adapter.notifyDataSetChanged();
                         } else {
                             Toast.makeText(activity, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
