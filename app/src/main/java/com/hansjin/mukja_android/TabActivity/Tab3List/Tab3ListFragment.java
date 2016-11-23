@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.TabActivity.Tab3List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -12,10 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hansjin.mukja_android.Activity.GroupRecommandActivity;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
@@ -64,6 +67,7 @@ public class Tab3ListFragment extends TabParentFragment {
     public static LinearLayout indicator3;
     public Tab3ListAdapter3 adapter3;
     private RecyclerView recyclerView3;
+    Button BT_group;
     private RecyclerView.LayoutManager layoutManager3;
     public int page3 = 1;
     public boolean endOfPage3 = false;
@@ -136,6 +140,8 @@ public class Tab3ListFragment extends TabParentFragment {
         TV_request2 = (TextView) view.findViewById(R.id.TV_request2);
 
         TV_request3 = (TextView) view.findViewById(R.id.TV_request3);
+
+
 
         initViewSetting(views);
     }
@@ -210,8 +216,24 @@ public class Tab3ListFragment extends TabParentFragment {
         if (recyclerView3 == null) {
             recyclerView3 = (RecyclerView) views.get(2).findViewById(R.id.recycler_view3);
             recyclerView3.setHasFixedSize(true);
+            BT_group = (Button) views.get(2).findViewById(R.id.group_button);
             layoutManager3 = new LinearLayoutManager(activity);
             recyclerView3.setLayoutManager(layoutManager3);
+
+            BT_group.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), GroupRecommandActivity.class);
+                    if(adapter3.group.isEmpty()){
+                        Toast.makeText(getContext(),"선택된 친구가 없습니다",Toast.LENGTH_SHORT).show();
+                    }else {
+                        ArrayList<String> temp = new ArrayList<String>(adapter3.group.values());
+                        Log.i("ddddd","보냄 : "+temp);
+                        intent.putStringArrayListExtra("group", temp);
+                        getContext().startActivity(intent);
+                    }
+                }
+            });
         }
 
         if (adapter3 == null) {

@@ -231,6 +231,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                 }
             });
 
+            /*
             itemViewHolder.food_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -240,6 +241,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             });
+            */
 
             itemViewHolder.people_like.setOnClickListener(new View.OnClickListener() {
                 @Override

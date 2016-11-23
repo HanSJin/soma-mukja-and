@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hansjin.mukja_android"
-    android:versionCode="561"
-    android:versionName="0.0.0.561">
+    android:versionCode="562"
+    android:versionName="0.0.0.562">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -128,6 +128,10 @@
             android:name=".NearbyRestaurant.WebDialog"
             android:theme="@android:style/Theme.Dialog"
             android:windowSoftInputMode="stateHidden" android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".Activity.GroupRecommandActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <service android:name=".FCM.MyFcmListenerService">
             <intent-filter>

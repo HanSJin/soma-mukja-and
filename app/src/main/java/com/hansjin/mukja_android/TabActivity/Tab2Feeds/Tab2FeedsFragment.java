@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.TabActivity.Tab2Feeds;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,8 +23,10 @@ import android.widget.Toast;
 
 import com.hansjin.mukja_android.Activity.RegisterActivity;
 import com.hansjin.mukja_android.Activity.RegisterActivity_;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Sign.SignActivity;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandAdapter;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
@@ -38,6 +41,8 @@ import java.util.List;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment.activity;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -100,6 +105,10 @@ public class Tab2FeedsFragment extends TabParentFragment {
             adapter = new Tab2FeedsAdapter(new Tab2FeedsAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
+                    Intent intent = new Intent(getContext(), DetailActivity_.class);
+                    intent.putExtra("food", adapter.getItem(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
