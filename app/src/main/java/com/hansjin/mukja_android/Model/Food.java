@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.RatingBar;
 
+import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.TimeFormatter.TimeFormmater;
 
 import java.io.Serializable;
@@ -129,6 +130,12 @@ public class Food implements Serializable {
         public String getCommentDate() {
             return comment_date;
         }
+        public String getPic_small(){
+            if(thumbnail_url_small.equals("facebook"))
+                return thumbnail_url_small;
+            else
+                return Constants.IMAGE_BASE_URL + thumbnail_url_small;
+        }
     }
 
     public List<String> comment_person_id(){
@@ -163,6 +170,12 @@ public class Food implements Serializable {
         }
         public String getCommentDate() {
             return comment_date;
+        }
+        public String getPic_small(){
+            if(thumbnail_url_small.equals("facebook"))
+                return thumbnail_url_small;
+            else
+                return Constants.IMAGE_BASE_URL + thumbnail_url_small;
         }
     }
 

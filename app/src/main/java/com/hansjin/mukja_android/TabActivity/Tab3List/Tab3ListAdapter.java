@@ -45,7 +45,6 @@ public class Tab3ListAdapter extends RecyclerView.Adapter<Tab3ListAdapter.ViewHo
     }
 
     public Tab3ListAdapter(OnItemClickListener onItemClickListener, Context mContext, Tab3ListFragment mTab3ListFragment) {
-
         mOnItemClickListener = onItemClickListener;
         context = mContext;
         mDataset.clear();
@@ -131,7 +130,7 @@ public class Tab3ListAdapter extends RecyclerView.Adapter<Tab3ListAdapter.ViewHo
         }
     }
     public class RequestViewHolder extends ViewHolder {
-        public TextView TV_user_name, TV_category, TV_about_me;
+        public TextView TV_user_name, TV_about_me;
         ImageView IV_user;
         Button BT_yes, BT_no;
 
@@ -139,7 +138,6 @@ public class Tab3ListAdapter extends RecyclerView.Adapter<Tab3ListAdapter.ViewHo
         public RequestViewHolder(View v) {
             super(v);
             TV_user_name = (TextView) v.findViewById(R.id.TV_user_name);
-            TV_category = (TextView) v.findViewById(R.id.TV_category);
             TV_about_me = (TextView) v.findViewById(R.id.TV_about_me);
             IV_user = (ImageView) v.findViewById(R.id.IV_user);
 

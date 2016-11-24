@@ -44,7 +44,6 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:layout_height="wrap_content"
-                    android:text="category"
                     android:textSize="12sp"
                     android:textColor="@color/colorGrayText"
                     android:layout_marginLeft="10dp"/>

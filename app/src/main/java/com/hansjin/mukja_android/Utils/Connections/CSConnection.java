@@ -5,6 +5,7 @@ import com.hansjin.mukja_android.Model.Category;
 import com.hansjin.mukja_android.Model.Explore;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.Model.GlobalResponse;
+import com.hansjin.mukja_android.Model.Recommand;
 import com.hansjin.mukja_android.Model.Result;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.Model.itemScores;
@@ -56,9 +57,8 @@ public interface CSConnection {
     Observable<List<Food>> similarResult(@Path("food_id") String food_id);
 
     //recommendation 결과 값
-    @POST("/recommand/{uid}")
-    Observable<List<Food>> recommendationResult(@Path("uid") String uid,
-                                                @Body Category fields);
+    @POST("/recommand")
+    Observable<Recommand> recommendationResult(@Body Category fields);
 
 
     //피드 가져오기
@@ -171,7 +171,7 @@ public interface CSConnection {
                                         @Path("you_id") String you_id);
 
     @POST("/food/comment/{food_id}")
-    Observable<GlobalResponse> commentFood(@Path("food_id") String food_id, @Body Map<String, Object> fields);
+    Observable<List<Food.CommentPerson>> commentFood(@Path("food_id") String food_id, @Body Map<String, Object> fields);
 
     @GET("/food/comment/get/{food_id}")
     Observable<List<Food.CommentPerson>> getCommentFood(@Path("food_id") String food_id);
@@ -182,7 +182,7 @@ public interface CSConnection {
 
 
     @POST("/food/comment/{food_id}/{comment_id}")
-    Observable<GlobalResponse> oneCommentFood(@Path("food_id") String food_id, @Path("comment_id") String comment_id, @Body Map<String, Object> fields);
+    Observable<List<Food.CommentPerson>> oneCommentFood(@Path("food_id") String food_id, @Path("comment_id") String comment_id, @Body Map<String, Object> fields);
 
     //Akinator - cooking
     @POST("/food/akinator/cooking/{me_id}")
@@ -215,6 +215,11 @@ public interface CSConnection {
     @POST("/food/akinator/taste/no/{me_id}")
     Observable<List<Food>> getAkinatorTaste_No(@Path("me_id") String me_id,
                                             @Body Category fields);
+
+    @POST("/sign/in/all")
+    Observable<User> signinUser_all(@Body Map<String, Object> fields);
+
+
 
 }
 

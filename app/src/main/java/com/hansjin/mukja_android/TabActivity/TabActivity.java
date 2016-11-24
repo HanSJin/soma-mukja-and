@@ -61,7 +61,7 @@ public class TabActivity extends AppCompatActivity {
         // Create items
         AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.tab_1, R.drawable.icon_recommand, R.color.colorBottomTabBackGround);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.tab_2, R.drawable.icon_feed, R.color.colorBottomTabBackGround);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tab_3, R.drawable.icon_feed, R.color.colorBottomTabBackGround); //list
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tab_3, R.drawable.icon_friends, R.color.colorBottomTabBackGround); //list
         AHBottomNavigationItem item4 = new AHBottomNavigationItem(R.string.tab_4, R.drawable.icon_explore, R.color.colorBottomTabBackGround);
         AHBottomNavigationItem item5 = new AHBottomNavigationItem(R.string.tab_5, R.drawable.icon_mypage, R.color.colorBottomTabBackGround);
 
@@ -110,7 +110,7 @@ public class TabActivity extends AppCompatActivity {
             }
         });
 
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         adapter = new BottomTabPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         currentFragment = adapter.getCurrentFragment();

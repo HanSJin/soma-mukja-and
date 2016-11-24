@@ -43,7 +43,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment.activity;
+import static com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandFragment.activity;
 
 /**
  * Created by kksd0900 on 16. 10. 11..
@@ -231,6 +231,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                 }
             });
 
+            /*
             itemViewHolder.food_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -240,6 +241,7 @@ public class Tab1RecommandAdapter extends RecyclerView.Adapter<ViewHolderParent>
                     activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             });
+            */
 
             itemViewHolder.people_like.setOnClickListener(new View.OnClickListener() {
                 @Override

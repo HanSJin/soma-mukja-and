@@ -1,5 +1,6 @@
 package com.hansjin.mukja_android.TabActivity.Tab2Feeds;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,14 +15,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.hansjin.mukja_android.Activity.RegisterActivity;
 import com.hansjin.mukja_android.Activity.RegisterActivity_;
+import com.hansjin.mukja_android.Detail.DetailActivity_;
 import com.hansjin.mukja_android.Model.Food;
 import com.hansjin.mukja_android.R;
+import com.hansjin.mukja_android.Sign.SignActivity;
 import com.hansjin.mukja_android.TabActivity.ParentFragment.TabParentFragment;
 import com.hansjin.mukja_android.TabActivity.Tab1Recommand.Tab1RecommandAdapter;
 import com.hansjin.mukja_android.TabActivity.TabActivity;
@@ -37,6 +42,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.hansjin.mukja_android.TabActivity.Tab5MyPage.Tab5MyPageFragment.activity;
+
 /**
  * Created by kksd0900 on 16. 10. 11..
  */
@@ -47,7 +54,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     public LinearLayout indicator;
-    ImageButton fab;
+    Button fab;
     public int page = 1;
     public boolean endOfPage = false;
     SwipeRefreshLayout pullToRefresh;
@@ -61,6 +68,17 @@ public class Tab2FeedsFragment extends TabParentFragment {
         b.putInt("index", index);
         fragment.setArguments(b);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // just as usual
+        page = 1;
+        endOfPage = false;
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        connectFeed(page);
     }
 
     @Nullable
@@ -87,6 +105,10 @@ public class Tab2FeedsFragment extends TabParentFragment {
             adapter = new Tab2FeedsAdapter(new Tab2FeedsAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
+                    Intent intent = new Intent(getContext(), DetailActivity_.class);
+                    intent.putExtra("food", adapter.getItem(position));
+                    startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             }, activity, this);
         }
@@ -102,7 +124,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
             }
         });
 
-        fab = (ImageButton)view.findViewById(R.id.add_button);
+        fab = (Button) view.findViewById(R.id.add_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +147,7 @@ public class Tab2FeedsFragment extends TabParentFragment {
         connectFeed(page);
     }
 
+
     @Override
     public void reload() {
         page = 1;
@@ -134,7 +157,9 @@ public class Tab2FeedsFragment extends TabParentFragment {
         connectFeed(page);
     }
 
+
     void connectFeed(final int page_num) {
+        Log.i("zc", "zxc : " +  SharedManager.getInstance().getMe()._id);
         LoadingUtil.startLoading(indicator);
         CSConnection conn = ServiceGenerator.createService(CSConnection.class);
         conn.getFeedList(SharedManager.getInstance().getMe()._id, page_num)

@@ -27,6 +27,18 @@
 
         <include layout="@layout/view_loading_indicator" android:id="@+id/indicator3" />
 
+        <Button
+            android:id="@+id/group_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/recommand_btn"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="76dp"
+            android:elevation="10dp"/>
+
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

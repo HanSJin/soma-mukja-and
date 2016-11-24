@@ -290,6 +290,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
             if (position == mDataset.size()-1 && !fragment.endOfPage)
                 fragment.connectFeed(++fragment.page);
 
+            /*
             itemViewHolder.food_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -299,6 +300,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
                     activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 }
             });
+            */
 
             itemViewHolder.people_like.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -363,7 +365,7 @@ public class Tab2FeedsAdapter extends RecyclerView.Adapter<ViewHolderParent> {
         String str_arr[] = {"년 전","개월 전","일 전","시간 전","분 전"};
         int update, now;
 
-        for(int i=0;i<5;i++){
+        for(int i=0;i<6;i++){
             if(i==5)
                 return "방금 전";
             else {

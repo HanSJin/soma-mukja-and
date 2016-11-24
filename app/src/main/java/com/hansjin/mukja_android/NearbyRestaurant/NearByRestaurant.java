@@ -308,12 +308,12 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
             if (poiItem == null) return null;
             Item item = mTagItemMap.get(poiItem.getTag());
             if (item == null) return null;
-            ImageView imageViewBadge = (ImageView) mCalloutBalloon.findViewById(R.id.badge);
-            TextView textViewTitle = (TextView) mCalloutBalloon.findViewById(R.id.title);
-            textViewTitle.setText(item.title);
             TextView textViewDesc = (TextView) mCalloutBalloon.findViewById(R.id.desc);
-            textViewDesc.setText(item.address);
+            TextView textViewTitle = (TextView) mCalloutBalloon.findViewById(R.id.title);
+            ImageView imageViewBadge = (ImageView) mCalloutBalloon.findViewById(R.id.badge);
             imageViewBadge.setImageDrawable(createDrawableFromUrl(item.imageUrl));
+            textViewTitle.setText(item.title);
+            textViewDesc.setText(item.address);
             return mCalloutBalloon;
         }
 
@@ -390,8 +390,8 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
             poiItem.setCustomImageResourceId(R.drawable.map_pin_blue);
             poiItem.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
             poiItem.setCustomSelectedImageResourceId(R.drawable.map_pin_red);
-            poiItem.setCustomImageAutoscale(false);
-            poiItem.setCustomImageAnchor(0.5f, 1.0f);
+            //poiItem.setCustomImageAutoscale(false);
+            //poiItem.setCustomImageAnchor(0.5f, 1.0f);
 
             mMapView.addPOIItem(poiItem);
             mTagItemMap.put(poiItem.getTag(), item);
@@ -414,7 +414,7 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
         poiItem.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
         poiItem.setCustomSelectedImageResourceId(R.drawable.location_pin_now);
         poiItem.setCustomImageAutoscale(false);
-        poiItem.setCustomImageAnchor(0.5f, 1.0f);
+        poiItem.setCustomImageAnchor(1.0f, 1.0f);
 
         mMapView.addPOIItem(poiItem);
         mTagItemMap.put(poiItem.getTag(), item);
@@ -437,12 +437,11 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
         poiItem2.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
         poiItem2.setCustomSelectedImageResourceId(R.drawable.location_pin_writing);
         poiItem2.setCustomImageAutoscale(false);
-        poiItem2.setCustomImageAnchor(0.5f, 1.0f);
+        mMapView.setZoomLevel(3, true);
+        //poiItem2.setCustomImageAnchor(0.5f, 1.0f);
 
         mMapView.addPOIItem(poiItem2);
         mTagItemMap.put(poiItem2.getTag(), item2);
-
-
 
         MapPOIItem[] poiItems = mMapView.getPOIItems();
 
@@ -450,13 +449,20 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
 
             //mMapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(SharedManager.getInstance().getMe().location_point.lat, SharedManager.getInstance().getMe().location_point.lon), 3, true);
             //mMapView.selectPOIItem(poiItems[0], true);
+            /*
             mMapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
 
+            mMapView.setMapCenterPointAndZoomLevel(poiItem.getMapPoint(),9,true);
+            */
 
             return true;
         }
 
+        /*
         mMapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
+
+        mMapView.setMapCenterPointAndZoomLevel(poiItem.getMapPoint(),9,true);
+        */
         return false; // 검색결과 없음
 
     }
@@ -497,6 +503,18 @@ public class NearByRestaurant extends AppCompatActivity implements MapView.Curre
 //        sb.append("distance=").append(item.distance).append("\n");
 //        sb.append("direction=").append(item.direction).append("\n");
 //        Toast.makeText(this, sb.toString(), Toast.LENGTH_SHORT).show();
+        //웹뷰 띄우기
+        Item item = mTagItemMap.get(mapPOIItem.getTag());
+        String url = item.placeUrl;
+        if(url!=null) {
+            Log.i("테스트트","아이템 존재 웹뷰 띄우기");
+            Intent intent = new Intent(getApplicationContext(), WebDialog.class);
+            intent.putExtra("URL",url);
+            startActivity(intent);
+        }
+        else{
+            Log.i("테스트트", "아이템 존재x 웹뷰띄우기");
+        }
     }
 
     @Override

@@ -104,7 +104,6 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             ImageHeaderViewHolder imageHolder = (ImageHeaderViewHolder) holder;
             Glide.with(context).
                     load(Constants.IMAGE_BASE_URL+food.image_url).
-                    thumbnail(0.1f).
                     into(imageHolder.foodImage);
             imageHolder.foodName.setText(food.name);
             imageHolder.viewCnt.setText("View "+food.view_cnt);
@@ -150,6 +149,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                     intent.putExtra("food_name",food.name);
                     intent.putExtra("location_point", food.author.author_location_point);
                     activity.startActivity(intent);
+                    Toast.makeText(context, "음식점 view 이벤트 발생", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -175,11 +175,13 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                     if(food_like_list.get(i).equals(me._id)){
                         isMe = true;
                     }
-                    for(int j=0;j<friend_list.size();j++){
-                        if(food_like_list.get(i).equals(friend_list.get(j))){
-                            tempFriend = me.friends.get(j).getUser_name();
-                            isYou = true;
-                            break;
+                    if(friend_list!=null) {
+                        for (int j = 0; j < friend_list.size(); j++) {
+                            if (food_like_list.get(i).equals(friend_list.get(j))) {
+                                tempFriend = me.friends.get(j).getUser_name();
+                                isYou = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -276,8 +278,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
                 personBodyViewHolder.layout_person.addView(iv);
                 Glide.with(context).
-                        load(Constants.IMAGE_BASE_URL + person.thumbnail_url + ".png").
-                        thumbnail(0.1f).
+                        load(Constants.IMAGE_BASE_URL + person.getPic()).
                         bitmapTransform(new CropCircleTransformation(context)).into(iv);
 
                 if (cnt > 10)
@@ -542,11 +543,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 TV_comment_write = (TextView) lv.findViewById(R.id.TV_comment_write);
 
                 Glide.with(context).
-                        load(comment_person.thumbnail_url_small).
-                        thumbnail(0.1f).
+                        load(comment_person.getPic_small()).
                         into(CIV_pic);
 
-                Log.i("zxc", "comment_person.thumbnail_url_small : " + comment_person.thumbnail_url_small );
+                Log.i("zxc", "comment_person.thumbnail_url_small : " + comment_person.getPic_small() );
                 Log.i("zxc", "CIV_pic : " + CIV_pic);
 
 
@@ -602,8 +602,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 TV_comment2_info = (TextView) lv.findViewById(R.id.TV_comment2_info);
 
                 Glide.with(context).
-                        load(re_comment_person.thumbnail_url_small).
-                        thumbnail(0.1f).
+                        load(re_comment_person.getPic_small()).
                         into(CIV2_pic);
                 TV_commenter2_name.setText(re_comment_person.user_name);
                 TV_comment2.setText(re_comment_person.comment);
@@ -641,8 +640,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 CIV_me_pic = (CircleImageView) lv.findViewById(R.id.CIV_me_pic);
 
                 Glide.with(context).
-                        load(SharedManager.getInstance().getMe().thumbnail_url_small).
-                        thumbnail(0.1f).
+                        load(SharedManager.getInstance().getMe().getPic_small()).
                         into(CIV_me_pic);
                 return lv;
             }

@@ -16,8 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="5dp"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_launcher" >
+            android:adjustViewBounds="true">
         </ImageView>
 
         <LinearLayout
@@ -27,12 +26,12 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="99dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="Custom Marker"
+                android:text="위치정보 보내기"
                 android:textColor="#ff000000"
                 android:textSize="14sp"
                 android:textStyle="bold" />

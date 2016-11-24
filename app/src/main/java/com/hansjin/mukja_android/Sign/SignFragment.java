@@ -34,6 +34,8 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Splash.SplashActivity;
@@ -42,6 +44,7 @@ import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
 import com.hansjin.mukja_android.Utils.Loadings.LoadingUtil;
+import com.hansjin.mukja_android.Utils.SharedManager.PreferenceManager;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import org.json.JSONArray;
@@ -114,12 +117,15 @@ public class SignFragment extends Fragment {
                             //connectSigninUser하고 connecSignup 또 함
                             //SharedManager.getInstance().getMe()가 SharedManager.getInstance().setMe()보다 일찍불려서 그럼.
 
+
+                            Log.i("pref","자동 로그인 처리 함수 호출 이후");
+
                             //최초 로그인 => 회원가입(DB에 없을때)
                             if(SharedManager.getInstance().getMe() == null) {
                                 n_user = new User();
                                 n_user.social_id = object.optString("id");
                                 n_user.social_type = "facebook";
-                                n_user.push_token = "random";
+                                n_user.push_token = FirebaseInstanceId.getInstance().getToken();
                                 n_user.device_type = "android";
                                 n_user.app_version = getAppVersion(getActivity());
                                 n_user.nickname = object.optString("name");
@@ -212,7 +218,7 @@ public class SignFragment extends Fragment {
 
         info = (TextView) view.findViewById(R.id.info);
 
-
+/*
         if(isLoggedIn()){
             field.put("social_id", AccessToken.getCurrentAccessToken().getUserId());
             new GraphRequest(
@@ -251,7 +257,7 @@ public class SignFragment extends Fragment {
             field.put("location", cityName);
             connectSigninUser_NonFacebook(field);
         }
-
+*/
 
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -374,6 +380,10 @@ public class SignFragment extends Fragment {
                     @Override
                     public final void onNext(User response) {
                         if (response != null) {
+                            //회원가입 시 push_on
+                            FirebaseMessaging.getInstance().subscribeToTopic("push_on");
+                            PreferenceManager.getInstance(getApplicationContext()).setPush(true);
+
                             SharedManager.getInstance().setMe(response);
 
                             editor.putString("social_id", response.social_id);
@@ -409,6 +419,8 @@ public class SignFragment extends Fragment {
                     public final void onNext(User response) {
                         if (response != null) {
                             try{
+                                PreferenceManager.getInstance(getActivity()).set_id(response._id);
+
                                 SharedManager.getInstance().setMe(response);
                                 editor.putString("social_id", response.social_id);
                                 editor.commit();
@@ -450,6 +462,11 @@ public class SignFragment extends Fragment {
                                 Toast.makeText(getActivity(), "ID 혹은 PW를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
+                            PreferenceManager.getInstance(getActivity()).set_id(response._id);
+
+                            //회원가입 시 push_on
+                            FirebaseMessaging.getInstance().subscribeToTopic("push_on");
+                            PreferenceManager.getInstance(getApplicationContext()).setPush(true);
                             SharedManager.getInstance().setMe(response);
 
                             editor.putString("social_id", response.social_id);

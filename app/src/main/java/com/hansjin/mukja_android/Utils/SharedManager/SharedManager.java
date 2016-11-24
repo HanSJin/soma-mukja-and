@@ -10,10 +10,10 @@ public class SharedManager {
     private volatile static SharedManager single;
     private User me;
     private User you;
-
     private Category category;
 
     public static SharedManager getInstance() {
+
         if (single == null) {
             synchronized(SharedManager.class) {
                 if (single == null) {

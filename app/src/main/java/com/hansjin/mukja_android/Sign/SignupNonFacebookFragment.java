@@ -22,6 +22,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.hansjin.mukja_android.Model.User;
 import com.hansjin.mukja_android.R;
 import com.hansjin.mukja_android.Splash.SplashActivity;
@@ -29,6 +31,7 @@ import com.hansjin.mukja_android.TabActivity.TabActivity_;
 import com.hansjin.mukja_android.Utils.Connections.CSConnection;
 import com.hansjin.mukja_android.Utils.Connections.ServiceGenerator;
 import com.hansjin.mukja_android.Utils.Constants.Constants;
+import com.hansjin.mukja_android.Utils.SharedManager.PreferenceManager;
 import com.hansjin.mukja_android.Utils.SharedManager.SharedManager;
 
 import rx.Subscriber;
@@ -87,7 +90,7 @@ public class SignupNonFacebookFragment extends Fragment {
                         User n_user = new User();
                         n_user.social_id = tempEmail;
                         n_user.social_type = "normal";
-                        n_user.push_token = "random";
+                        n_user.push_token = FirebaseInstanceId.getInstance().getToken();
                         n_user.device_type = "android";
                         n_user.app_version = getAppVersion(getActivity());
                         n_user.nickname = tempName;
@@ -154,6 +157,11 @@ public class SignupNonFacebookFragment extends Fragment {
                     @Override
                     public final void onNext(User response) {
                         if (response != null) {
+                            //회원가입 시 push_on
+                            FirebaseMessaging.getInstance().subscribeToTopic("push_on");
+                            PreferenceManager.getInstance(getApplicationContext()).setPush(true);
+                            PreferenceManager.getInstance(getActivity()).set_id(response._id);
+
                             SharedManager.getInstance().setMe(response);
                             Intent intent = new Intent(getActivity(), TabActivity_.class);
                             startActivity(intent);

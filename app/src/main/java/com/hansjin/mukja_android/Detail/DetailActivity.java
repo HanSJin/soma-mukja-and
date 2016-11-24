@@ -1,13 +1,16 @@
 package com.hansjin.mukja_android.Detail;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -76,10 +79,16 @@ public class DetailActivity extends AppCompatActivity {
         ET_comment.setText("");
     }
 
+
+
+    int ScrollOffsetY_MAX = 0;
+    long start;
+    long end;
+
     @AfterViews
     void afterBindingView() {
         this.activity = this;
-
+        start = System.currentTimeMillis();
         food = (Food) getIntent().getSerializableExtra("food");
 
         setSupportActionBar(cs_toolbar);
@@ -104,6 +113,27 @@ public class DetailActivity extends AppCompatActivity {
         }
         recyclerView.setAdapter(adapter);
 
+
+
+
+
+
+
+
+
+        recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = recyclerView.computeVerticalScrollOffset();
+
+                Log.d("asd", "scrollY: " + scrollY);
+
+                if(getY() < scrollY){
+                    setY(scrollY);
+                }
+
+            }
+        });
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -122,6 +152,21 @@ public class DetailActivity extends AppCompatActivity {
 //        connGetCommentFood();
     }
 
+    private void setY(int y){
+        ScrollOffsetY_MAX = y;
+    }
+
+    private int getY(){
+        return ScrollOffsetY_MAX;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        end = System.currentTimeMillis();
+        Toast.makeText(getApplicationContext(), "최대 스크롤 길이 : " + getY() + " / 뷰 체류시간 : " + (end-start)/1000.0 +"(초)", Toast.LENGTH_SHORT).show();
+    }
+
     void refresh() {
         connFoodView();
         connLikedPerson();
@@ -130,6 +175,7 @@ public class DetailActivity extends AppCompatActivity {
         LoadingUtil.stopLoading(indicator);
         pullToRefresh.setRefreshing(false);
     }
+
 
 
     @Override
@@ -212,23 +258,27 @@ public class DetailActivity extends AppCompatActivity {
         field.put("me_id", SharedManager.getInstance().getMe()._id);
         field.put("comment", comment);// commenter_name
         field.put("me_name", SharedManager.getInstance().getMe().nickname);
-        field.put("me_pic_small", SharedManager.getInstance().getMe().thumbnail_url_small);
+        field.put("thumbnail_url", SharedManager.getInstance().getMe().thumbnail_url);
+        Log.i("zxc", "field.toString() : " + field.toString());
         conn.commentFood(food._id, field)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GlobalResponse>() {
+                .subscribe(new Subscriber<List<Food.CommentPerson>>() {
                     @Override
                     public final void onCompleted() {
-                        setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
+                        //setResult(Constants.ACTIVITY_CODE_TAB2_REFRESH_RESULT);
                     }
                     @Override
                     public final void onError(Throwable e) {
                         e.printStackTrace();
                     }
                     @Override
-                    public final void onNext(GlobalResponse response) {
-                        if (response.code == 0) {
+                    public final void onNext(List<Food.CommentPerson> response) {
+                        Log.i("zxc", "asd : " + response.get(0).getComment());
+                        if (response != null) {
                             Toast.makeText(activity, "댓글이 정상적으로 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                            adapter.food.comment_person = response;
+                            adapter.notifyDataSetChanged();
                         } else {
                             Toast.makeText(activity, Constants.ERROR_MSG, Toast.LENGTH_SHORT).show();
                         }
